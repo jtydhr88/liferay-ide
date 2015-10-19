@@ -16,6 +16,7 @@ package com.liferay.ide.project.ui.migration;
 
 import com.liferay.ide.core.util.CoreUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
@@ -26,6 +27,7 @@ import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 
 /**
  * @author Gregory Amerson
+ * @author Terry Jia
  */
 public class MigrationDecorator extends BaseLabelProvider implements ILightweightLabelDecorator
 {
@@ -45,17 +47,27 @@ public class MigrationDecorator extends BaseLabelProvider implements ILightweigh
             }
         }
 
+        final List<TaskProblem> problems = new ArrayList<>();
 
         if( element instanceof IResource )
         {
             final IResource resource = (IResource) element;
 
-            final List<TaskProblem> problems = MigrationUtil.getTaskProblemsFromResource( resource );
+            problems.addAll( MigrationUtil.getTaskProblemsFromResource( resource ) );
+        }
+        else if( element instanceof MPTree )
+        {
+            problems.addAll( MigrationUtil.getAllTaskProblems() );
+        }
 
-            if( problems.size() > 0 )
-            {
-                decoration.addSuffix( " [" + problems.size() + " problems]" );
-            }
+        if( problems != null && problems.size() > 0 )
+        {
+            final String suffix = String.format(
+                " [ %d %s problem%s]",
+                problems.size(),
+                ( element instanceof MPTree ? "total" : ""),
+                ( problems.size() > 1 ? "s" : "") );
+            decoration.addSuffix( suffix );
         }
     }
 

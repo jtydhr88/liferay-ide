@@ -30,7 +30,7 @@ public class ComboBoxUtil extends SWTBotUtil
 
     public void select( String label, String value )
     {
-        bot.comboBox( label ).setSelection( value );
+        bot.comboBoxWithLabel( label ).setSelection( value );
 
         sleep();
     }

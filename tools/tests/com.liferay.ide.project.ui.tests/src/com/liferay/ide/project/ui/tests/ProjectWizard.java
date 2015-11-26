@@ -35,5 +35,17 @@ public interface ProjectWizard
     public final String MENU_HOOK = "Hook";
     public final String MENU_LAYOUT_TEMPLATE = "Layout Template";
     public final String MENU_WEB = "Web";
-
+    
+    public final int INDEX_VALIDATION_MESSAGE = 2;
+    public final int INDEX_THEME_VALIDATION_MESSAGE = 0;
+    public final String THEME_PARENT_TYPE = "Theme parent:";
+    public final String THEME_FARMEWORK_TYPE = "Theme framework:";
+    public final String MANU_THEME_PARENT_STYLED = "_styled";
+    public final String MANU_THEME_PARENT_UNSTYLED = "_unstyled";
+    public final String MANU_THEME_PARENT_CLASSIC = "classic";
+    public final String MANU_THEME_FRAMEWORK_FREEMARKER = "Freemarker";
+    public final String MANU_THEME_FRAMEWORK_VELOCITY = "Velocity";
+    public final String MANU_THEME_FRAMEWORK_JSP = "JSP";
+    
+    
 }

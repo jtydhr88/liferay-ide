@@ -19,6 +19,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 
 /**
  * @author Terry Jia
+ * @author Ying Xu
  */
 public class ComboBoxUtil extends SWTBotUtil
 {
@@ -30,7 +31,7 @@ public class ComboBoxUtil extends SWTBotUtil
 
     public void select( String label, String value )
     {
-        bot.comboBox( label ).setSelection( value );
+        bot.comboBoxWithLabel( label ).setSelection( value );
 
         sleep();
     }

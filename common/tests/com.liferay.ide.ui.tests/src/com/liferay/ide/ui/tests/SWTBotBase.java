@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Terry Jia
+ * @author Ying Xu
  */
 @RunWith( SWTBotJunit4ClassRunner.class )
 public class SWTBotBase implements UIBase
@@ -36,6 +37,7 @@ public class SWTBotBase implements UIBase
     public static ShellUtil shellUtil;
     public static TreeUtil treeUtil;
     public static ViewUtil viewUtil;
+    public static CheckBoxUtil checkBoxUtil;
 
     @BeforeClass
     public static void beforeClass() throws Exception
@@ -50,6 +52,7 @@ public class SWTBotBase implements UIBase
         shellUtil = new ShellUtil( bot );
         treeUtil = new TreeUtil( bot );
         viewUtil = new ViewUtil( bot );
+        checkBoxUtil = new CheckBoxUtil( bot );
 
         viewUtil.close( VIEW_WELCOME );
         bot.perspectiveByLabel( "Liferay" ).activate();

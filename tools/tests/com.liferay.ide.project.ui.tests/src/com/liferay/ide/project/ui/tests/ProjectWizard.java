@@ -17,6 +17,7 @@ package com.liferay.ide.project.ui.tests;
 
 /**
  * @author Terry Jia
+ * @author Ying Xu
  */
 public interface ProjectWizard
 {
@@ -24,6 +25,7 @@ public interface ProjectWizard
     public final String TEXT_PROJECT_NAME = "Project name:";
     public final String TEXT_SDK_LOCATION = "SDK Location:";
     public final String TEXT_PLUGIN_TYPE = "Plugin type:";
+    public final String TEXT_DISPLAY_NAME = "Display name:";
 
     public final String TOOLTIP_CREATE_LIFERAY_PROJECT = "Create a new Liferay Plugin Project";
     public final String TOOLTIP_MENU_ITEM_NEW_LIFERAY_PROJECT = "New Liferay Plugin Project";
@@ -35,5 +37,8 @@ public interface ProjectWizard
     public final String MENU_HOOK = "Hook";
     public final String MENU_LAYOUT_TEMPLATE = "Layout Template";
     public final String MENU_WEB = "Web";
+    
+    public final int INDEX_VALIDATION_MESSAGE = 2;
+    public final int INDEX_VALIDATION_MESSAGE_WEB_SDKVERSION = 1;
 
 }

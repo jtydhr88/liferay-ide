@@ -20,6 +20,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
 /**
  * @author Terry Jia
+ * @author Ying Xu
  */
 public class TreeUtil extends SWTBotUtil
 {
@@ -43,5 +44,13 @@ public class TreeUtil extends SWTBotUtil
     {
         return bot.tree().getAllItems();
     }
-
+    
+    public SWTBotTreeItem getTreeItem(String name){
+    	return bot.tree().getTreeItem(name);
+    }
+    
+    public SWTBotTreeItem expandNode(String nodeText){
+    	return bot.tree().expandNode(nodeText);
+    }
+    
 }

@@ -32,5 +32,11 @@ public class TextUtil extends SWTBotUtil
     {
         bot.textWithLabel( textLabel ).setText( textValue );
     }
+    
+    public String getText(int index) 
+    {
+        return bot.text(index).getText();
+    }
+    
 
 }

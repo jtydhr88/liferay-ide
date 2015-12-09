@@ -34,10 +34,12 @@ public abstract class ShellPageObject<T extends SWTBot> extends AbstractPageObje
 
     public void waitForPageToOpen()
     {
+        SWTBotPreferences.TIMEOUT = 30000;
+
         bot.waitUntil( new ShellCondition( title, true ) );
     }
 
-    protected void waitForPageToClose()
+    public void waitForPageToClose()
     {
         bot.waitUntil( new ShellCondition( title, false ) );
     }

@@ -54,4 +54,9 @@ public class EditorPageObject extends AbstractPageObject<SWTWorkbenchBot>
     {
         return bot.editorByTitle( name );
     }
+
+    public boolean isActive()
+    {
+        return getEditor().isActive();
+    }
 }

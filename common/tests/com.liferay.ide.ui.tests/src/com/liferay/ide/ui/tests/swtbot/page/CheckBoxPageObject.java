@@ -16,10 +16,31 @@ public class CheckBoxPageObject<T extends SWTBot> extends AbstractWidgetPageObje
         super( bot, label );
     }
 
+    public void deselect()
+    {
+        AbstractSWTBot<? extends Widget> widget = getWidget();
+
+        if( widget instanceof SWTBotCheckBox )
+        {
+            SWTBotCheckBox checkBox = (SWTBotCheckBox) widget;
+            bot.waitUntil( new WidgetEnabledCondition( checkBox, true ) );
+            checkBox.deselect();;
+        }
+    }
+    
     @Override
     protected AbstractSWTBot<?> getWidget()
     {
         return bot.checkBox( label );
+    }
+
+    public boolean isChecked()
+    {
+        AbstractSWTBot<? extends Widget> widget = getWidget();
+
+        SWTBotCheckBox checkBox = (SWTBotCheckBox) widget;
+
+        return checkBox.isChecked();
     }
 
     public void select()
@@ -31,18 +52,6 @@ public class CheckBoxPageObject<T extends SWTBot> extends AbstractWidgetPageObje
             SWTBotCheckBox checkBox = (SWTBotCheckBox) widget;
             bot.waitUntil( new WidgetEnabledCondition( checkBox, true ) );
             checkBox.select();
-        }
-    }
-
-    public void deselect()
-    {
-        AbstractSWTBot<? extends Widget> widget = getWidget();
-
-        if( widget instanceof SWTBotCheckBox )
-        {
-            SWTBotCheckBox checkBox = (SWTBotCheckBox) widget;
-            bot.waitUntil( new WidgetEnabledCondition( checkBox, true ) );
-            checkBox.deselect();;
         }
     }
 

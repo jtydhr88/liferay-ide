@@ -59,6 +59,8 @@ public class WizardPageObject<T extends SWTBot> extends CancelPageObject<T>
     public void finish()
     {
         clickClosingButton( finishButton() );
+        
+        bot.sleep(2000);
     }
 
     protected SWTBotButton finishButton()
@@ -79,6 +81,7 @@ public class WizardPageObject<T extends SWTBot> extends CancelPageObject<T>
     public void next()
     {
         clickButton( nextButton() );
+        bot.sleep( 2000 );
     }
 
     protected SWTBotButton nextButton()
@@ -93,6 +96,8 @@ public class WizardPageObject<T extends SWTBot> extends CancelPageObject<T>
 
     public String getValidationMessage()
     {
+        bot.sleep( 2000 );
+
         if( validationMessageIndex < 0 )
         {
             log.error( "Validation Message Index error" );

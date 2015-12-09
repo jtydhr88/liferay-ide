@@ -36,6 +36,8 @@ public class CancelPageObject<T extends SWTBot> extends ClosingButtonPageObject<
     public void cancel()
     {
         clickClosingButton( cancelButton() );
+        
+        bot.sleep( 2000 );
     }
 
     protected SWTBotButton cancelButton()

@@ -16,6 +16,8 @@ public class SetSDKLocationPageObject<T extends SWTBot> extends WizardPageObject
         super( bot, title, "Cancel", "Finish", "< Back", "Next >" );
 
         sdkLocationText = new TextPageObject<SWTBot>( bot, "SDK Location:" );
+
+        bot.sleep( 2000 );
     }
 
     public void setSdkLocation( String sdkLocation )

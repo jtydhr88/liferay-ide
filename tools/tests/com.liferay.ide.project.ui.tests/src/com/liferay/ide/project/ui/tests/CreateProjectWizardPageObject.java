@@ -25,20 +25,7 @@ public class CreateProjectWizardPageObject<T extends SWTBot> extends WizardPageO
 
     public CreateProjectWizardPageObject( T bot, String title )
     {
-        super( bot, title, BUTTON_CANCEL, BUTTON_FINISH, BUTTON_BACK, BUTTON_NEXT );
-
-        projectNameText = new TextPageObject<>( bot, LABEL_PROJECT_NAME );
-        displayNameText = new TextPageObject<>( bot, LABEL_DISPLAY_NAME );
-        buildTypeComboBox = new ComboBoxPageObject<>( bot, LABEL_BUILD_TYPE );
-        artifactVersionText = new TextPageObject<>( bot, LABEL_ACTIVE_PROFILES );
-        groupIdText = new TextPageObject<>( bot, LABEL_GROUP_ID );
-        activeProfilesText = new TextPageObject<>( bot, LABEL_ACTIVE_PROFILES );
-        useDefaultLoactionCheckBox = new CheckBoxPageObject<>( bot, LABEL_USE_DEFAULT_LOCATION );
-        location = new TextPageObject<>( bot, LABEL_LOCATION );
-        pluginTypeComboBox = new ComboBoxPageObject<>( bot, LABEL_PLUGIN_TYPE );
-        includeSimpleCodeCheckBox = new CheckBoxPageObject<>( bot, LABEL_INCLUDE_SAMPLE_CODE );
-        launchNewPortletWizardCheckBox =
-            new CheckBoxPageObject<>( bot, LABEL_LAUNCH_NEW_PORTLET_WIZARD_AFTER_PROJECT );
+        this( bot, title, 0 );
     }
 
     public CreateProjectWizardPageObject( T bot, String title, int validationMessageIndex )
@@ -56,12 +43,17 @@ public class CreateProjectWizardPageObject<T extends SWTBot> extends WizardPageO
         pluginTypeComboBox = new ComboBoxPageObject<>( bot, LABEL_PLUGIN_TYPE );
         includeSimpleCodeCheckBox = new CheckBoxPageObject<>( bot, LABEL_INCLUDE_SAMPLE_CODE );
         launchNewPortletWizardCheckBox =
-            new CheckBoxPageObject<>( bot, LABEL_LAUNCH_NEW_PORTLET_WIZARD_AFTER_PROJECT );
+
+        new CheckBoxPageObject<>( bot, LABEL_LAUNCH_NEW_PORTLET_WIZARD_AFTER_PROJECT );
+
+        bot.sleep( 2000 );
+
     }
 
     public void createSDKProject( String projectName )
     {
         createSDKProject( projectName, MENU_PORTLET );
+        bot.sleep( 1000 );
     }
 
     public void createSDKProject( String projectName, String pluginType )

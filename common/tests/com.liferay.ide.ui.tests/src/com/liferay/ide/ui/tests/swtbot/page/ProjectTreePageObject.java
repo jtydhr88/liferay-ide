@@ -13,11 +13,11 @@
  *
  *******************************************************************************/
 
-package com.liferay.ide.project.ui.tests;
+package com.liferay.ide.ui.tests.swtbot.page;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
 
-import com.liferay.ide.ui.tests.swtbot.page.TreeItemPageObject;
+import com.liferay.ide.ui.tests.ProjectBuildAction;
 
 /**
  * @author Li Lu

@@ -27,11 +27,19 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 public class TreePageObject<T extends SWTBot> extends AbstractWidgetPageObject<SWTBot>
 {
 
+    protected int index = 0;
+
     protected TableCollection selection;
 
     public TreePageObject( SWTBot bot )
     {
         super( bot );
+    }
+
+    public TreePageObject( SWTBot bot, int index )
+    {
+        this( bot );
+        this.index = index;
     }
 
     public String[] getAllItems()
@@ -75,7 +83,7 @@ public class TreePageObject<T extends SWTBot> extends AbstractWidgetPageObject<S
 
     protected AbstractSWTBot<?> getWidget()
     {
-        return bot.tree();
+        return bot.tree( index );
     }
 
     public void select( final String... items )

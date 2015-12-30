@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.junit.BeforeClass;
@@ -33,25 +34,29 @@ import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ZipUtil;
 import com.liferay.ide.ui.LiferayUIPlugin;
+import com.liferay.ide.ui.tests.swtbot.page.ProjectTreePageObject;
+import com.liferay.ide.ui.tests.swtbot.page.TreeItemPageObject;
+import com.liferay.ide.ui.tests.swtbot.page.TreePageObject;
 
 /**
  * @author Terry Jia
  * @author Ashley Yuan
+ * @author Li Lu
  */
 @RunWith( SWTBotJunit4ClassRunner.class )
 public class SWTBotBase implements UIBase
 {
 
-    private final static String liferayBundlesDir = System.getProperty( "liferay.bundles.dir" );
-    private static IPath liferayBundlesPath;
-
     public static SWTWorkbenchBot bot;
-
     public static ButtonBot buttonBot;
+
     public static CheckBoxBot checkBoxBot;
+
     public static ComboBoxBot comboBoxBot;
     public static EditorBot editorBot;
     public static LabelBot labelBot;
+    private final static String liferayBundlesDir = System.getProperty( "liferay.bundles.dir" );
+    private static IPath liferayBundlesPath;
     public static RadioBot radioBot;
     public static ShellBot shellBot;
     public static TextBot textBot;
@@ -82,6 +87,61 @@ public class SWTBotBase implements UIBase
         SWTBotPreferences.TIMEOUT = 30000;
 
         setupPluginsSDK();
+    }
+
+    public static void deleteALLWSProjects()
+    {
+        try
+        {
+            TreePageObject<SWTWorkbenchBot> tree = new TreePageObject<SWTWorkbenchBot>( bot );
+            String[] projects = tree.getAllItems();
+
+            for( String project : projects )
+            {
+                ProjectTreePageObject<SWTWorkbenchBot> projectItem =
+                    new ProjectTreePageObject<SWTWorkbenchBot>( bot, project );
+                projectItem.deleteProject();
+            }
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    protected static IPath getIvyCacheZip()
+    {
+        return getLiferayBundlesPath().append( "ivy-cache.zip" );
+    }
+
+    protected static IPath getLiferayBundlesPath()
+    {
+        if( liferayBundlesPath == null )
+        {
+            liferayBundlesPath = new Path( liferayBundlesDir );
+        }
+
+        return liferayBundlesPath;
+    }
+
+    protected static IPath getLiferayPluginsSdkDir()
+    {
+        return LiferayUIPlugin.getDefault().getStateLocation().append( "liferay-plugins-sdk-6.2" );
+    }
+
+    protected static String getLiferayPluginsSdkName()
+    {
+        return "liferay-plugins-sdk-6.2";
+    }
+
+    protected static IPath getLiferayPluginsSDKZip()
+    {
+        return getLiferayBundlesPath().append( "liferay-plugins-sdk-6.2.zip" );
+    }
+
+    protected static String getLiferayPluginsSdkZipFolder()
+    {
+        return "liferay-plugins-sdk-6.2/";
     }
 
     private static void setupPluginsSDK() throws IOException
@@ -130,6 +190,24 @@ public class SWTBotBase implements UIBase
         assertEquals( "Expected .ivy folder to be here: " + ivyCacheDir.getAbsolutePath(), true, ivyCacheDir.exists() );
     }
 
+    public void openWizard( String wizardName )
+    {
+
+        bot.menu( "File" ).menu( "New" ).menu( "Other..." ).click();
+
+        textBot.setText( 0, "Liferay" );
+
+        TreeItemPageObject<SWTBot> liferayTree = new TreeItemPageObject<SWTBot>( bot, "Liferay" );
+
+        bot.sleep( 200 );
+
+        liferayTree.expand();
+
+        liferayTree.select( wizardName );
+
+        buttonBot.click( BUTTON_NEXT );
+    }
+
     protected void sleep()
     {
         sleep( 5000 );
@@ -138,41 +216,6 @@ public class SWTBotBase implements UIBase
     protected void sleep( long millis )
     {
         bot.sleep( millis );
-    }
-
-    protected static IPath getLiferayBundlesPath()
-    {
-        if( liferayBundlesPath == null )
-        {
-            liferayBundlesPath = new Path( liferayBundlesDir );
-        }
-
-        return liferayBundlesPath;
-    }
-
-    protected static IPath getIvyCacheZip()
-    {
-        return getLiferayBundlesPath().append( "ivy-cache.zip" );
-    }
-
-    protected static IPath getLiferayPluginsSDKZip()
-    {
-        return getLiferayBundlesPath().append( "liferay-plugins-sdk-6.2.zip" );
-    }
-
-    protected static String getLiferayPluginsSdkZipFolder()
-    {
-        return "liferay-plugins-sdk-6.2/";
-    }
-
-    protected static String getLiferayPluginsSdkName()
-    {
-        return "liferay-plugins-sdk-6.2";
-    }
-
-    protected static IPath getLiferayPluginsSdkDir()
-    {
-        return LiferayUIPlugin.getDefault().getStateLocation().append( "liferay-plugins-sdk-6.2" );
     }
 
 }

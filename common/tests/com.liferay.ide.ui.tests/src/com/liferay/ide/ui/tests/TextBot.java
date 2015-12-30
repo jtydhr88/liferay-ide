@@ -20,6 +20,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 /**
  * @author Terry Jia
  * @author Ashley Yuan
+ * @author Li Lu
  */
 public class TextBot extends Bot
 {
@@ -49,6 +50,12 @@ public class TextBot extends Bot
         bot.styledText().setText( text );
     }
 
+    public void setText( int index, String textValue )
+    {
+        bot.text( index ).setText( textValue );
+        sleep();
+    }
+    
     public void setText( String textLabel, String textValue )
     {
         bot.textWithLabel( textLabel ).setText( textValue );

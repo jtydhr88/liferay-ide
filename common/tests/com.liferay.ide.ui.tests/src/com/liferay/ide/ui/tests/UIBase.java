@@ -31,8 +31,11 @@ public interface UIBase
     public final String BUTTON_HELP = "Help";
     public final String BUTTON_BROWSE = "Browse...";
     public final String BUTTON_DELETE = "Delete";
+    public final String BUTTON_YES = "Yes";
+    public final String BUTTON_NO = "No";
 
     public final String CHECKBOX_INCLUDE_SAMPLE_CODE = "Include sample code";
+    public final String CHECKBOX_INCLUDE_SAMPLE_ENTITY = "Include sample entity in new file.";
 
     public final String VIEW_PACKAGE_EXPLORER = "Package Explorer";
     public final String VIEW_WELCOME = "Welcome";

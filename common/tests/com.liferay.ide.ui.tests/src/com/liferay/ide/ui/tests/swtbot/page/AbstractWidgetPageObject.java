@@ -19,6 +19,7 @@ public abstract class AbstractWidgetPageObject<T extends SWTBot> extends Abstrac
 {
 
     protected String label;
+    protected int index;
 
     public AbstractWidgetPageObject( T bot )
     {
@@ -29,6 +30,12 @@ public abstract class AbstractWidgetPageObject<T extends SWTBot> extends Abstrac
     {
         super( bot );
         this.label = label;
+    }
+    
+    public AbstractWidgetPageObject( T bot, int index )
+    {
+        super( bot );
+        this.index = index;
     }
 
     public String getLabel()

@@ -13,28 +13,32 @@
  *
  *******************************************************************************/
 
-package com.liferay.ide.ui.tests;
+package com.liferay.ide.hook.ui.tests;
+
+import org.eclipse.swtbot.swt.finder.SWTBot;
+
+import com.liferay.ide.project.ui.tests.ProjectWizard;
+import com.liferay.ide.ui.tests.swtbot.page.DialogPageObject;
+import com.liferay.ide.ui.tests.swtbot.page.TreePageObject;
 
 /**
- * @author Terry Jia
- * @author Ashley Yuan
- * @author Ying Xu
+ * @author Vicky Wang
  */
-public interface UIBase
+public class PortalPropertiesFilePageObject<T extends SWTBot> extends DialogPageObject<T>
+    implements HookConfigurationWizard, ProjectWizard
 {
 
-    public final String BUTTON_BACK = "< Back";
-    public final String BUTTON_BROWSE = "Browse...";
-    public final String BUTTON_CANCEL = "Cancel";
-    public final String BUTTON_DELETE = "Delete";
-    public final String BUTTON_FINISH = "Finish";
-    public final String BUTTON_HELP = "Help";
-    public final String BUTTON_NEXT = "Next >";
-    public final String BUTTON_OK = "OK";
+    TreePageObject<SWTBot> path;
 
-    public final String CHECKBOX_INCLUDE_SAMPLE_CODE = "Include sample code";
+    public PortalPropertiesFilePageObject( T bot, String title )
+    {
+        super( bot, title, BUTTON_CANCEL, BUTTON_OK );
+        path = new TreePageObject<>( bot );
+    }
 
-    public final String VIEW_PACKAGE_EXPLORER = "Package Explorer";
-    public final String VIEW_WELCOME = "Welcome";
+    public void select(String... items)
+    {
+        path.selectTreeItem( items );
+    }
 
 }

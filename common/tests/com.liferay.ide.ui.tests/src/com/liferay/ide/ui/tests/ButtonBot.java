@@ -35,6 +35,12 @@ public class ButtonBot extends Bot
         sleep();
     }
 
+    public void click( String buttonLabel, int index )
+    {
+        bot.button( buttonLabel, index ).click();
+        sleep();
+    }
+
     public boolean isEnabled( int index )
     {
         return bot.button( index ).isEnabled();

@@ -13,28 +13,33 @@
  *
  *******************************************************************************/
 
-package com.liferay.ide.ui.tests;
+package com.liferay.ide.hook.ui.tests;
+
+import org.eclipse.swtbot.swt.finder.SWTBot;
+
+import com.liferay.ide.project.ui.tests.ProjectWizard;
+import com.liferay.ide.ui.tests.swtbot.page.ButtonPageObject;
+import com.liferay.ide.ui.tests.swtbot.page.DialogPageObject;
 
 /**
- * @author Terry Jia
- * @author Ashley Yuan
- * @author Ying Xu
+ * @author Vicky Wang
  */
-public interface UIBase
+public class AddServiceWarningPageObject<T extends SWTBot> extends DialogPageObject<T>
+    implements HookConfigurationWizard, ProjectWizard
 {
 
-    public final String BUTTON_BACK = "< Back";
-    public final String BUTTON_BROWSE = "Browse...";
-    public final String BUTTON_CANCEL = "Cancel";
-    public final String BUTTON_DELETE = "Delete";
-    public final String BUTTON_FINISH = "Finish";
-    public final String BUTTON_HELP = "Help";
-    public final String BUTTON_NEXT = "Next >";
-    public final String BUTTON_OK = "OK";
+    ButtonPageObject<SWTBot> ok;
 
-    public final String CHECKBOX_INCLUDE_SAMPLE_CODE = "Include sample code";
+    public AddServiceWarningPageObject( T bot, String title )
+    {
+        super( bot, title, BUTTON_OK, null );
 
-    public final String VIEW_PACKAGE_EXPLORER = "Package Explorer";
-    public final String VIEW_WELCOME = "Welcome";
+        ok = new ButtonPageObject<SWTBot>( bot, BUTTON_OK );
+    }
+
+    public ButtonPageObject<SWTBot> getOk()
+    {
+        return ok;
+    }
 
 }

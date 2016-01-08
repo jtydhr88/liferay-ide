@@ -61,7 +61,7 @@ public class WizardPageObject<T extends SWTBot> extends CancelPageObject<T>
         clickClosingButton( finishButton() );
     }
 
-    protected SWTBotButton finishButton()
+    public SWTBotButton finishButton()
     {
         return bot.button( finishButtonText );
     }

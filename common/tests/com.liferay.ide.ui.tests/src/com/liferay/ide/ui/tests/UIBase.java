@@ -38,4 +38,6 @@ public interface UIBase
     public final String VIEW_PACKAGE_EXPLORER = "Package Explorer";
     public final String VIEW_WELCOME = "Welcome";
 
+    public final int INDEX_DEFAULT_VALIDATION_MESSAGE = -1;
+
 }

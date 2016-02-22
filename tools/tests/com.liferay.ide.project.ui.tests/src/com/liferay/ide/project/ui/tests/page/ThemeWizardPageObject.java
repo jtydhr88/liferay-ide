@@ -42,7 +42,7 @@ public class ThemeWizardPageObject<T extends SWTBot> extends WizardPageObject<T>
 
     public ThemeWizardPageObject( T bot )
     {
-        this( bot, 0 );
+        this( bot, INDEX_DEFAULT_VALIDATION_MESSAGE );
     }
 
     public ThemeWizardPageObject( T bot, int indexThemeValidationMessage )

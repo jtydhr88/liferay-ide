@@ -57,7 +57,7 @@ public abstract class AbstractWidgetPageObject<T extends SWTBot> extends Abstrac
     public String getText()
     {
         return getWidget().getText();
-    }ddd
+    }
 
     protected abstract AbstractSWTBot<?> getWidget();
 

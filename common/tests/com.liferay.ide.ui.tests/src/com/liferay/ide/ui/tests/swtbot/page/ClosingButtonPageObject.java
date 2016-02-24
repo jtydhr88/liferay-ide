@@ -46,4 +46,9 @@ public abstract class ClosingButtonPageObject<T extends SWTBot> extends ShellPag
         button.click();
     }
 
+    public boolean isButtonEnabled( String buttonText )
+    {
+        return bot.button( buttonText ).isEnabled();
+    }
+
 }

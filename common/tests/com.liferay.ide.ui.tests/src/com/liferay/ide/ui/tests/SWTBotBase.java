@@ -17,15 +17,24 @@ package com.liferay.ide.ui.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -37,6 +46,7 @@ import com.liferay.ide.ui.LiferayUIPlugin;
 /**
  * @author Terry Jia
  * @author Ashley Yuan
+ * @author Ying Xu
  */
 @RunWith( SWTBotJunit4ClassRunner.class )
 public class SWTBotBase implements UIBase
@@ -44,6 +54,13 @@ public class SWTBotBase implements UIBase
 
     private final static String liferayBundlesDir = System.getProperty( "liferay.bundles.dir" );
     private static IPath liferayBundlesPath;
+
+    protected KeyStroke ctrl = KeyStroke.getInstance( SWT.CTRL, 0 );
+    protected KeyStroke alt = KeyStroke.getInstance( SWT.ALT, 0 );
+    protected KeyStroke enter = KeyStroke.getInstance( KeyEvent.VK_ENTER );
+    protected KeyStroke up = KeyStroke.getInstance( KeyEvent.VK_UP );
+    protected KeyStroke S = KeyStroke.getInstance( 'S' );
+    protected KeyStroke slash = KeyStroke.getInstance( '/' );
 
     public static SWTWorkbenchBot bot;
 
@@ -58,6 +75,7 @@ public class SWTBotBase implements UIBase
     public static ToolbarBot toolbarBot;
     public static TreeBot treeBot;
     public static ViewBot viewBot;
+    public static MenuBot menuBot;
 
     @BeforeClass
     public static void beforeClass() throws Exception
@@ -75,11 +93,13 @@ public class SWTBotBase implements UIBase
         editorBot = new EditorBot( bot );
         labelBot = new LabelBot( bot );
         radioBot = new RadioBot( bot );
+        menuBot = new MenuBot( bot );
 
         viewBot.close( VIEW_WELCOME );
         bot.perspectiveByLabel( "Liferay" ).activate();
 
         SWTBotPreferences.TIMEOUT = 30000;
+        SWTBotPreferences.KEYBOARD_LAYOUT = "EN_US";
 
         setupPluginsSDK();
     }
@@ -128,6 +148,32 @@ public class SWTBotBase implements UIBase
         }
 
         assertEquals( "Expected .ivy folder to be here: " + ivyCacheDir.getAbsolutePath(), true, ivyCacheDir.exists() );
+    }
+
+    public void openFile( final String path ) throws Exception
+    {
+        Display.getDefault().syncExec( new Runnable()
+        {
+
+            public void run()
+            {
+                try
+                {
+                    File fileToOpen = new File( path );
+
+                    if( fileToOpen.exists() && fileToOpen.isFile() )
+                    {
+                        IFileStore fileStore = EFS.getLocalFileSystem().getStore( fileToOpen.toURI() );
+                        IWorkbenchPage page = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getPages()[0];
+                        IDE.openInternalEditorOnFileStore( page, fileStore );
+                    }
+                }
+                catch( Exception e )
+                {
+                    e.printStackTrace();
+                }
+            }
+        } );
     }
 
     protected void sleep()

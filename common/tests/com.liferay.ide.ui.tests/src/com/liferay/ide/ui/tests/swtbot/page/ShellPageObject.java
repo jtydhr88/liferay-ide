@@ -20,7 +20,7 @@ import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 
-public abstract class ShellPageObject<T extends SWTBot> extends AbstractPageObject<T>
+public class ShellPageObject<T extends SWTBot> extends AbstractPageObject<T>
 {
 
     protected String title;

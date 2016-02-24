@@ -13,22 +13,28 @@
  *
  *******************************************************************************/
 
-package com.liferay.ide.project.ui.tests.page;
+package com.liferay.ide.ui.tests;
 
-import com.liferay.ide.ui.tests.UIBase;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 
 /**
- * @author Ashley Yuan
+ * @author Ying Xu
  */
-public interface CreateLiferayPortletWizard extends UIBase
+public class MenuBot extends Bot
 {
 
-    String LABEL_JAVA_PACKAGE = "Java Package:";
-    String LABEL_PORTLET_CLASS = "Portlet class:";
-    String LABEL_PORTLET_PLUGIN_PROJECT = "Portlet plugin project:";
-    String LABEL_SUPERCLASS = "Superclass:";
+    public MenuBot( SWTWorkbenchBot bot )
+    {
+        super( bot );
+    }
 
-    String RADIO_CREATE_NEW_PORTLET = "Create new portlet";
-    String RADIO_USE_DEFAULT_PORTLET = "Use default portlet (MVCPortlet)";
+    public void menuClick( String menuFile, String menuNew, String menuProject )
+    {
+        sleep( 3000 );
+
+        bot.menu( menuFile ).menu( menuNew ).menu( menuProject ).click();
+
+        sleep();
+    }
 
 }

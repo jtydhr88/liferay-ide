@@ -13,22 +13,25 @@
  *
  *******************************************************************************/
 
-package com.liferay.ide.project.ui.tests.page;
+package com.liferay.ide.ui.tests.swtbot.page;
 
-import com.liferay.ide.ui.tests.UIBase;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 
 /**
- * @author Ashley Yuan
+ * @author Ying Xu
  */
-public interface CreateLiferayPortletWizard extends UIBase
+public class PopUpPageObject<T extends SWTBot> extends ShellPageObject<T>
 {
 
-    String LABEL_JAVA_PACKAGE = "Java Package:";
-    String LABEL_PORTLET_CLASS = "Portlet class:";
-    String LABEL_PORTLET_PLUGIN_PROJECT = "Portlet plugin project:";
-    String LABEL_SUPERCLASS = "Superclass:";
+    public PopUpPageObject( T bot, String title )
+    {
+        super( bot, title );
+    }
 
-    String RADIO_CREATE_NEW_PORTLET = "Create new portlet";
-    String RADIO_USE_DEFAULT_PORTLET = "Use default portlet (MVCPortlet)";
+    public PopUpPageObject( T bot, String title, int index )
+    {
+
+        super( bot, title, index );
+    }
 
 }

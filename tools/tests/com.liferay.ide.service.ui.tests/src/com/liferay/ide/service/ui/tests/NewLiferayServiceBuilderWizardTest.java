@@ -205,7 +205,7 @@ public class NewLiferayServiceBuilderWizardTest extends SWTBotBase implements Se
         // keyPress.pressShortcut( up );
         // keyPress.pressShortcut( alt, slash );
 
-        // PopUpPageObject<SWTWorkbenchBot> popUpPage = new PopUpPageObject<SWTWorkbenchBot>( bot, TEXT_BLANK, 4 );
+        // PopUpPageObject<SWTWorkbenchBot> popUpPage = new PopUpPageObject<SWTWorkbenchBot>( bot, 4 );
 
         // popUpPage.activate();
 
@@ -278,8 +278,7 @@ public class NewLiferayServiceBuilderWizardTest extends SWTBotBase implements Se
 
         toolbarBot.menuClick( TOOLTIP_MENU_NEW, TOOLTIP_MENU_LIFERAY_SERVICE_BUILDER );
         newServiceBuilderWizard.NewServiceBuilder( "packagePath1", "namespace1" );
-        assertEquals(
-            TEXT_ALREADY_HAS_SERVICE_BUILDER_XML_FILE_MESSAGE, newServiceBuilderWizard.getValidationMessage() );
+        assertEquals( TEXT_ALREADY_HAS_SERVICE_BUILDER_XML_FILE_MESSAGE, newServiceBuilderWizard.getValidationMessage() );
         assertFalse( newServiceBuilderWizard.isButtonEnabled( BUTTON_FINISH ) );
         newServiceBuilderWizard.cancel();
         sleep( 3000 );

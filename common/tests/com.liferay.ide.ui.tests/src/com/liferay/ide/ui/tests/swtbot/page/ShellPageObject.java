@@ -28,7 +28,14 @@ public abstract class ShellPageObject<T extends SWTBot> extends AbstractPageObje
 
     public ShellPageObject( T bot, String title )
     {
-        this( bot, title, 0 );
+        super( bot );
+        this.title = title;
+    }
+
+    public ShellPageObject( T bot, int index )
+    {
+        super( bot );
+        this.index = index;
     }
 
     public ShellPageObject( T bot, String title, int index )

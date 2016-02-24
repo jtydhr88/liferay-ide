@@ -23,14 +23,13 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 public class PopUpPageObject<T extends SWTBot> extends ShellPageObject<T>
 {
 
-    public PopUpPageObject( T bot, String title )
+    public PopUpPageObject( T bot, int index )
     {
-        super( bot, title );
+        super( bot, index );
     }
 
     public PopUpPageObject( T bot, String title, int index )
     {
-
         super( bot, title, index );
     }
 

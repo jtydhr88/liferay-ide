@@ -29,12 +29,16 @@ public interface UIBase
     public final String BUTTON_DELETE = "Delete";
     public final String BUTTON_NEXT = "Next >";
     public final String BUTTON_OK = "OK";
+
     public final String BUTTON_HELP = "Help";
     public final String BUTTON_BROWSE = "Browse...";
     public final String BUTTON_YES = "Yes";
     public final String BUTTON_NO = "No";
     public final String BUTTON_ADD = "Add...";
     public final String BUTTON_REMOVE = "Remove";
+
+    public final String LABEL_SOURCE_FOLDER = "Source folder:";
+    public final String LABEL_NAME = "Name:";
 
     public final String CHECKBOX_INCLUDE_SAMPLE_CODE = "Include sample code";
 
@@ -46,5 +50,6 @@ public interface UIBase
     public final String MENU_PROJECT = "Project...";
 
     public final String TEXT_BLANK = "";
+    public final int INDEX_DEFAULT_VALIDATION_MESSAGE = -1;
 
 }

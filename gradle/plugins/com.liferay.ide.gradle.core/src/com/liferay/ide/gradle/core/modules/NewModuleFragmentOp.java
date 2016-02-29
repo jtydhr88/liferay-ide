@@ -25,7 +25,6 @@ import org.eclipse.sapphire.modeling.ProgressMonitor;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.modeling.annotations.DelegateImplementation;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.annotations.Listeners;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.annotations.Service;
 import org.eclipse.sapphire.modeling.annotations.Services;
@@ -34,56 +33,48 @@ import org.eclipse.sapphire.modeling.annotations.Type;
 /**
  * @author Terry Jia
  */
-public interface NewJSPHookModuleOp extends BaseModuleOp
+public interface NewModuleFragmentOp extends BaseModuleOp
 {
-    ElementType TYPE = new ElementType( NewJSPHookModuleOp.class );
+    ElementType TYPE = new ElementType( NewModuleFragmentOp.class );
 
-    // *** Liferay Bundle ***
+    // *** Liferay Runtime ***
 
-    @Label( standard = "Portal Bundle" )
     @Services
     (
         value =
         {
-            @Service( impl = PortalBundleNamePossibleValuesService.class ),
-            @Service( impl = PortalBundleNameDefaultValueService.class ),
-            @Service( impl = NewLiferayBundleValidationService.class )
+            @Service( impl = LiferayRuntimeNamePossibleValuesService.class ),
+            @Service( impl = LiferayRuntimeNameDefaultValueService.class ),
+            @Service( impl = LiferayRuntimeNameValidationService.class )
         }
     )
-    ValueProperty PROP_BUNDLE_NAME = new ValueProperty( TYPE, "BundleName" );
-
-    Value<String> getBundleName();
-    void setBundleName( String value );
-
-    // *** CustomOSGiBundle ***
-
-    @Label( standard = "Host Bundle" )
-    @Service( impl = OSGiBundlePossibleValuesService.class )
-    @Listeners( OSGiBundleListener.class )
     @Required
-    ValueProperty PROP_CUSTOM_OSGI_BUNDLE = new ValueProperty( TYPE, "CustomOSGiBundle" );
+    ValueProperty PROP_LIFERAY_RUNTIME_NAME = new ValueProperty( TYPE, "LiferayRuntimeName" );
 
-    Value<String> getCustomOSGiBundle();
-    void setCustomOSGiBundle(String value);
+    Value<String> getLiferayRuntimeName();
+    void setLiferayRuntimeName( String value );
 
-    // *** CustomJSPs ***
+    // *** HostOSGiBundle ***
 
-    @Type( base = OSGiCustomJSP.class )
-    @Label( standard = "custom jsps" )
-    ListProperty PROP_CUSTOM_JSPS = new ListProperty( TYPE, "CustomJSPs" );
+    @Label( standard = "Host OSGi Bundle" )
+    @Service( impl = HostOSGiBundlePossibleValuesService.class )
+    @Required
+    ValueProperty PROP_HOST_OSGI_BUNDLE = new ValueProperty( TYPE, "HostOsgiBundle" );
 
-    ElementList<OSGiCustomJSP> getCustomJSPs();
+    Value<String> getHostOsgiBundle();
+    void setHostOsgiBundle(String value);
 
-    // *** RealOSGiBUndleFile ***
+    // *** OverrideFiles ***
 
-    ValueProperty PROP_REAL_OSGI_BUNDLE_FILE = new ValueProperty( TYPE, "RealOSGiBundleFile" );
+    @Type( base = OverrideFilePath.class )
+    @Label( standard = "Overridden files" )
+    ListProperty PROP_OVERRIDE_FILES = new ListProperty( TYPE, "OverrideFiles" );
 
-    Value<String> getRealOSGiBundleFile();
-    void setRealOSGiBundleFile( String value );
+    ElementList<OverrideFilePath> getOverrideFiles();
 
     // *** Method: execute ***
 
     @Override
-    @DelegateImplementation( NewJSPHookModuleOpMethods.class )
+    @DelegateImplementation( NewModuleFragmentOpMethods.class )
     Status execute( ProgressMonitor monitor );
 }

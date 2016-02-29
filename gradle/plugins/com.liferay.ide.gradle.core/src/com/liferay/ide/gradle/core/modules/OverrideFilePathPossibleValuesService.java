@@ -35,26 +35,26 @@ import org.eclipse.wst.server.core.IRuntime;
 /**
  * @author Terry Jia
  */
-public class OSGiCustomJSPPossibleValuesService extends PossibleValuesService
+public class OverrideFilePathPossibleValuesService extends PossibleValuesService
 {
 
-    private static String osgiBundleName;
     private static Set<String> possibleValues;
+    private String osgiBundleName;
 
     @Override
     protected void compute( final Set<String> values )
     {
-        final NewJSPHookModuleOp op = op();
+        final NewModuleFragmentOp op = op();
 
-        String currentOSGiBundle = op.getCustomOSGiBundle().content();
+        String hostOSGiBundle = op.getHostOsgiBundle().content();
 
-        if( osgiBundleName == null || !osgiBundleName.equals( currentOSGiBundle ) || possibleValues == null )
+        if( osgiBundleName == null || !osgiBundleName.equals( hostOSGiBundle ) || possibleValues == null )
         {
-            osgiBundleName = currentOSGiBundle;
+            osgiBundleName = hostOSGiBundle;
 
             possibleValues = new HashSet<String>();
 
-            final String runtimeName = op.getBundleName().content();
+            final String runtimeName = op.getLiferayRuntimeName().content();
 
             IRuntime runtime = ServerUtil.getRuntime( runtimeName );
 
@@ -62,8 +62,7 @@ public class OSGiCustomJSPPossibleValuesService extends PossibleValuesService
 
             if( portalBundle != null )
             {
-                File module =
-                    portalBundle.getOSGiBundlesDir().append( "modules" ).append( currentOSGiBundle ).toFile();
+                File module = portalBundle.getOSGiBundlesDir().append( "modules" ).append( hostOSGiBundle ).toFile();
 
                 if( module.exists() )
                 {
@@ -96,11 +95,11 @@ public class OSGiCustomJSPPossibleValuesService extends PossibleValuesService
 
             possibleValuesSet.addAll( possibleValues );
 
-            ElementList<OSGiCustomJSP> currentJsps = op.getCustomJSPs();
+            ElementList<OverrideFilePath> currentFiles = op.getOverrideFiles();
 
-            if( currentJsps != null )
+            if( currentFiles != null )
             {
-                for( OSGiCustomJSP cj : currentJsps )
+                for( OverrideFilePath cj : currentFiles )
                 {
                     String value = cj.getValue().content();
 
@@ -121,9 +120,9 @@ public class OSGiCustomJSPPossibleValuesService extends PossibleValuesService
         return Status.createOkStatus();
     }
 
-    private NewJSPHookModuleOp op()
+    private NewModuleFragmentOp op()
     {
-        return context( NewJSPHookModuleOp.class );
+        return context( NewModuleFragmentOp.class );
     }
 
 }

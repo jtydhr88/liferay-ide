@@ -16,7 +16,7 @@
 package com.liferay.ide.gradle.core.modules;
 
 import com.liferay.ide.project.core.ProjectCore;
-import com.liferay.ide.gradle.core.modules.NewJSPHookModuleOp;
+import com.liferay.ide.gradle.core.modules.NewModuleFragmentOp;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.core.portal.PortalBundle;
 import com.liferay.ide.server.util.ServerUtil;
@@ -34,7 +34,7 @@ import org.eclipse.wst.server.core.IRuntime;
 /**
  * @author Terry Jia
  */
-public class OSGiBundlePossibleValuesService extends PossibleValuesService
+public class HostOSGiBundlePossibleValuesService extends PossibleValuesService
 {
 
     private List<String> bundles = null;
@@ -50,11 +50,11 @@ public class OSGiBundlePossibleValuesService extends PossibleValuesService
         {
             bundles = new ArrayList<String>();
 
-            final NewJSPHookModuleOp op = op();
+            final NewModuleFragmentOp op = op();
 
             if( !op.disposed() )
             {
-                final String runtimeName = op.getBundleName().content();
+                final String runtimeName = op.getLiferayRuntimeName().content();
 
                 IRuntime runtime = ServerUtil.getRuntime( runtimeName );
 
@@ -64,18 +64,16 @@ public class OSGiBundlePossibleValuesService extends PossibleValuesService
                 {
                     try
                     {
-
                         File modules = portalBundle.getOSGiBundlesDir().append( "modules" ).toFile();
 
                         File[] files = modules.listFiles( new FilenameFilter()
                         {
-
                             @Override
                             public boolean accept( File dir, String name )
                             {
                                 return name.matches( ".*\\.web\\.jar" );
                             }
-                        } );
+                        });
 
                         for( File file : files )
                         {
@@ -93,9 +91,9 @@ public class OSGiBundlePossibleValuesService extends PossibleValuesService
         }
     }
 
-    private NewJSPHookModuleOp op()
+    private NewModuleFragmentOp op()
     {
-        return context( NewJSPHookModuleOp.class );
+        return context( NewModuleFragmentOp.class );
     }
 
     @Override

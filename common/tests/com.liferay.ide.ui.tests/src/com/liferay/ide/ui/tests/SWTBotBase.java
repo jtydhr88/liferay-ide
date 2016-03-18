@@ -24,10 +24,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.TextConsole;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -39,6 +44,7 @@ import com.liferay.ide.ui.LiferayUIPlugin;
 /**
  * @author Terry Jia
  * @author Ashley Yuan
+ * @author Vicky Wang
  */
 @RunWith( SWTBotJunit4ClassRunner.class )
 public class SWTBotBase implements UIBase
@@ -96,7 +102,8 @@ public class SWTBotBase implements UIBase
         SWTBotPreferences.KEYBOARD_LAYOUT = "EN_US";
 
         unzipPluginsSDK();
-
+        unzipServer();
+        
     }
 
     protected static IPath getIvyCacheZip()
@@ -112,6 +119,11 @@ public class SWTBotBase implements UIBase
         }
 
         return liferayBundlesPath;
+    }
+
+    protected static String getLiferayPluginServerName()
+    {
+        return "tomcat-7.0.62";
     }
 
     protected static IPath getLiferayPluginsSdkDir()
@@ -132,6 +144,21 @@ public class SWTBotBase implements UIBase
     protected static String getLiferayPluginsSdkZipFolder()
     {
         return "liferay-plugins-sdk-6.2/";
+    }
+
+    protected static IPath getLiferayServerDir()
+    {
+        return LiferayUIPlugin.getDefault().getStateLocation().append( "liferay-portal-7.0-ce-b2/" );
+    }
+
+    protected static IPath getLiferayServerZip()
+    {
+        return getLiferayBundlesPath().append( "liferay-portal-tomcat-7.0-ce-b2-20160105152151933.zip" );
+    }
+
+    protected static String getLiferayServerZipFolder()
+    {
+        return "liferay-portal-7.0-ce-b2/";
     }
 
     protected static void unzipPluginsSDK() throws IOException
@@ -178,6 +205,71 @@ public class SWTBotBase implements UIBase
         }
 
         assertEquals( "Expected .ivy folder to be here: " + ivyCacheDir.getAbsolutePath(), true, ivyCacheDir.exists() );
+    }
+
+    protected static void unzipServer() throws IOException
+    {
+        FileUtil.deleteDir( getLiferayServerDir().toFile(), true );
+        final File liferayServerZipFile = getLiferayServerZip().toFile();
+
+        assertEquals(
+            "Expected file to exist: " + liferayServerZipFile.getAbsolutePath(), true, liferayServerZipFile.exists() );
+
+        final File liferayServerDirFile = getLiferayServerDir().toFile();
+
+        liferayServerDirFile.mkdirs();
+
+        final String liferayServerZipFolder = getLiferayServerZipFolder();
+
+        if( CoreUtil.isNullOrEmpty( liferayServerZipFolder ) )
+        {
+            ZipUtil.unzip( liferayServerZipFile, liferayServerDirFile );
+        }
+        else
+        {
+            ZipUtil.unzip(
+                liferayServerZipFile, liferayServerZipFolder, liferayServerDirFile, new NullProgressMonitor() );
+        }
+
+    }
+
+    public boolean checkServerConsoleMessage( String expectedMessage, int timeout ) throws Exception
+    {
+        TextConsole console = (TextConsole) getConsole( "Liferay" ); // get server console
+
+        long timeoutExpiredMs = System.currentTimeMillis() + timeout;
+
+        while( true )
+        {
+            Thread.sleep( 500 );
+
+            IDocument content = console.getDocument();
+
+            if( content.get().contains( expectedMessage ) )
+            {
+                return true;
+            }
+
+            if( System.currentTimeMillis() >= timeoutExpiredMs )
+            {
+                return false;
+            }
+        }
+    }
+
+    protected IConsole getConsole( String name )
+    {
+        ConsolePlugin plugin = ConsolePlugin.getDefault();
+
+        IConsoleManager conMan = plugin.getConsoleManager();
+
+        IConsole[] existing = conMan.getConsoles();
+
+        for( int i = 0; i < existing.length; i++ )
+            if( ( existing[i].getName() ).contains( name ) )
+                return existing[i];
+
+        return null;
     }
 
     protected void sleep()

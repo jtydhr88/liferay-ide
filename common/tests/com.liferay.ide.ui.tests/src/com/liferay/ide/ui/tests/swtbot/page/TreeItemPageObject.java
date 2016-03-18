@@ -39,6 +39,12 @@ public class TreeItemPageObject<T extends SWTBot> extends TreePageObject<SWTBot>
         this.nodeText = nodeText;
     }
 
+    public TreeItemPageObject( SWTBot bot, int treeIndex, String... nodeText )
+    {
+        super( bot, treeIndex );
+        this.nodeText = nodeText;
+    }
+
     public void collapse()
     {
         getWidget().collapse();

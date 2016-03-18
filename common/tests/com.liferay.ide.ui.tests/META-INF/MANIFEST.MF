@@ -27,6 +27,7 @@ Require-Bundle: com.liferay.ide.core,
  com.liferay.ide.ui,
  org.apache.log4j,
  org.eclipse.ui.workbench,
+ org.eclipse.core.filesystem,
  org.eclipse.jface
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

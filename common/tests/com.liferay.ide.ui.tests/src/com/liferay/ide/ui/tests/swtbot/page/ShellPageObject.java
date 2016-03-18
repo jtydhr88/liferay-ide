@@ -23,13 +23,27 @@ import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 public abstract class ShellPageObject<T extends SWTBot> extends AbstractPageObject<T>
 {
 
+    int index = -1;
     protected String title;
 
     public ShellPageObject( T bot, String title )
     {
         super( bot );
+        this.title = title;
+    }
+
+    public ShellPageObject( T bot, int index )
+    {
+        super( bot );
+        this.index = index;
+    }
+
+    public ShellPageObject( T bot, String title, int index )
+    {
+        super( bot );
 
         this.title = title;
+        this.index = index;
     }
 
     public void waitForPageToOpen()
@@ -40,6 +54,16 @@ public abstract class ShellPageObject<T extends SWTBot> extends AbstractPageObje
     protected void waitForPageToClose()
     {
         bot.waitUntil( new ShellCondition( title, false ) );
+    }
+
+    public void activate()
+    {
+        getShell().activate();
+    }
+
+    protected SWTBotShell getShell()
+    {
+        return bot.shell( title, index );
     }
 
     public void closeIfOpen()

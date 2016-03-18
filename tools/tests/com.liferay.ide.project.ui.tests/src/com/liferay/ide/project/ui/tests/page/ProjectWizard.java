@@ -62,7 +62,6 @@ public interface ProjectWizard extends UIBase
 
     public final String TEXT_ADD_PROJECT_TO_WORKING_SET = "Add project to working set";
     public final String TEXT_ADDITIONAL_PORTLET_OPTIONS = "Additional portlet options";
-    public final String TEXT_BLANK = "";
     public final String TEXT_CHOOSE_AVAILABLE_PORTLET_FRAMEWORKS =
         "Choose from available portlet frameworks depending on which technology is most appropriate for this project.";
     public final String TEXT_CHOOSE_PLUGINS_SDK_AND_OPEN = "Choose Plugins SDK and Open in Workspace";

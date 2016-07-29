@@ -1563,4 +1563,10 @@
             </class>
         </editor>
     </extension>
+   <extension
+         point="org.eclipse.ui.editors.templates">
+      <include
+            file="templates/project-java-templates">
+      </include>
+   </extension>
 </plugin>

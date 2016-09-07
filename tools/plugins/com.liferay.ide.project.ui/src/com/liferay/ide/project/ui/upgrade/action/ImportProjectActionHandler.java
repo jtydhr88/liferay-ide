@@ -22,8 +22,10 @@ import com.liferay.ide.core.util.ZipUtil;
 import com.liferay.ide.project.core.ProjectCore;
 import com.liferay.ide.project.core.modules.BladeCLI;
 import com.liferay.ide.project.core.modules.BladeCLIException;
+import com.liferay.ide.project.core.upgrade.CodeUpgradeOp;
 import com.liferay.ide.project.core.util.ProjectImportUtil;
 import com.liferay.ide.project.core.util.ProjectUtil;
+import com.liferay.ide.project.ui.ProjectUI;
 import com.liferay.ide.sdk.core.SDK;
 import com.liferay.ide.sdk.core.SDKUtil;
 import com.liferay.ide.server.util.ServerUtil;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -59,10 +62,11 @@ public class ImportProjectActionHandler extends BaseActionHandler
     @Override
     protected Object run( Presentation context )
     {
-        String layout = op( context ).getLayout().content();
+        CodeUpgradeOp op = op( context );
+        String layout = op.getLayout().content();
 
-        IPath location = PathBridge.create( op( context ).getSdkLocation().content() );
-        String projectName = op( context ).getProjectName().content();
+        IPath location = PathBridge.create( op.getSdkLocation().content() );
+        String projectName = op.getProjectName().content();
 
         try
         {
@@ -73,6 +77,8 @@ public class ImportProjectActionHandler extends BaseActionHandler
                 {
                     try
                     {
+                        backupSDK( op );
+                        
                         copyNewSDK( location, monitor );
 
                         clearWorkspaceSDKAndProjects( location, monitor );
@@ -91,7 +97,7 @@ public class ImportProjectActionHandler extends BaseActionHandler
                         }
                         else
                         {
-                            String serverName = op( context ).getLiferayServerName().content();
+                            String serverName = op.getLiferayServerName().content();
 
                             IServer server = ServerUtil.getServer( serverName );
 
@@ -121,11 +127,29 @@ public class ImportProjectActionHandler extends BaseActionHandler
             e.printStackTrace();
         }
 
-        op( context ).setNewLocation( newPath );
+        op.setNewLocation( newPath );
 
         newPath = "";
 
         return null;
+    }
+
+    private void backupSDK( CodeUpgradeOp op )
+    {
+        try
+        {
+            org.eclipse.sapphire.modeling.Path originalSDKPath = op.getSdkLocation().content();
+
+            if( originalSDKPath != null )
+            {
+                IPath backupLocation = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+                ZipUtil.zip( originalSDKPath.toFile(), backupLocation.append( "backup.zip" ).toFile() );
+            }
+        }
+        catch( IOException e )
+        {
+            ProjectUI.logError( "Error to backup original sdk folder.", e );
+        }
     }
 
     private void clearWorkspaceSDKAndProjects( IPath targetSDKLocation, IProgressMonitor monitor ) throws CoreException

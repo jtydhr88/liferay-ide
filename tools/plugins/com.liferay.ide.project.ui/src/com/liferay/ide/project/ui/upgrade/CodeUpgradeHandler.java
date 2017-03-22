@@ -22,6 +22,7 @@ import com.liferay.ide.ui.util.UIUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -48,7 +49,9 @@ public class CodeUpgradeHandler extends AbstractHandler
 
             try
             {
-                activePage.showView( UpgradeView.ID );
+                IViewPart upgradeView = activePage.showView( UpgradeView.ID );
+
+                activePage.toggleZoom( activePage.getReference( upgradeView ) );
             }
             catch( PartInitException e )
             {

@@ -73,11 +73,12 @@ public class ServiceDefaultValuesService extends DefaultValueService
 
             try
             {
-                ServiceCommand serviceCommand = new ServiceCommand( runningServer );
-
-                ServiceContainer allServices = serviceCommand.execute();
-
-                retVal =  allServices.getServiceList().get( 0 );
+//                ServiceCommand serviceCommand = new ServiceCommand( runningServer );
+//
+//                ServiceContainer allServices = serviceCommand.execute();
+//
+//                retVal =  allServices.getServiceList().get( 0 );
+                retVal = "com.liferay.service";
             }
             catch( Exception e )
             {

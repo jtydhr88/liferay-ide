@@ -15,15 +15,14 @@
 
 package com.liferay.ide.server.core.portal;
 
-import aQute.remote.api.Agent;
-
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.StringPool;
-import com.liferay.ide.server.core.ILiferayServerBehavior;
+import com.liferay.ide.server.core.ILiferayServer;
 import com.liferay.ide.server.core.LiferayServerCore;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +33,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IModuleType;
+import org.eclipse.wst.server.core.IRuntime;
 import org.eclipse.wst.server.core.internal.Server;
 import org.eclipse.wst.server.core.model.ServerDelegate;
 
@@ -45,9 +45,11 @@ import org.eclipse.wst.server.core.model.ServerDelegate;
 @SuppressWarnings( "restriction" )
 public class PortalServerDelegate extends ServerDelegate implements PortalServerWorkingCopy
 {
-
+    private Object versionLock = new Object(); 
+    private int currentVersion;
+    private int loadedVersion;
     private final static List<String> SUPPORT_TYPES_LIST = Arrays.asList( "liferay.bundle", "jst.web", "jst.utility" );
-
+    protected PortalBundleConfiguration bundleConfiguration;
     public PortalServerDelegate()
     {
         super();
@@ -223,7 +225,7 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
     public void setDefaults( IProgressMonitor monitor )
     {
         setAttribute( Server.PROP_AUTO_PUBLISH_TIME, getAutoPublishTime() );
-        setAttribute( ILiferayServerBehavior.AGENT_PORT, Agent.DEFAULT_PORT );
+        //setAttribute( ILiferayServerBehavior.AGENT_PORT, Agent.DEFAULT_PORT );
     }
 
     @Override
@@ -252,14 +254,139 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
         setAttribute( ATTR_USERNAME, username );
     }
 
-    public void setHttpPort( String httpPort )
+    @Override
+    public void saveConfiguration( IProgressMonitor monitor ) throws CoreException
     {
-        setAttribute( ATTR_HTTP_PORT, httpPort );
-
-        PortalRuntime runtime =
-            (PortalRuntime) getServer().getRuntime().loadAdapter( PortalRuntime.class, new NullProgressMonitor() );
-
-        runtime.getPortalBundle().setHttpPort( httpPort );
+        PortalRuntime runtime = (PortalRuntime) getServer().getRuntime().loadAdapter( PortalRuntime.class, new NullProgressMonitor() );
+        if ( runtime != null )
+        {
+            bundleConfiguration.save(runtime.getAppServerDir(), monitor);            
+        }
     }
 
+    public void applyChange( LiferayServerPort port, IProgressMonitor monitor )
+    {
+        if ( port.getStoreLocation().equals( LiferayServerPort.defayltStoreInServer )  )
+        {
+            setAttribute( port.getId(), port.getPort() );
+        }
+        else
+        {
+            bundleConfiguration.applyChange( port );
+        }
+    }
+    
+    public List<LiferayServerPort> getLiferayServerPorts()
+    {
+        List<LiferayServerPort> liferayServerPorts = new ArrayList<LiferayServerPort>();
+
+        liferayServerPorts.addAll( createServerPort() );
+        liferayServerPorts.addAll( getBundleConfiguration().getServerPorts() );
+
+        return liferayServerPorts;
+    }
+
+    private List<LiferayServerPort> createServerPort()
+    {
+        List<LiferayServerPort> serverPorts = new ArrayList<LiferayServerPort>();
+        if ( getServer() != null )
+        {
+            
+            serverPorts.add( new LiferayServerPort( ATTR_AGENT_PORT, "Bnd Agent", getAgentPort(), "TCPIP", LiferayServerPort.defayltStoreInServer ) );
+            serverPorts.add( new LiferayServerPort( ATTR_JMX_PORT, "Jmx Client", getJmxPort(), "TCPIP", LiferayServerPort.defayltStoreInServer ) );
+            serverPorts.add( new LiferayServerPort( ATTR_TELNET_PORT, "Telnet", getTelnetPort(), "TCPIP", LiferayServerPort.defayltStoreInServer ) );
+        }
+        
+        return serverPorts;
+    }
+  
+    @Override
+    public void importRuntimeConfiguration(IRuntime runtime, IProgressMonitor monitor) throws CoreException 
+    {
+        try 
+        {
+            synchronized (versionLock) 
+            {
+                bundleConfiguration = null;
+                currentVersion = 0;
+                loadedVersion = 0;
+            }
+            
+            PortalRuntime portalRuntime = (PortalRuntime) runtime.loadAdapter( PortalRuntime.class, new NullProgressMonitor() );
+            bundleConfiguration = portalRuntime.getPortalBundle().getBundleConfiguration();
+            bundleConfiguration.importFromPath( portalRuntime.getPortalBundle().getAppServerDir(), monitor );
+
+        } catch (CoreException ce) {
+            throw ce;
+        }
+    }
+    
+    public PortalBundleConfiguration getBundleConfiguration()
+    {
+        int current;
+        PortalBundleConfiguration bundleConfig;
+        // Grab current state
+        synchronized (versionLock) 
+        {
+            current = currentVersion;
+            bundleConfig = bundleConfiguration;
+        }
+        // If configuration needs loading
+        if (bundleConfig == null || loadedVersion != current) 
+        {
+            try {
+                PortalRuntime portalRuntime = (PortalRuntime) getServer().getRuntime().loadAdapter( PortalRuntime.class, new NullProgressMonitor() );
+                bundleConfiguration = portalRuntime.getPortalBundle().getBundleConfiguration();
+
+                // If not yet loaded
+                if (bundleConfig == null) 
+                {
+                    bundleConfig = bundleConfiguration;
+                }                
+                bundleConfiguration.load( portalRuntime.getAppServerDir(), new NullProgressMonitor() );
+                // Update loaded version
+                synchronized (versionLock) 
+                {
+                    // If newer version not already loaded, update version
+                    if (bundleConfiguration == null || loadedVersion < current) {
+                        bundleConfiguration = bundleConfig;
+                        loadedVersion = current;
+                    }
+                }
+            } 
+            catch (CoreException ce) 
+            {
+                LiferayServerCore.logError( ce );
+            }
+        }
+        return bundleConfig;
+    }
+
+    @Override
+    public int getAgentPort()
+    {
+        return getAttribute( ATTR_AGENT_PORT, ILiferayServer.DEFAULT_AGENT_PORT );
+    }
+
+    @Override
+    public int getJmxPort()
+    {
+        return getAttribute( ATTR_JMX_PORT, ILiferayServer.DEFAULT_JMX_PORT );
+    }
+
+    @Override
+    public int getTelnetPort()
+    {
+        return getAttribute( ATTR_TELNET_PORT, ILiferayServer.DEFAULT_TELNET_PORT );
+    }
+
+    @Override
+    public void configurationChanged() 
+    {
+        synchronized (versionLock) 
+        {
+            currentVersion++;
+        }
+    }
+    
 }

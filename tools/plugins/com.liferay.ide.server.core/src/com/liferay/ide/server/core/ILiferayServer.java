@@ -40,6 +40,18 @@ public interface ILiferayServer
     String DEFAULT_PASSWORD = defaultPrefs.get( "default.password", StringPool.EMPTY );
 
     String DEFAULT_USERNAME = defaultPrefs.get( "default.username", StringPool.EMPTY );
+    
+    int DEFAULT_AGENT_PORT = defaultPrefs.getInt( "default.agent.port", 29998 );
+    
+    int DEFAULT_JMX_PORT = defaultPrefs.getInt( "default.jmx.port", 8099 );
+    
+    int DEFAULT_TELNET_PORT = defaultPrefs.getInt( "default.telnet.port", 11311 );
+    
+    String ATTR_AGENT_PORT = "agent-port";
+    
+    String ATTR_JMX_PORT = "jmx-port";
+    
+    String ATTR_TELNET_PORT = "telnet-port";
 
     URL getWebServicesListURL();
 

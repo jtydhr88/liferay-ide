@@ -64,6 +64,9 @@ public interface PortalBundle extends ILiferayPortal
 
     String getHttpPort();
 
-    void setHttpPort( String port );
+    PortalBundleConfiguration getBundleConfiguration();
 
+    int getDefaultAgentPort();
+    
+    int getDefaultJmxPort();
 }

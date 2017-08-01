@@ -52,5 +52,11 @@ public interface PortalServer extends ILiferayServer
     boolean getLaunchSettings();
 
     String[] getMemoryArgs();
+    
+    int getAgentPort();
+    
+    int getJmxPort();
+    
+    int getTelnetPort();
 
 }

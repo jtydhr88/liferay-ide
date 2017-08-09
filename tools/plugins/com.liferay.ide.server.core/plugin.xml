@@ -1242,6 +1242,7 @@
             runtimeTypeId="com.liferay.ide.server.portal.runtime"
             startBeforePublish="true"
             startTimeout="900000"
+            hasConfiguration="true"
             stopTimeout="300000"
             supportsRemoteHosts="true">
       </serverType>
@@ -1399,6 +1400,13 @@
          point="com.liferay.ide.server.core.portalBundles">
       <portalBundle
             class="com.liferay.ide.server.core.portal.PortalJBossEapBundleFactory"
+            type="jboss">
+      </portalBundle>
+   </extension>
+   <extension
+         point="com.liferay.ide.server.core.portalBundles">
+      <portalBundle
+            class="com.liferay.ide.server.core.portal.PortalJBossEap64BundleFactory"
             type="jboss">
       </portalBundle>
    </extension>

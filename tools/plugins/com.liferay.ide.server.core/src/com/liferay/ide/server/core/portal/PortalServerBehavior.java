@@ -80,6 +80,8 @@ public class PortalServerBehavior extends ServerBehaviourDelegate
 {
     public static final String ATTR_STOP = "stop-server";
 
+
+
     private static final String[] JMX_EXCLUDE_ARGS = new String []
     {
         "-Dcom.sun.management.jmxremote",
@@ -308,13 +310,18 @@ public class PortalServerBehavior extends ServerBehaviourDelegate
 
         Collections.addAll( retval, getPortalRuntime().getPortalBundle().getRuntimeStartVMArgs() );
 
-        int agentPort = getServer().getAttribute( AGENT_PORT, Agent.DEFAULT_PORT );
+        int agentPort = getPortalServer().getAgentPort();
 
         retval.add( "-D" + Agent.AGENT_SERVER_PORT_KEY + "=" + agentPort );
+        
+        int jmxPort = getPortalServer().getJmxPort();
+
+        retval.add( "-Dcom.sun.management.jmxremote.port=" + jmxPort );
 
         return retval.toArray( new String[0] );
     }
-
+  
+    
     private String[] getRuntimeStopProgArgs()
     {
         return getPortalRuntime().getPortalBundle().getRuntimeStopProgArgs();
@@ -350,7 +357,7 @@ public class PortalServerBehavior extends ServerBehaviourDelegate
         {
             String url = "http://" + getServer().getHost();
 
-            final int port = Integer.parseInt( getPortalRuntime().getPortalBundle().getHttpPort() );
+            final int port = Integer.parseInt( getPortalServer().getHttpPort() );
 
             if( port != 80 )
             {
@@ -403,6 +410,19 @@ public class PortalServerBehavior extends ServerBehaviourDelegate
 
                     if( index == 0 || ( index > 0 && Character.isWhitespace( retval.charAt( index - 1 ) ) ) )
                     {
+                        // replace
+                        String s = retval.substring( 0, index );
+                        int index2 = getNextToken( retval, index + ind + 1 );
+
+                        if( index2 >= 0 )
+                        {
+                            retval = s + newArgs[i] + retval.substring( index2 );
+                        }
+                        else
+                        {
+                            retval = s + newArgs[i];
+                        }
+
                         newArgs[i] = null;
                     }
                 }
@@ -412,6 +432,19 @@ public class PortalServerBehavior extends ServerBehaviourDelegate
 
                     if( index == 0 || ( index > 0 && Character.isWhitespace( retval.charAt( index - 1 ) ) ) )
                     {
+                        // replace
+                        String s = retval.substring( 0, index );
+                        int index2 = getNextToken( retval, index );
+
+                        if( index2 >= 0 )
+                        {
+                            retval = s + newArgs[i] + retval.substring( index2 );
+                        }
+                        else
+                        {
+                            retval = s + newArgs[i];
+                        }
+
                         newArgs[i] = null;
                     }
                 }
@@ -421,7 +454,36 @@ public class PortalServerBehavior extends ServerBehaviourDelegate
 
                     if( index == 0 || ( index > 0 && Character.isWhitespace( retval.charAt( index - 1 ) ) ) )
                     {
-                        newArgs[i] = null;
+                        // replace
+                        String s = retval.substring( 0, index );
+                        int index2 = getNextToken( retval, index );
+
+                        if( !keepActionLast || i < ( size - 1 ) )
+                        {
+                            if( index2 >= 0 )
+                            {
+                                retval = s + newArgs[i] + retval.substring( index2 );
+                            }
+                            else
+                            {
+                                retval = s + newArgs[i];
+                            }
+
+                            newArgs[i] = null;
+                        }
+                        else
+                        {
+                            // The last VM argument needs to remain last,
+                            // remove original arg and append the vmArg later
+                            if( index2 >= 0 )
+                            {
+                                retval = s + retval.substring( index2 );
+                            }
+                            else
+                            {
+                                retval = s;
+                            }
+                        }
                     }
                 }
             }
@@ -534,12 +596,21 @@ public class PortalServerBehavior extends ServerBehaviourDelegate
                     xbootIndex = retval.lastIndexOf( "-Xbootclasspath" );
                 }
 
-                retval = retval + " " + xbootClasspath;
+                if ( !Character.isWhitespace( retval.charAt( retval.length() - 1 ) ) )
+                {
+                    retval = retval + " " + xbootClasspath;
+                }
+                else
+                {
+                    retval = retval + xbootClasspath;
+                }
+                
             }
         }
 
         return retval;
     }
+
 
     private void mergeClasspath( List<IRuntimeClasspathEntry> oldCpEntries, IRuntimeClasspathEntry cpEntry )
     {

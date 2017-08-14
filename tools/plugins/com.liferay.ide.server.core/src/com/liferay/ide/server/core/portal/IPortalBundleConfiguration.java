@@ -12,47 +12,24 @@
  * details.
  *
  *******************************************************************************/
-
 package com.liferay.ide.server.core.portal;
 
-import com.liferay.ide.server.core.ILiferayServer;
+import java.beans.PropertyChangeListener;
+import java.util.List;
 
 /**
- * @author Gregory Amerson
- * @author Terry Jia
+ * @author Simon Jiang
  */
-public interface PortalServer extends ILiferayServer
+
+public interface IPortalBundleConfiguration
 {
-
-    String ID = "com.liferay.ide.server.portal";
-
-    String START = "start";
-
-    String STOP = "stop";
-
-    String PROPERTY_EXTERNAL_PROPERTIES = "externalProperties";
-
-    String PROPERTY_MEMORY_ARGS = "memoryArgs";
-
-    String PROPERTY_SERVER_MODE = "serverMode";
-
-    String PROPERTY_LAUNCH_SETTINGS = "launchSettings";
-
-    String PROPERTY_DEVELOPER_MODE = "developerMode";
-
-    int getAutoPublishTime();
-
-    boolean getDeveloperMode();
-
-    String getExternalProperties();
-
-    boolean getLaunchSettings();
-
-    String[] getMemoryArgs();
+    public List<LiferayServerPort> getConfiguredServerPorts();
     
-    int getAgentPort();
+    public void addPropertyChangeListener( PropertyChangeListener listener );
     
-    int getJmxPort();
+    public void removePropertyChangeListener( PropertyChangeListener listener );
     
-    int getTelnetPort();
+    public void modifyServerPort(String id, int port);
+
+    public int getHttpPort();
 }

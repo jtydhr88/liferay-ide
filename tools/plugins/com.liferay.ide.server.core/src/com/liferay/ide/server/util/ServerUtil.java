@@ -15,8 +15,6 @@
 
 package com.liferay.ide.server.util;
 
-import aQute.remote.api.Agent;
-
 import com.liferay.ide.core.ILiferayConstants;
 import com.liferay.ide.core.ILiferayPortal;
 import com.liferay.ide.core.ILiferayProject;
@@ -30,10 +28,12 @@ import com.liferay.ide.server.core.ILiferayRuntime;
 import com.liferay.ide.server.core.ILiferayServer;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.core.portal.BundleSupervisor;
+import com.liferay.ide.server.core.portal.LiferayServerPort;
 import com.liferay.ide.server.core.portal.PortalBundle;
 import com.liferay.ide.server.core.portal.PortalBundleFactory;
 import com.liferay.ide.server.core.portal.PortalRuntime;
 import com.liferay.ide.server.core.portal.PortalServer;
+import com.liferay.ide.server.core.portal.PortalServerDelegate;
 import com.liferay.ide.server.remote.IRemoteServer;
 import com.liferay.ide.server.remote.IServerManagerConnection;
 
@@ -107,6 +107,43 @@ public class ServerUtil
     // private static Pattern aQuteAgentPortPattern = Pattern.compile( "-DaQute.agent.server.port=([0-9]+)" );
     // private static Pattern jmxRemotePortPattern = Pattern.compile( "-Dcom.sun.management.jmxremote.port=([0-9]+)" );
 
+    public static List<String> checkUsingPorts( String serverName, LiferayServerPort port )
+    {
+        final List<String> serverLists = new ArrayList<String>();
+
+        final IServer[] servers = ServerCore.getServers();
+
+        for( IServer server : servers )
+        {
+            PortalServerDelegate portalServer = ( (PortalServerDelegate) server.loadAdapter( PortalServer.class, null ) );
+
+            if( portalServer != null && !server.getName().equals( serverName ) )
+            {
+                try
+                {
+                    List<LiferayServerPort> serverPorts = portalServer.getLiferayServerPorts();
+                    
+                    for(LiferayServerPort usedPort : serverPorts )
+                    {
+                        if ( usedPort.getPort() == port.getPort() )
+                        {
+                            if ( !serverLists.contains( server.getName() ) )
+                            {
+                                serverLists.add( server.getName() );
+                            }
+                        }
+                    }
+                }
+                catch( Exception e)
+                {
+                    LiferayServerCore.logError( e );
+                }
+            }
+        }
+
+        return serverLists;
+    }
+    
     public static Map<String, String> configureAppServerProperties( ILiferayRuntime liferayRuntime )
     {
         return getSDKRequiredProperties( liferayRuntime );
@@ -127,47 +164,10 @@ public class ServerUtil
     public static BundleSupervisor createBundleSupervisor( PortalRuntime portalRuntime, IServer server )
         throws Exception
     {
-        int aQuteAgentPort = Agent.DEFAULT_PORT;
-        int jmxPort = portalRuntime.getPortalBundle().getJmxRemotePort();
+        PortalServerDelegate portalServerDelegate = (PortalServerDelegate) server.loadAdapter( PortalServer.class, null );
 
-        /*
-        try
-        {
-            String launchVmArguments = server.getLaunchConfiguration( true, null ).getWorkingCopy().getAttribute(
-                IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "" );
-
-            Matcher aQutematcher = aQuteAgentPortPattern.matcher( launchVmArguments );
-            Matcher jmxMatcher = jmxRemotePortPattern.matcher( launchVmArguments );
-
-            String agentPortStr = null;
-
-            if( aQutematcher.find() )
-            {
-                agentPortStr = aQutematcher.group( 1 );
-            }
-
-            if( !CoreUtil.empty( agentPortStr ) )
-            {
-                aQuteAgentPort = Integer.parseInt( agentPortStr );
-            }
-
-            String jmxPortStr = null;
-
-            if( jmxMatcher.find() )
-            {
-                jmxPortStr = jmxMatcher.group( 1 );
-            }
-
-            if( !CoreUtil.empty( jmxPortStr ) )
-            {
-                jmxPort = Integer.parseInt( jmxPortStr );
-            }
-        }
-        catch( Exception e )
-        {
-            LiferayServerCore.logError( "can't get agent or jmx port from server launch configuration ", e );
-        }
-        */
+        int aQuteAgentPort =  portalServerDelegate.getAgentPort();
+        int jmxPort = portalServerDelegate.getJmxPort();
 
         BundleSupervisor bundleSupervisor = new BundleSupervisor( jmxPort );
 

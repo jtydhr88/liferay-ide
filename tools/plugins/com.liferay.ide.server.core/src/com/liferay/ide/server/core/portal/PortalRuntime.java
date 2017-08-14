@@ -14,9 +14,6 @@
  *******************************************************************************/
 package com.liferay.ide.server.core.portal;
 
-import com.liferay.ide.server.core.ILiferayRuntime;
-import com.liferay.ide.server.core.LiferayServerCore;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -34,8 +31,13 @@ import org.eclipse.jdt.launching.IVMInstall2;
 import org.eclipse.jdt.launching.IVMInstallType;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.wst.server.core.IRuntime;
 import org.eclipse.wst.server.core.IRuntimeType;
+import org.eclipse.wst.server.core.ServerCore;
 import org.eclipse.wst.server.core.model.RuntimeDelegate;
+
+import com.liferay.ide.server.core.ILiferayRuntime;
+import com.liferay.ide.server.core.LiferayServerCore;
 
 
 /**
@@ -357,6 +359,26 @@ public class PortalRuntime extends RuntimeDelegate implements ILiferayRuntime, P
     {
         IStatus status = super.validate();
 
+        IPath runtimeLocation = getRuntimeLocation();
+
+        if( runtimeLocation != null && runtimeLocation.toFile().exists() )
+        {
+            IRuntime[] runtimes = ServerCore.getRuntimes();
+
+            if( runtimes != null && runtimes.length > 1 )
+            {
+                for( IRuntime runtime : runtimes )
+                {
+                    if( runtime.getLocation().equals( this.getRuntimeLocation() ) )
+                    {
+                        return new Status(
+                            IStatus.WARNING, LiferayServerCore.PLUGIN_ID, 0, Msgs.warnPortalRuntimeHasMoreThanOneServer,
+                            null );
+                    }
+                }
+            }
+        }
+
         if( !status.isOK() )
         {
             return status;
@@ -401,6 +423,7 @@ public class PortalRuntime extends RuntimeDelegate implements ILiferayRuntime, P
         public static String errorJRE70;
         public static String errorPortalVersion70;
         public static String errorPortalNotExisted;
+        public static String warnPortalRuntimeHasMoreThanOneServer;
 
         static
         {

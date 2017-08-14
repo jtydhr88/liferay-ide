@@ -372,7 +372,7 @@ public class RemoteSettingsEditorSection extends ServerEditorSection
 
         updating = true;
 
-        textHttpPort.setText( remoteServer.getHTTPPort() );
+        textHttpPort.setText( remoteServer.getHttpPort() );
 
         textUsername.setText( remoteServer.getUsername() );
 

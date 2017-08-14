@@ -68,7 +68,7 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
     protected IRemoteServerWorkingCopy remoteServerWC;
     protected IServerWorkingCopy serverWC;
     protected Text textHostname;
-    protected Text textHTTP;
+    protected Text textHttp;
     protected Text textLiferayPortalContextPath;
     protected Text textPassword;
     protected Text textServerManagerContextPath;
@@ -106,9 +106,9 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
             }
 
         }
-        else if( src.equals( textHTTP ) )
+        else if( src.equals( textHttp ) )
         {
-            this.remoteServerWC.setHTTPPort( textHTTP.getText() );
+            this.remoteServerWC.setHttpPort( textHttp.getText() );
         }
         else if( src.equals( textServerManagerContextPath ) )
         {
@@ -184,9 +184,9 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
         labelHttpPort = new Label( connectionGroup, SWT.NONE );
         labelHttpPort.setText( Msgs.httpPortLabel );
 
-        textHTTP = new Text( connectionGroup, SWT.BORDER );
-        textHTTP.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false, 1, 1 ) );
-        textHTTP.addModifyListener( this );
+        textHttp = new Text( connectionGroup, SWT.BORDER );
+        textHttp.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false, 1, 1 ) );
+        textHttp.addModifyListener( this );
 
         labelUsername = new Label( connectionGroup, SWT.NONE );
         labelUsername.setText( Msgs.username );
@@ -234,7 +234,7 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
                     try
                     {
                         final String url =
-                            MessageFormat.format( installUrl, "http://" + textHostname.getText() + ":" + textHTTP.getText() ); //$NON-NLS-1$ //$NON-NLS-2$
+                            MessageFormat.format( installUrl, "http://" + textHostname.getText() + ":" + textHttp.getText() ); //$NON-NLS-1$ //$NON-NLS-2$
                         PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL( new URL( url ) );
                     }
                     catch ( Exception e1 )
@@ -285,7 +285,7 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
         {
             ignoreModifyEvents = true;
             this.textHostname.setText( this.serverWC.getHost() );
-            this.textHTTP.setText( this.remoteServerWC.getHTTPPort() );
+            this.textHttp.setText( this.remoteServerWC.getHttpPort() );
             this.textLiferayPortalContextPath.setText( this.remoteServerWC.getLiferayPortalContextPath() );
             this.textServerManagerContextPath.setText( this.remoteServerWC.getServerManagerContextPath() );
             // this.checkboxSecurity.setSelection( this.remoteServerWC.getSecurityEnabled() );
@@ -403,7 +403,7 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
             return LiferayServerUI.createErrorStatus( Msgs.specifyUsernamePassword );
         }
 
-        String port = remoteServerWC.getHTTPPort();
+        String port = remoteServerWC.getHttpPort();
 
         if( CoreUtil.isNullOrEmpty( port ) )
         {

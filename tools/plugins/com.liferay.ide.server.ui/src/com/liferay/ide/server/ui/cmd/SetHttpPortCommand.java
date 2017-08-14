@@ -36,13 +36,13 @@ public class SetHttpPortCommand extends RemoteServerCommand
 
     public void execute()
     {
-        oldHttpPort = server.getHTTPPort();
-        server.setHTTPPort( httpPort );
+        oldHttpPort = server.getHttpPort();
+        server.setHttpPort( httpPort );
     }
 
     public void undo()
     {
-        server.setHTTPPort( oldHttpPort );
+        server.setHttpPort( oldHttpPort );
     }
 
     private static class Msgs extends NLS

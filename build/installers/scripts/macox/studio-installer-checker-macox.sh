@@ -1,12 +1,5 @@
-#Add all properties
-homeDir="/Users/liferay_cn"
-exceptedBladeVersion="2.2.0.201707061805"
-exceptedJpmVersion="3.2.0.201605172009"
-bundleName="liferay-dxp-digital-enterprise-tomcat-7.0-sp4-20170705142422877.zip"
-liferayWsDir="/Users/liferay_cn/liferay-workspace"
-studioDir="/Users/liferay_cn/LiferayDeveloperStudio"
-pluginsSdkName="com.liferay.portal.plugins.sdk-1.0.11-withdependencies.zip"
-dxpName="liferay-dxp-digital-enterprise-tomcat-7.0-sp4-20170705142422877.zip"
+source ../common/env.properties 
+source env-mac.properties 
 
 #1 check pwd file does not exist
 
@@ -22,7 +15,7 @@ if [ ! -d "/private/tmp/LiferayWorkspace" ]; then
 echo "LiferayWorkspace temp dir does not exist.(Successfully)"
 else
 echo "LiferayWorkspace temp dir exists.(Error)"
-fi 
+fi
 
 #3 check jpm is installed, jpm/bin exists, .jpm exists
 
@@ -82,4 +75,27 @@ if [ -d "$liferayWsDir" ]; then
 echo "Liferay Workpsace exists.(Successfully)"
 else
 echo "Liferay Workspace does not exist.(Error)"
+fi
+
+#8 check Studio home dir
+
+if [ -d "$studioDir" ]; then
+echo "Developer stuido dir exists.(Successfully)"
+else
+echo "Developer stuido dir does not exist.(Error)"
+fi
+
+#9 check plugins sdk in bundles folder
+
+if [ -f "$homeDir/.liferay/bundles/$pluginsSdkName" ]; then
+echo "Plugins sdk exists.(Successfully)"
+else
+echo "Plugins sdk does not exist.(Error)"
+fi
+
+#10 check dxp tomcat in bundles folder
+if [ -f "$homeDir/.liferay/bundles/$dxpName" ]; then
+echo "Dxp tomcat exists.(Successfully)"
+else
+echo "Dxp tomcat does not exist.(Error)"
 fi

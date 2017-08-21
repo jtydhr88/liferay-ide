@@ -1,6 +1,4 @@
-#Add properties here
-workspaceDir="/home/liferay/LiferayDeveloperStudio/liferay-workspace"
-studioDir="/home/liferay/LiferayDeveloperStudio"
+source env-linux.properties
 
 #1 remove blade cache
 rm -rf ~/.blade
@@ -15,7 +13,7 @@ rm -rf ~/.liferay/token
 rm -rf ~/.liferay/bundles
 
 #5 remove liferay workspce
-rm -rf ${workspaceDir}
+rm -rf ${liferayWsInStudioDir}
 
 #6 remove liferay developer stuido
 rm -rf ${studioDir}

@@ -440,6 +440,80 @@ public class MavenUtil
         return retval;
     }
 
+    public static String getMavenBuildServiceGoal( IProject project )
+    {
+        try
+        {
+            Plugin plugin = getPlugin(
+                getProjectFacade( project ), ILiferayMavenConstants._LIFERAY_MAVEN_PLUGINS_GROUP_ID + ":" +
+                    ILiferayMavenConstants.LIFERAY_MAVEN_PLUGIN_ARTIFACT_ID,
+                new NullProgressMonitor() );
+
+            if( plugin == null )
+            {
+                plugin =
+                    getPlugin(
+                        getProjectFacade( project ),
+                        ILiferayMavenConstants.NEW_LIFERAY_MAVEN_PLUGINS_GROUP_ID + ":" +
+                            ILiferayMavenConstants.LIFERAY_MAVEN_PLUGINS_SERVICE_BUILDER_KEY,
+                        new NullProgressMonitor() );
+            }
+
+            if( plugin == null )
+            {
+                return "build-service";
+            }
+
+            if( CoreUtil.compareVersions( new Version( plugin.getVersion() ), new Version( "1.0.145" ) ) >= 0 &&
+                plugin.getArtifactId().equals( ILiferayMavenConstants.LIFERAY_MAVEN_PLUGINS_SERVICE_BUILDER_KEY ) )
+            {
+                return "service-builder:build";
+            }
+
+        }
+        catch( CoreException e )
+        {
+        }
+
+        return ILiferayMavenConstants.PLUGIN_GOAL_BUILD_SERVICE;
+    }
+
+    public static String getMavenBuildWSDDGoal( IProject project )
+    {
+        try
+        {
+            Plugin plugin = getPlugin(
+                getProjectFacade( project ), ILiferayMavenConstants._LIFERAY_MAVEN_PLUGINS_GROUP_ID + ":" +
+                    ILiferayMavenConstants.LIFERAY_MAVEN_PLUGIN_ARTIFACT_ID,
+                new NullProgressMonitor() );
+
+            if( plugin == null )
+            {
+                plugin = getPlugin(
+                    getProjectFacade( project ), ILiferayMavenConstants.NEW_LIFERAY_MAVEN_PLUGINS_GROUP_ID + ":" +
+                        ILiferayMavenConstants.LIFERAY_MAVEN_PLUGINS_WSDD_BUILDER_KEY,
+                    new NullProgressMonitor() );
+            }
+
+            if( plugin == null )
+            {
+                return "build-wsdd";
+            }
+
+            if( CoreUtil.compareVersions( new Version( plugin.getVersion() ), new Version( "1.0.7" ) ) >= 0 &&
+                plugin.getArtifactId().equals( ILiferayMavenConstants.LIFERAY_MAVEN_PLUGINS_WSDD_BUILDER_KEY ) )
+            {
+                return "wsdd-builder:build";
+            }
+
+        }
+        catch( CoreException e )
+        {
+        }
+
+        return ILiferayMavenConstants.PLUGIN_GOAL_BUILD_WSDD;
+    }
+
     public static Plugin getPlugin( IMavenProjectFacade facade, final String pluginKey, IProgressMonitor monitor ) throws CoreException
     {
         Plugin retval = null;

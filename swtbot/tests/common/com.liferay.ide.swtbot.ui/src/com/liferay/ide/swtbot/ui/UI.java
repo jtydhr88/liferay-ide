@@ -115,8 +115,6 @@ public interface UI {
 
 	public final String CONFIG = "Config";
 
-	public final String CONFIGURE_COMPONENT_CLASS = "Configure Component Class";
-
 	public final String CONSOLE = "Console";
 
 	public final String CONSTRUCTORS_FROM_SUPERCLASS = "Constructors from superclass";
@@ -468,6 +466,8 @@ public interface UI {
 
 	public final String PACKAGE_NAME = "Package name:";
 
+	public final String PACKAGE_NAME_UPPERCASE = "Package Name:";
+
 	public final String PACKAGE_PATH = "Package path:";
 
 	public final String PANEL_APP = "panel-app";
@@ -523,6 +523,8 @@ public interface UI {
 	public final String PROJECT_EXPLORER = "Project Explorer";
 
 	public final String PROJECT_NAME = "Project name:";
+
+	public final String PROJECT_TEMPLATE_NAME = "Project Template Name:";
 
 	public final String PROPERTIES = "Properties:";
 

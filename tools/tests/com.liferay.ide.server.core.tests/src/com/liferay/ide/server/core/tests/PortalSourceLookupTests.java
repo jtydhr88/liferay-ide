@@ -59,15 +59,7 @@ public class PortalSourceLookupTests
 
     @Before
     public void setUpTest() throws Exception {
-        Stream.of( CoreUtil.getAllProjects() ).forEach(project -> {
-            try
-            {
-                project.delete( true, new NullProgressMonitor() );
-            }
-            catch( CoreException e )
-            {
-            }
-        });
+        Stream.of( CoreUtil.getAllProjects() ).forEach(this::deleteProject);
 
         Assert.assertEquals( 0, CoreUtil.getAllProjects().length );
 
@@ -94,6 +86,17 @@ public class PortalSourceLookupTests
         Assert.assertTrue( CoreUtil.getProject( "debug-lib" ).exists() );
 
         Assert.assertTrue( CoreUtil.getProject( "debug-test" ).exists() );
+    }
+
+    private void deleteProject( IProject project )
+    {
+        try
+        {
+            project.delete( true, new NullProgressMonitor() );
+        }
+        catch( CoreException e )
+        {
+        }
     }
 
     private ILaunchConfiguration[] getPortalServerLaunchConfigurations() throws CoreException
@@ -146,12 +149,17 @@ public class PortalSourceLookupTests
         Assert.assertNotNull( sourceContainers );
 
         Assert.assertEquals( 1,
-            Stream.of( sourceContainers ).filter(
+            Stream.of(
+                sourceContainers
+            ).filter(
                 sourceContainer -> sourceContainer instanceof JavaProjectSourceContainer
-            ).count());
+            ).count()
+        );
 
         Assert.assertFalse(
-            Stream.of( sourceContainers ).filter(
+            Stream.of(
+                sourceContainers
+            ).filter(
                 sourceContainer -> sourceContainer instanceof PackageFragmentRootSourceContainer
             ).map(
                 sourceContainer -> ((PackageFragmentRootSourceContainer)sourceContainer).getPath()
@@ -164,23 +172,23 @@ public class PortalSourceLookupTests
 
         portalServer = addProjectToServer( debugTestProject, portalServer );
 
-        Assert.assertTrue( deleteLaunchConfig( launchConfiguration ) );
+        ISourceContainer[] updatedSourceContainers =
+            portalSourcePathComputer.computeSourceContainers( launchConfiguration, _NPM );
 
-        launchConfiguration = portalServer.getLaunchConfiguration( true, _NPM );
-
-        portalSourcePathComputer = getPortalSourcePathComputer( launchConfiguration );
-
-        sourceContainers = portalSourcePathComputer.computeSourceContainers( launchConfiguration, _NPM );
-
-        Assert.assertNotNull( sourceContainers );
+        Assert.assertNotNull( updatedSourceContainers );
 
         Assert.assertEquals( 2,
-            Stream.of( sourceContainers ).filter(
+            Stream.of(
+                updatedSourceContainers
+            ).filter(
                 sourceContainer -> sourceContainer instanceof JavaProjectSourceContainer
-            ).count());
+            ).count()
+        );
 
         Assert.assertTrue(
-            Stream.of( sourceContainers ).filter(
+            Stream.of(
+                updatedSourceContainers
+            ).filter(
                 sourceContainer -> sourceContainer instanceof PackageFragmentRootSourceContainer
             ).map(
                 sourceContainer -> ((PackageFragmentRootSourceContainer)sourceContainer).getPath()

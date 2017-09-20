@@ -30,7 +30,7 @@ public class NewLiferayModuleInfoWizard extends Wizard {
 		super(bot, 2);
 
 		_componentClassName = new Text(bot, COMPONENT_CLASS_NAME);
-		_packageName = new Text(bot, PACKAGE_NAME);
+		_packageName = new Text(bot, PACKAGE_NAME_UPPERCASE);
 		_serviceName = new Text(bot, SERVICE_NAME);
 		_properties = new Table(bot, PROPERTIES);
 		_browseBtn = new ToolbarButtonWithTooltip(bot, BROWSE);

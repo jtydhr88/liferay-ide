@@ -394,5 +394,4 @@ public class KaleoConnection extends RemoteConnection implements IKaleoConnectio
 	private String _portalContextPath;
 	private URL _portalHomeUrl;
 	private String _serverName;
-
 }

@@ -41,7 +41,7 @@
                 </property-editor>
                 <spacer></spacer>
                 <property-editor>
-                    <label>Download Liferay bundle</label>
+                    <label>Download liferay bundle</label>
                     <property>provisionLiferayBundle</property>
                 </property-editor>
                 <property-editor>

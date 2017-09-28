@@ -204,7 +204,7 @@ public interface UI {
 
 	public final String DOVIEW = "doView";
 
-	public final String DOWNLOAD_LIFERAY_BUNDLE = "Download Liferay bundle";
+	public final String DOWNLOAD_LIFERAY_BUNDLE = "Download liferay bundle";
 
 	public final String EDIT = "Edit";
 

@@ -659,7 +659,7 @@ public class InitConfigureProjectPage extends Page implements IServerLifecycleLi
     private void createDownloaBundleCheckboxElement()
     {
         disposeBundleCheckboxElement();
-        downloadBundleCheckbox = SWTUtil.createCheckButton( pageParent, "Download Liferay bundle (recommended)", null, true, 1 );
+        downloadBundleCheckbox = SWTUtil.createCheckButton( pageParent, "Download liferay bundle (recommended)", null, true, 1 );
         GridDataFactory.generate( downloadBundleCheckbox, 2, 1 );
         downloadBundleCheckbox.addSelectionListener( new SelectionAdapter()
         {

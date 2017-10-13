@@ -27,6 +27,7 @@ import org.junit.Test;
 /**
  * @author Vicky Wang
  * @author Ying Xu
+ * @author Ashley Yuan
  */
 public class ValidationNewLiferayWorkspaceWizardTests extends SwtbotBase {
 
@@ -70,9 +71,10 @@ public class ValidationNewLiferayWorkspaceWizardTests extends SwtbotBase {
 
 		_newLiferayWorkspaceProjectWizard.getUseDefaultLocation().deselect();
 
-		Assert.assertEquals(
-			envAction.getEclipseWorkspacePath().toOSString(),
-			_newLiferayWorkspaceProjectWizard.getLocation().getText());
+		String exceptLocation = envAction.getEclipseWorkspacePath().toOSString();
+		String actualLocation = _newLiferayWorkspaceProjectWizard.getLocation().getText();
+
+		Assert.assertEquals(exceptLocation.replace("\\", "/"), actualLocation.replace("\\", "/"));
 
 		_newLiferayWorkspaceProjectWizard.getUseDefaultLocation().select();
 

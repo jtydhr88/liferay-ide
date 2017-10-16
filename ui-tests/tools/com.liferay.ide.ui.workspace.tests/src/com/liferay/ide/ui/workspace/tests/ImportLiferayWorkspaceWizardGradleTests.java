@@ -37,6 +37,8 @@ public class ImportLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 	@After
 	public void after() {
 		viewAction.deleteProjectsExcludeNames("init-project");
+		
+		System.out.println( "tests" );
 	}
 
 	@Test

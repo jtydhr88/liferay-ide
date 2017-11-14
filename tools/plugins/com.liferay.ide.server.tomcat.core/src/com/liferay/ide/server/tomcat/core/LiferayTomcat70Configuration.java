@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,10 +10,7 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- *
- * Contributors:
- * 		Gregory Amerson - initial implementation and ongoing maintenance
- *******************************************************************************/
+ */
 
 package com.liferay.ide.server.tomcat.core;
 
@@ -32,47 +29,53 @@ import org.eclipse.wst.server.core.IModule;
 /**
  * @author Gregory Amerson
  */
-@SuppressWarnings( "restriction" )
-public class LiferayTomcat70Configuration extends Tomcat70Configuration implements ILiferayTomcatConfiguration
-{
+@SuppressWarnings("restriction")
+public class LiferayTomcat70Configuration extends Tomcat70Configuration implements ILiferayTomcatConfiguration {
 
-    public LiferayTomcat70Configuration( IFolder path )
-    {
-        super( path );
-    }
+	public LiferayTomcat70Configuration(IFolder path)
+	{
 
-    @Override
-    public void addWebModule( int index, ITomcatWebModule module )
-    {
-        isServerDirty = true;
-        firePropertyChangeEvent( ADD_WEB_MODULE_PROPERTY, null, module );
-    }
+		super(path);
+	}
 
-    @Override
-    protected String getWebModuleURL( IModule webModule )
-    {
-        if( webModule != null && ProjectUtil.isLiferayFacetedProject( webModule.getProject() ) )
-        {
-            return StringPool.EMPTY; // just go to portal root, no need to view the webapp
-                       // context url
-        }
+	@Override
+	public void addWebModule(int index, ITomcatWebModule module)
+	{
 
-        return super.getWebModuleURL( webModule );
-    }
+		isServerDirty = true;
+		firePropertyChangeEvent(ADD_WEB_MODULE_PROPERTY, null, module);
+	}
 
-    @Override
-    protected IStatus cleanupServer(
-        IPath baseDir, IPath installDir, boolean removeKeptContextFiles, IProgressMonitor monitor )
-    {
-        // don't cleanupServer
-        return Status.OK_STATUS;
-    }
+	@Override
+	public void removeWebModule(int index)
+	{
 
-    @Override
-    public void removeWebModule( int index )
-    {
-        isServerDirty = true;
-        firePropertyChangeEvent( REMOVE_WEB_MODULE_PROPERTY, null, new Integer( index ) );
-    }
+		isServerDirty = true;
+		firePropertyChangeEvent(REMOVE_WEB_MODULE_PROPERTY, null, Integer.valueOf(index));
+	}
+
+	@Override
+	protected IStatus cleanupServer(
+		IPath baseDir, IPath installDir, boolean removeKeptContextFiles, IProgressMonitor monitor)
+			{
+
+		// don't cleanupServer
+
+		return Status.OK_STATUS;
+	}
+
+	@Override
+	protected String getWebModuleURL(IModule webModule)
+	{
+
+		if ((webModule != null) && ProjectUtil.isLiferayFacetedProject(webModule.getProject())) {
+
+			// just go to portal root, no need to view the webapp context url
+
+			return StringPool.EMPTY;
+		}
+
+		return super.getWebModuleURL(webModule);
+	}
 
 }

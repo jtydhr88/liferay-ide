@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,10 +10,11 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- *
- *******************************************************************************/
+ */
+
 package com.liferay.ide.server.tomcat.core;
 
+import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.server.core.portal.AbstractPortalBundleFactory;
 import com.liferay.ide.server.core.portal.PortalBundle;
 
@@ -21,42 +22,35 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 
-
 /**
  * @author Gregory Amerson
  * @author Simon Jiang
  */
-public class PortalTomcatBundleFactory extends AbstractPortalBundleFactory
-{
-    @Override
-    public PortalBundle create( Map<String, String> appServerProperties )
-    {
-        return new PortalTomcatBundle( appServerProperties );
-    }
+public class PortalTomcatBundleFactory extends AbstractPortalBundleFactory {
 
+	@Override
+	public PortalBundle create(IPath location) {
+		return new PortalTomcatBundle(location);
+	}
 
-    @Override
-    public PortalBundle create( IPath location )
-    {
-        return new PortalTomcatBundle( location );
-    }
+	@Override
+	public PortalBundle create(Map<String, String> appServerProperties) {
+		return new PortalTomcatBundle(appServerProperties);
+	}
 
-    @Override
-    protected boolean detectBundleDir( IPath path )
-    {
-        if( !path.toFile().exists() )
-        {
-            return false;
-        }
+	@Override
+	protected boolean detectBundleDir(IPath path) {
+		if (!path.toFile().exists()) {
+			return false;
+		}
 
-        if( path.append( "bin" ).toFile().exists() &&
-            path.append( "conf" ).toFile().exists() &&
-            path.append( "lib" ).toFile().exists() &&
-            path.append( "webapps" ).toFile().exists() )
-        {
-            return true;
-        }
+		if (FileUtil.exists(path.append("bin").toFile()) && FileUtil.exists(path.append("conf").toFile()) &&
+			FileUtil.exists(path.append("lib").toFile()) && FileUtil.exists(path.append("webapps").toFile())) {
 
-        return false;
-    }
+			return true;
+		}
+
+		return false;
+	}
+
 }

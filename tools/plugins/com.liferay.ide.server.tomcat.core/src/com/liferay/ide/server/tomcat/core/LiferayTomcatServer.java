@@ -1,19 +1,22 @@
-/*******************************************************************************
- * Copyright (c) 2003, 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
- * Contributors:
- *    IBM Corporation - Initial API and implementation
- *    Greg Amerson <gregory.amerson@liferay.com>
- *******************************************************************************/
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
 
 package com.liferay.ide.server.tomcat.core;
 
 import com.liferay.ide.core.ILiferayConstants;
 import com.liferay.ide.core.util.CoreUtil;
+import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.StringPool;
 import com.liferay.ide.project.core.util.ProjectUtil;
 import com.liferay.ide.server.core.ILiferayRuntime;
@@ -37,7 +40,10 @@ import org.eclipse.jst.server.tomcat.core.internal.TomcatServer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IRuntime;
+import org.eclipse.wst.server.core.IServer;
+import org.eclipse.wst.server.core.IServerType;
 import org.eclipse.wst.server.core.ServerUtil;
+
 import org.osgi.framework.Version;
 
 /**
@@ -45,428 +51,439 @@ import org.osgi.framework.Version;
  * @author Terry Jia
  * @author Simon Jiang
  */
-@SuppressWarnings( "restriction" )
-public class LiferayTomcatServer extends TomcatServer
-    implements ILiferayTomcatConstants, ILiferayTomcatServer, ILiferayTomcatServerWC
-{
+@SuppressWarnings("restriction")
+public class LiferayTomcatServer
+	extends TomcatServer implements ILiferayTomcatConstants, ILiferayTomcatServer, ILiferayTomcatServerWC {
 
-    public LiferayTomcatServer()
-    {
-        super();
-    }
+	public LiferayTomcatServer() {
+	}
 
-    @Override
-    public String getId()
-    {
-        return getServer().getId();
-    }
+	@Override
+	public String getAutoDeployDirectory()
+	{
 
-    @Override
-    public String getHost()
-    {
-        return getServer().getHost();
-    }
+		return getAttribute(PROPERTY_AUTO_DEPLOY_DIR, "../deploy");
+	}
 
-    @Override
-    public String getAutoDeployDirectory()
-    {
-        return getAttribute( PROPERTY_AUTO_DEPLOY_DIR, "../deploy" ); //$NON-NLS-1$
-    }
+	@Override
+	public String getAutoDeployInterval()
+	{
 
-    @Override
-    public String getAutoDeployInterval()
-    {
-        return getAttribute( PROPERTY_AUTO_DEPLOY_INTERVAL, ILiferayTomcatConstants.DEFAULT_AUTO_DEPLOY_INTERVAL );
-    }
+		return getAttribute(PROPERTY_AUTO_DEPLOY_INTERVAL, ILiferayTomcatConstants.DEFAULT_AUTO_DEPLOY_INTERVAL);
+	}
 
-    public int getDefaultServerMode()
-    {
-        int defaultServerMode = ILiferayTomcatConstants.STANDARD_SERVER_MODE;
+	public int getDefaultServerMode()
+	{
 
-        try
-        {
-            String version = LiferayTomcatUtil.getVersion( ((ILiferayRuntime)getServer().getRuntime() ) );
-            Version portalVersion = Version.parseVersion( version );
+		int defaultServerMode = ILiferayTomcatConstants.STANDARD_SERVER_MODE;
 
-            if( CoreUtil.compareVersions( portalVersion, ILiferayConstants.V620 ) < 0 )
-            {
-                defaultServerMode = ILiferayTomcatConstants.DEVELOPMENT_SERVER_MODE;
-            }
-        }
-        catch( Exception e )
-        {
-        }
+		try
+		{
+			String version = LiferayTomcatUtil.getVersion((ILiferayRuntime)getServer().getRuntime());
 
-        return defaultServerMode;
-    }
+			Version portalVersion = Version.parseVersion(version);
 
-    @Override
-    public String getExternalProperties()
-    {
-        return getAttribute( PROPERTY_EXTERNAL_PROPERTIES, StringPool.EMPTY );
-    }
+			if (CoreUtil.compareVersions(portalVersion, ILiferayConstants.V620) < 0) {
+				defaultServerMode = ILiferayTomcatConstants.DEVELOPMENT_SERVER_MODE;
+			}
+		}
+		catch (Exception e) {
+		}
 
-    @Override
-    public String getMemoryArgs()
-    {
-        return getAttribute( PROPERTY_MEMORY_ARGS, ILiferayTomcatConstants.DEFAULT_MEMORY_ARGS );
-    }
+		return defaultServerMode;
+	}
 
-    @Override
-    public URL getPluginContextURL( String context )
-    {
-        try
-        {
-            return new URL( getPortalHomeUrl(), StringPool.FORWARD_SLASH + context );
-        }
-        catch( Exception ex )
-        {
-            return null;
-        }
-    }
+	@Override
+	public String getExternalProperties()
+	{
 
-    @Override
-    public String getHttpPort()
-    {
-        try
-        {
-            return String.valueOf( getTomcatConfiguration().getMainPort().getPort() );
-        }
-        catch( CoreException e )
-        {
-            return null;
-        }
-    }
+		return getAttribute(PROPERTY_EXTERNAL_PROPERTIES, StringPool.EMPTY);
+	}
 
-    @Override
-    public URL getPortalHomeUrl()
-    {
-        try
-        {
-            TomcatConfiguration config = getTomcatConfiguration();
-            if( config == null )
-                return null;
+	@Override
+	public String getHost()
+	{
 
-            String url = "http://" + getServer().getHost(); //$NON-NLS-1$
-            int port = config.getMainPort().getPort();
-            port = ServerUtil.getMonitoredPort( getServer(), port, "web" ); //$NON-NLS-1$
-            if( port != 80 )
-                url += ":" + port; //$NON-NLS-1$
-            return new URL( url );
-        }
-        catch( Exception ex )
-        {
-            return null;
-        }
-    }
+		return getServer().getHost();
+	}
 
-    @Override
-    public String getPassword()
-    {
-        return getAttribute( ATTR_PASSWORD, DEFAULT_PASSWORD );
-    }
+	@Override
+	public String getHttpPort()
+	{
 
-    public ILiferayTomcatConfiguration getLiferayTomcatConfiguration() throws CoreException
-    {
-        return (ILiferayTomcatConfiguration) getTomcatConfiguration();
-    }
+		try
+		{
+			TomcatConfiguration tomcatConfig = getTomcatConfiguration();
 
-    @Override
-    public boolean getUseDefaultPortalServerSettings()
-    {
-        return getAttribute(
-            PROPERTY_USE_DEFAULT_PORTAL_SERVER_SETTINGS,
-            ILiferayTomcatConstants.DEFAULT_USE_DEFAULT_PORTAL_SERVER_SETTING );
-    }
+			Object port = tomcatConfig.getMainPort().getPort();
 
-    @Override
-    public int getServerMode()
-    {
-        return getAttribute( PROPERTY_SERVER_MODE, getDefaultServerMode() );
-    }
+			return String.valueOf(port);
+		}
+		catch (CoreException ce) {
+			return null;
+		}
+	}
 
-    @Override
-    public TomcatConfiguration getTomcatConfiguration() throws CoreException
-    {
-        if( configuration == null )
-        {
-            IFolder folder = getServer().getServerConfiguration();
-            if( folder == null || !folder.exists() )
-            {
-                String path = null;
-                if( folder != null )
-                {
-                    path = folder.getFullPath().toOSString();
-                    IProject project = folder.getProject();
-                    if( project != null && project.exists() && !project.isOpen() )
-                        throw new CoreException( new Status( IStatus.ERROR, TomcatPlugin.PLUGIN_ID, 0, NLS.bind(
-                            Msgs.errorConfigurationProjectClosed, path, project.getName() ), null ) );
-                }
-                throw new CoreException( new Status( IStatus.ERROR, TomcatPlugin.PLUGIN_ID, 0, NLS.bind(
-                    Msgs.errorNoConfiguration, path ), null ) );
-            }
+	@Override
+	public String getId()
+	{
 
-            String id = getServer().getServerType().getId();
-            if( id.endsWith( "60" ) ) //$NON-NLS-1$
-            {
-                configuration = new LiferayTomcat60Configuration( folder );
-            }
-            else if( id.endsWith( "70" ) || id.endsWith( "7062" ) ) //$NON-NLS-1$ //$NON-NLS-2$
-            {
-                configuration = new LiferayTomcat70Configuration( folder );
-            }
-            try
-            {
-                ( (ILiferayTomcatConfiguration) configuration ).load( folder, null );
-            }
-            catch( CoreException ce )
-            {
-                // ignore
-                configuration = null;
-                throw ce;
-            }
-        }
-        return configuration;
-    }
+		return getServer().getId();
+	}
 
-    @Override
-    public ITomcatVersionHandler getTomcatVersionHandler()
-    {
-        ITomcatVersionHandler handler = super.getTomcatVersionHandler();
-        if( handler instanceof ILiferayTomcatHandler )
-        {
-            ( (ILiferayTomcatHandler) handler ).setCurrentServer( getServer() );
-        }
-        return handler;
-    }
+	public ILiferayTomcatConfiguration getLiferayTomcatConfiguration() throws CoreException
+	{
 
-    @Override
-    public String getUsername()
-    {
-        return getAttribute( ATTR_USERNAME, DEFAULT_USERNAME );
-    }
+		return (ILiferayTomcatConfiguration)getTomcatConfiguration();
+	}
 
-    @Override
-    public String getUserTimezone()
-    {
-        return getAttribute( PROPERTY_USER_TIMEZONE, ILiferayTomcatConstants.DEFAULT_USER_TIMEZONE );
-    }
+	@Override
+	public String getMemoryArgs()
+	{
 
-    @Override
-    public URL getWebServicesListURL()
-    {
-        try
-        {
-            return new URL( getPortalHomeUrl(), "/tunnel-web/axis" ); //$NON-NLS-1$
-        }
-        catch( MalformedURLException e )
-        {
-            LiferayTomcatPlugin.logError( "Unable to get web services list URL", e ); //$NON-NLS-1$
-        }
+		return getAttribute(PROPERTY_MEMORY_ARGS, ILiferayTomcatConstants.DEFAULT_MEMORY_ARGS);
+	}
 
-        return null;
-    }
+	@Override
+	public String getPassword()
+	{
 
-    @Override
-    public void importRuntimeConfiguration( IRuntime runtime, IProgressMonitor monitor ) throws CoreException
-    {
-        if( runtime == null )
-        {
-            configuration = null;
-            return;
-        }
-        IPath path = runtime.getLocation().append( "conf" ); //$NON-NLS-1$
+		return getAttribute(ATTR_PASSWORD, DEFAULT_PASSWORD);
+	}
 
-        String id = getServer().getServerType().getId();
-        IFolder folder = getServer().getServerConfiguration();
-        if( id.endsWith( "60" ) ) //$NON-NLS-1$
-        {
-            configuration = new LiferayTomcat60Configuration( folder );
-        }
-        else if( id.endsWith( "70" ) || id.endsWith( "7062" ) ) //$NON-NLS-1$ //$NON-NLS-2$
-        {
-            configuration = new LiferayTomcat70Configuration( folder );
-        }
+	@Override
+	public URL getPluginContextURL(String context)
+	{
 
-        if( path.toFile().exists() )
-        {
-            try
-            {
-                configuration.importFromPath( path, isTestEnvironment(), monitor );
-            }
-            catch( CoreException ce )
-            {
-                // ignore
-                configuration = null;
-                throw ce;
-            }
-        }
-    }
+		try
+		{
+			return new URL(getPortalHomeUrl(), StringPool.FORWARD_SLASH + context);
+		}
+		catch (Exception ex) {
+			return null;
+		}
+	}
 
-    @Override
-    public void modifyModules( IModule[] add, IModule[] remove, IProgressMonitor monitor ) throws CoreException
-    {
+	@Override
+	public URL getPortalHomeUrl()
+	{
 
-        // check if we are adding ext plugin then we need to turn off auto publishing if we are removing ext plugin
-        // then we can re-enable publishing if it was previously set
+		try
+		{
+			TomcatConfiguration config = getTomcatConfiguration();
 
-        boolean addingExt = false;
-        boolean removingExt = false;
+			if (config == null) {
+				return null;
+			}
 
-        if( !CoreUtil.isNullOrEmpty( add ) )
-        {
-            for( IModule m : add )
-            {
-                if( m.getProject() != null && ProjectUtil.isExtProject( m.getProject() ) )
-                {
-                    addingExt = true;
-                    break;
-                }
-            }
-        }
-        else if( !CoreUtil.isNullOrEmpty( remove ) )
-        {
-            for( IModule m : remove )
-            {
-                if( m.getProject() != null && ProjectUtil.isExtProject( m.getProject() ) )
-                {
-                    removingExt = true;
-                    break;
-                }
-            }
-        }
+			String url = "http://" + getServer().getHost();
+			int port = config.getMainPort().getPort();
+			port = ServerUtil.getMonitoredPort(getServer(), port, "web");
 
-        // if (addingExt && !removingExt) {
-        // int existingSetting =
-        // getServer().getAttribute(Server.PROP_AUTO_PUBLISH_SETTING, Server.AUTO_PUBLISH_RESOURCE);
-        //
-        // if (existingSetting != Server.AUTO_PUBLISH_DISABLE) {
-        // LiferayTomcatUtil.displayToggleMessage(
-        // "The Ext plugin Automatic publishing has been set to disabled since an Ext plugin has been added.  This setting will be restored once the Ext plugin is removed.",
-        // LiferayTomcatPlugin.PREFERENCES_ADDED_EXT_PLUGIN_TOGGLE_KEY);
-        // }
-        //
-        // IServerWorkingCopy wc = getServer().createWorkingCopy();
-        // wc.setAttribute(Server.PROP_AUTO_PUBLISH_SETTING, Server.AUTO_PUBLISH_DISABLE);
-        // wc.setAttribute("last-" + Server.PROP_AUTO_PUBLISH_SETTING, existingSetting);
-        // wc.save(true, monitor);
-        // }
+			if (port != 80) {
+				url += ":" + port;
+			}
 
-        if( !addingExt && removingExt )
-        {
-            LiferayTomcatUtil.displayToggleMessage(
-                Msgs.removingExtPlugin, LiferayTomcatPlugin.PREFERENCES_REMOVE_EXT_PLUGIN_TOGGLE_KEY );
-        }
-        // int lastSetting =
-        // getServer().getAttribute("last-" + Server.PROP_AUTO_PUBLISH_SETTING, Server.AUTO_PUBLISH_RESOURCE);
+			return new URL(url);
+		}
+		catch (Exception ex) {
+			return null;
+		}
+	}
 
-        // IServerWorkingCopy wc = getServer().createWorkingCopy();
-        // wc.setAttribute(Server.PROP_AUTO_PUBLISH_SETTING, lastSetting);
-        // wc.save(true, monitor);
-        // }
+	@Override
+	public int getServerMode()
+	{
 
-        super.modifyModules( add, remove, monitor );
+		return getAttribute(PROPERTY_SERVER_MODE, getDefaultServerMode());
+	}
 
-    }
+	@Override
+	public TomcatConfiguration getTomcatConfiguration() throws CoreException
+	{
 
-    @Override
-    public void saveConfiguration( IProgressMonitor monitor ) throws CoreException
-    {
+		if (configuration == null) {
+			IFolder folder = getServer().getServerConfiguration();
 
-        LiferayTomcatRuntime portalRuntime =
-            (LiferayTomcatRuntime) getServer().getRuntime().loadAdapter( LiferayTomcatRuntime.class, monitor );
+			if (FileUtil.notExists(folder)) {
+				String path = null;
 
-        String serverInfo = portalRuntime.getServerInfo();
+				if (folder != null) {
+					path = folder.getFullPath().toOSString();
+					IProject project = folder.getProject();
 
-        String expectedServerInfo = portalRuntime.getExpectedServerInfo();
+					if (FileUtil.exists(project) && !project.isOpen()) {
+						throw new CoreException(
+							new Status(
+								IStatus.ERROR, TomcatPlugin.PLUGIN_ID, 0,
+								NLS.bind(Msgs.errorConfigurationProjectClosed, path, project.getName()), null));
+					}
+				}
 
-        if( serverInfo != null && expectedServerInfo != null )
-        {
-            if( serverInfo.contains( Msgs.enterpriseEdition ) && !( expectedServerInfo.contains( Msgs.enterpriseEdition ) ) )
-            {
-                LiferayTomcatUtil.displayToggleMessage(
-                    Msgs.switchRuntimeType, LiferayTomcatPlugin.PREFERENCES_EE_UPGRADE_MSG_TOGGLE_KEY );
-            }
-        }
+				throw new CoreException(
+					new Status(
+						IStatus.ERROR, TomcatPlugin.PLUGIN_ID, 0, NLS.bind(Msgs.errorNoConfiguration, path), null));
+			}
 
-        super.saveConfiguration( monitor );
-    }
+			IServerType serverType = getServer().getServerType();
 
-    public void setAutoDeployDirectory( String dir )
-    {
-        setAttribute( PROPERTY_AUTO_DEPLOY_DIR, dir );
-    }
+			String id = serverType.getId();
 
-    public void setAutoDeployInterval( String interval )
-    {
-        setAttribute( PROPERTY_AUTO_DEPLOY_INTERVAL, interval );
-    }
+			if (id.endsWith("60")) {
+				configuration = new LiferayTomcat60Configuration(folder);
+			}
+			else if (id.endsWith("70") || id.endsWith("7062")) {
+				configuration = new LiferayTomcat70Configuration(folder);
+			}
 
-    @Override
-    public void setDefaults( IProgressMonitor monitor )
-    {
-        super.setDefaults( monitor );
-        setTestEnvironment( false );
-        setDeployDirectory( ILiferayTomcatConstants.DEFAULT_DEPLOYDIR );
-        setSaveSeparateContextFiles( false );
-        ServerUtil.setServerDefaultName(getServerWorkingCopy());
-    }
+			try
+			{
+				((ILiferayTomcatConfiguration)configuration).load(folder, null);
+			}
+			catch (CoreException ce) {
+				configuration = null;
+				throw ce;
+			}
+		}
 
-    public void setExternalProperties( String externalProperties )
-    {
-        setAttribute( PROPERTY_EXTERNAL_PROPERTIES, externalProperties );
-    }
+		return configuration;
+	}
 
-    @Override
-    public void setMemoryArgs( String memoryArgs )
-    {
-        setAttribute( PROPERTY_MEMORY_ARGS, memoryArgs );
-    }
+	@Override
+	public ITomcatVersionHandler getTomcatVersionHandler()
+	{
 
-    @Override
-    public void setPassword( String password )
-    {
-        setAttribute( ATTR_PASSWORD, password );
-    }
+		ITomcatVersionHandler handler = super.getTomcatVersionHandler();
 
-    public void setUseDefaultPortalServerSettings( final boolean useDefaultPortalServerSettings )
-    {
-        setAttribute( PROPERTY_USE_DEFAULT_PORTAL_SERVER_SETTINGS, useDefaultPortalServerSettings );
-    }
+		if (handler instanceof ILiferayTomcatHandler) {
+			((ILiferayTomcatHandler)handler).setCurrentServer(getServer());
+		}
 
-    public void setServerMode( int serverMode )
-    {
-        setAttribute( PROPERTY_SERVER_MODE, serverMode );
-    }
+		return handler;
+	}
 
-    @Override
-    public void setUsername( String username )
-    {
-        setAttribute( ATTR_USERNAME, username );
-    }
+	@Override
+	public boolean getUseDefaultPortalServerSettings()
+	{
 
-    @Override
-    public void setUserTimezone( String userTimezone )
-    {
-        setAttribute( PROPERTY_USER_TIMEZONE, userTimezone );
-    }
+		return getAttribute(
+			PROPERTY_USE_DEFAULT_PORTAL_SERVER_SETTINGS,
+			ILiferayTomcatConstants.DEFAULT_USE_DEFAULT_PORTAL_SERVER_SETTING);
+	}
 
-    protected IEclipsePreferences getPrefStore()
-    {
-        return LiferayTomcatPlugin.getPreferenceStore();
-    }
+	@Override
+	public String getUsername()
+	{
 
-    private static class Msgs extends NLS
-    {
-        public static String enterpriseEdition;
-        public static String errorConfigurationProjectClosed;
-        public static String errorNoConfiguration;
-        public static String removingExtPlugin;
-        public static String switchRuntimeType;
+		return getAttribute(ATTR_USERNAME, DEFAULT_USERNAME);
+	}
 
-        static
-        {
-            initializeMessages( LiferayTomcatServer.class.getName(), Msgs.class );
-        }
-    }
+	@Override
+	public String getUserTimezone()
+	{
+
+		return getAttribute(PROPERTY_USER_TIMEZONE, ILiferayTomcatConstants.DEFAULT_USER_TIMEZONE);
+	}
+
+	@Override
+	public URL getWebServicesListURL()
+	{
+
+		try
+		{
+			return new URL(getPortalHomeUrl(), "/tunnel-web/axis");
+		}
+		catch (MalformedURLException murle) {
+			LiferayTomcatPlugin.logError("Unable to get web services list URL", murle);
+		}
+
+		return null;
+	}
+
+	@Override
+	public void importRuntimeConfiguration(IRuntime runtime, IProgressMonitor monitor) throws CoreException
+	{
+
+		if (runtime == null) {
+			configuration = null;
+			return;
+		}
+
+		IPath path = runtime.getLocation().append("conf");
+
+		IServer server = getServer();
+
+		String id = server.getServerType().getId();
+		IFolder folder = server.getServerConfiguration();
+
+		if (id.endsWith("60")) {
+			configuration = new LiferayTomcat60Configuration(folder);
+		}
+		else if (id.endsWith("70") || id.endsWith("7062")) {
+			configuration = new LiferayTomcat70Configuration(folder);
+		}
+
+		if (FileUtil.exists(path.toFile())) {
+			try {
+				configuration.importFromPath(path, isTestEnvironment(), monitor);
+			}
+			catch (CoreException ce) {
+				configuration = null;
+				throw ce;
+			}
+		}
+	}
+
+	@Override
+	public void modifyModules(IModule[] add, IModule[] remove, IProgressMonitor monitor) throws CoreException
+	{
+
+		/*
+		 * check if we are adding ext plugin then we need to turn off auto publishing if we are removing ext plugin
+		 * then we can re-enable publishing if it was previously set
+		 */
+		boolean addingExt = false;
+		boolean removingExt = false;
+
+		if (!CoreUtil.isNullOrEmpty(add)) {
+			for (IModule m : add)
+			{
+				if ((m.getProject() != null) && ProjectUtil.isExtProject(m.getProject())) {
+					addingExt = true;
+
+					break;
+				}
+			}
+		}
+		else if (!CoreUtil.isNullOrEmpty(remove)) {
+			for (IModule m : remove)
+			{
+				if ((m.getProject() != null) && ProjectUtil.isExtProject(m.getProject())) {
+					removingExt = true;
+
+					break;
+				}
+			}
+		}
+
+		if (!addingExt && removingExt) {
+			LiferayTomcatUtil.displayToggleMessage(
+				Msgs.removingExtPlugin, LiferayTomcatPlugin.PREFERENCES_REMOVE_EXT_PLUGIN_TOGGLE_KEY);
+		}
+
+		super.modifyModules(add, remove, monitor);
+	}
+
+	@Override
+	public void saveConfiguration(IProgressMonitor monitor) throws CoreException
+	{
+
+		IRuntime serverRuntime = getServer().getRuntime();
+
+		LiferayTomcatRuntime portalRuntime = (LiferayTomcatRuntime)serverRuntime.loadAdapter(
+			LiferayTomcatRuntime.class, monitor);
+
+		String serverInfo = portalRuntime.getServerInfo();
+
+		String expectedServerInfo = portalRuntime.getExpectedServerInfo();
+
+		if ((serverInfo != null) && (expectedServerInfo != null)) {
+			if (serverInfo.contains(Msgs.enterpriseEdition) && !(expectedServerInfo.contains(Msgs.enterpriseEdition))) {
+				LiferayTomcatUtil.displayToggleMessage(
+					Msgs.switchRuntimeType, LiferayTomcatPlugin.PREFERENCES_EE_UPGRADE_MSG_TOGGLE_KEY);
+			}
+		}
+
+		super.saveConfiguration(monitor);
+	}
+
+	public void setAutoDeployDirectory(String dir)
+	{
+
+		setAttribute(PROPERTY_AUTO_DEPLOY_DIR, dir);
+	}
+
+	public void setAutoDeployInterval(String interval)
+	{
+
+		setAttribute(PROPERTY_AUTO_DEPLOY_INTERVAL, interval);
+	}
+
+	@Override
+	public void setDefaults(IProgressMonitor monitor)
+	{
+
+		super.setDefaults(monitor);
+		setTestEnvironment(false);
+		setDeployDirectory(ILiferayTomcatConstants.DEFAULT_DEPLOYDIR);
+		setSaveSeparateContextFiles(false);
+		ServerUtil.setServerDefaultName(getServerWorkingCopy());
+	}
+
+	public void setExternalProperties(String externalProperties)
+	{
+
+		setAttribute(PROPERTY_EXTERNAL_PROPERTIES, externalProperties);
+	}
+
+	@Override
+	public void setMemoryArgs(String memoryArgs)
+	{
+
+		setAttribute(PROPERTY_MEMORY_ARGS, memoryArgs);
+	}
+
+	@Override
+	public void setPassword(String password)
+	{
+
+		setAttribute(ATTR_PASSWORD, password);
+	}
+
+	public void setServerMode(int serverMode)
+	{
+
+		setAttribute(PROPERTY_SERVER_MODE, serverMode);
+	}
+
+	public void setUseDefaultPortalServerSettings(boolean useDefaultPortalServerSettings)
+	{
+
+		setAttribute(PROPERTY_USE_DEFAULT_PORTAL_SERVER_SETTINGS, useDefaultPortalServerSettings);
+	}
+
+	@Override
+	public void setUsername(String username)
+	{
+
+		setAttribute(ATTR_USERNAME, username);
+	}
+
+	@Override
+	public void setUserTimezone(String userTimezone)
+	{
+
+		setAttribute(PROPERTY_USER_TIMEZONE, userTimezone);
+	}
+
+	protected IEclipsePreferences getPrefStore()
+	{
+
+		return LiferayTomcatPlugin.getPreferenceStore();
+	}
+
+	private static class Msgs extends NLS {
+
+		public static String enterpriseEdition;
+		public static String errorConfigurationProjectClosed;
+		public static String errorNoConfiguration;
+		public static String removingExtPlugin;
+		public static String switchRuntimeType;
+
+		static
+		{
+			initializeMessages(LiferayTomcatServer.class.getName(), Msgs.class);
+		}
+	}
+
 }

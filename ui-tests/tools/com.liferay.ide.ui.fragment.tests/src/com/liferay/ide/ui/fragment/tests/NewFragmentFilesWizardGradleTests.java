@@ -75,6 +75,8 @@ public class NewFragmentFilesWizardGradleTests extends SwtbotBase {
 		
 		dialogAction.prepareText("com.liferay.announcements.web-1.1.9.");
 		
+		dialogAction.confirm();
+		
 		wizardAction.finishToWait();
 	}
 	

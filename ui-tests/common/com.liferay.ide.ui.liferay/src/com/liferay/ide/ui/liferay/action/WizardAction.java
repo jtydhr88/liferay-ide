@@ -35,6 +35,8 @@ import com.liferay.ide.ui.swtbot.page.Text;
 import com.liferay.ide.ui.swtbot.page.Wizard;
 import com.liferay.ide.ui.swtbot.util.StringPool;
 
+import javax.swing.JButton;
+
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 
@@ -468,5 +470,11 @@ public class WizardAction extends UIAction {
 	private final NewLiferayWorkspaceWizard _newWorkspaceWizard = new NewLiferayWorkspaceWizard(bot);
 	private final SetSDKLocationWizard _setSdkLocationWizard = new SetSDKLocationWizard(bot);
 	private final Wizard _wizard = new Wizard(bot);
+	
+	public void openNewModuleFragmentFilesWizard() {
+		MenuItem menu = ide.getNewBtn().getLiferayFragmentFiles();
+
+		menu.click();
+	}
 
 }

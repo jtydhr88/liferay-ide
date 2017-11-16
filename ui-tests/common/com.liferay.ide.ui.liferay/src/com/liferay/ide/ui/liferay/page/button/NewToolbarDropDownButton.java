@@ -14,6 +14,7 @@
 
 package com.liferay.ide.ui.liferay.page.button;
 
+import com.liferay.ide.ui.swtbot.UI;
 import com.liferay.ide.ui.swtbot.page.MenuItem;
 import com.liferay.ide.ui.swtbot.page.ToolbarDropDownButton;
 
@@ -21,6 +22,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 
 /**
  * @author Ying Xu
+ * @author Rui  Wang
  */
 public class NewToolbarDropDownButton extends ToolbarDropDownButton {
 
@@ -36,8 +38,12 @@ public class NewToolbarDropDownButton extends ToolbarDropDownButton {
 		_liferayServiceBuilder = new MenuItem(bot, this, LIFERAY_SERVICE_BUILDER);
 		_liferayLayoutTemplate = new MenuItem(bot, this, LIFERAY_LAYOUT_TEMPLATE);
 		_newPackage = new MenuItem(bot, this, PACKAGE);
+		_newliferayModuleFragmentFiles = new MenuItem (bot,this,NEW_LIFERAY_MODULE_FRAGMENT_FILES);
 	}
 
+	public MenuItem getLiferayFragmentFiles() {
+		return _newliferayModuleFragmentFiles;
+	}
 	public MenuItem getLiferayHookConfiguration() {
 		return _liferayHookConfiguration;
 	}
@@ -83,5 +89,6 @@ public class NewToolbarDropDownButton extends ToolbarDropDownButton {
 	private MenuItem _liferayServiceBuilder;
 	private MenuItem _liferayVaadinPortlet;
 	private MenuItem _newPackage;
+	private MenuItem _newliferayModuleFragmentFiles;
 
 }

@@ -86,5 +86,4 @@ public class LiferayIDE extends Eclipse {
 	private NewToolbarDropDownButton _newBtn;
 	private NewLiferayWorkspaceWizard _newLiferayWorkspaceProjectWizard;
 
-
 }

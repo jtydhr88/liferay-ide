@@ -19,12 +19,14 @@ import com.liferay.ide.ui.liferay.SwtbotBase;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author Vicky Wang
  * @author Sunny Shi
+ * @author Rui Wang
  */
 public class NewFragmentFilesWizardGradleTests extends SwtbotBase {
 
@@ -58,53 +60,100 @@ public class NewFragmentFilesWizardGradleTests extends SwtbotBase {
 		wizardAction.prepareNewServer(serverName);
 
 		wizardAction.finish();
-	
 	}
 
-	public void createFragmentProject(){
-
-		String projectName = "test-fragment-gradle";
-		
-		wizardAction.openNewFragmentWizard();
-		
-		wizardAction.prepareFragmentGradle(projectName);
-		
-		wizardAction.next();
-		
-		wizardAction.openBrowseOsgiBundleDialog();
-		
-		dialogAction.prepareText("com.liferay.announcements.web-1.1.9.");
-		
-		dialogAction.confirm();
-		
-		wizardAction.finishToWait();
-	}
-	
 	@Test
 	public void addFragmentJsp() {
-		
+		String projectName = "test-fragment-gradle";
+
 		createFragmentProject();
-		
-		wizardAction.openNewModuleFragmentFilesWizard();
-		
+
+		wizardAction.openLiferayModuleFragmentFilesWizard();
+
 		wizardAction.openAddOverrideFilesDialog();
-		
+
 		dialogAction.selectItems("META-INF/resources/configuration.jsp");
-		
+
 		dialogAction.confirm();
 
 		wizardAction.finishToWait();
 
-		viewAction.deleteProject();
-	
+		viewAction.deleteProject(projectName);
+	}
+
+	@Test
+	public void addFragmentJspf() {
+		String projectName = "test-fragment-gradle";
+
+		createFragmentProject();
+
+		wizardAction.openLiferayModuleFragmentFilesWizard();
+
+		wizardAction.openAddOverrideFilesDialog();
+
+		dialogAction.selectItems("META-INF/resources/entry_action.jspf");
+
+		dialogAction.confirm();
+
+		wizardAction.finishToWait();
+
+		viewAction.deleteProject(projectName);
 	}
 
 	@Test
 	public void addFragmentPortletProperties() {
+		String projectName = "test-fragment-gradle";
+
+		createFragmentProject();
+
+		wizardAction.openLiferayModuleFragmentFilesWizard();
+
+		wizardAction.openAddOverrideFilesDialog();
+
+		dialogAction.selectItems("portlet.properties");
+
+		dialogAction.confirm();
+
+		wizardAction.finishToWait();
+
+		viewAction.deleteProject(projectName);
 	}
 
 	@Test
 	public void addFragmentResourceAction() {
+		String projectName = "test-fragment-gradle";
+
+		createFragmentProject();
+
+		wizardAction.openLiferayModuleFragmentFilesWizard();
+
+		wizardAction.openAddOverrideFilesDialog();
+
+		dialogAction.selectItems("resource-actions/default.xml");
+
+		dialogAction.confirm();
+
+		wizardAction.finishToWait();
+
+		viewAction.deleteProject(projectName);
+	}
+
+	public void createFragmentProject() {
+		String projectName = "test-fragment-gradle";
+
+		wizardAction.openNewFragmentWizard();
+
+		wizardAction.prepareFragmentGradle(projectName);
+
+		wizardAction.next();
+
+		wizardAction.openBrowseOsgiBundleDialog();
+
+		dialogAction.prepareText("com.liferay.announcements.web-1.1.9.");
+
+		dialogAction.confirm();
+
+		wizardAction.finishToWait();
 	}
 
 }

@@ -350,6 +350,8 @@ public interface UI {
 
 	public final String LIFERAY_LAYOUT_TEMPLATE = "Liferay Layout Template";
 
+	public final String LIFERAY_MODULE_FRAGMENT_FILES = "Liferay Module Fragment Files";
+
 	public final String LIFERAY_MODULE_PROJECT = "Liferay Module Project";
 
 	public final String LIFERAY_MODULE_PROJECTS = "Liferay Module Project(s)";
@@ -431,8 +433,6 @@ public interface UI {
 	public final String NEW_LIFERAY_MODULE_PROJECT = "New Liferay Module Project";
 
 	public final String NEW_LIFERAY_MODULE_PROJECT_FRAGMENT = "New Liferay Module Project Fragment";
-	
-	public final String NEW_LIFERAY_MODULE_FRAGMENT_FILES = "New Liferay Module Fragment Files";
 
 	public final String NEW_LIFERAY_PLUGIN_PROJECT = "New Liferay Plugin Project";
 

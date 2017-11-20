@@ -118,6 +118,12 @@ public class WizardAction extends UIAction {
 		next();
 	}
 
+	public void openLiferayModuleFragmentFilesWizard() {
+		MenuItem menu = ide.getNewBtn().getLiferayMoudleFragmentFiles();
+
+		menu.click();
+	}
+
 	public void openNewFragmentWizard() {
 		MenuItem menu = ide.getCreateLiferayProjectToolbar().getNewLiferayModuleFragment();
 

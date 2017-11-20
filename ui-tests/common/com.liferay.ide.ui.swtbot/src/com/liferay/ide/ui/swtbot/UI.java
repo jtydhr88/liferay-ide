@@ -20,6 +20,7 @@ package com.liferay.ide.ui.swtbot;
  * @author Ying Xu
  * @author Vicky Wang
  * @author Li Lu
+ * @author Rui Wang
  */
 public interface UI {
 
@@ -348,6 +349,8 @@ public interface UI {
 	public final String LIFERAY_JSF_PORTLET = "Liferay JSF Portlet";
 
 	public final String LIFERAY_LAYOUT_TEMPLATE = "Liferay Layout Template";
+
+	public final String LIFERAY_MODULE_FRAGMENT_FILES = "Liferay Module Fragment Files";
 
 	public final String LIFERAY_MODULE_PROJECT = "Liferay Module Project";
 

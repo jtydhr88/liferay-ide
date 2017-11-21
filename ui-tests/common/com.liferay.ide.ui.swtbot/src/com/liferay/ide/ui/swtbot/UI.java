@@ -89,9 +89,13 @@ public interface UI {
 
 	public final String BUILD_LANG = "build-lang";
 
+	public final String BUILD_SERVICES = "Build Services";
+
 	public final String BUILD_TYPE = "Build type:";
 
 	public final String BUNDLE_URL = "Bundle url:";
+
+	public final String BUILD_WSDD = "Build WSDD";
 
 	public final String CANCEL = "Cancel";
 
@@ -645,6 +649,12 @@ public interface UI {
 	public final String SHOW_VIEW = "Show View";
 
 	public final String SIMULATION_PANEL_ENTRY = "simulation-panel-entry";
+
+	public final String SOURCE = "Source";
+
+	public final String OVERVIEW = "Overview";
+
+	public final String Diagram = "Diagram";
 
 	public final String SOURCE_FOLDER = "Source folder:";
 

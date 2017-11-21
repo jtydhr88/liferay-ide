@@ -429,6 +429,10 @@ public class WizardAction extends UIAction {
 		preparePlugin(projectName, PORTLET_UPCASE, ANT_LIFERAY_PLUGINS_SDK);
 	}
 
+	public void preparePluginServiceBuilderPortletSdk(String projectName) {
+		preparePlugin(projectName, SERVICE_BUILDER_PORTLET, ANT_LIFERAY_PLUGINS_SDK);
+	}
+
 	public void preparePluginSdk(String projectName) {
 		preparePlugin(projectName, ANT_LIFERAY_PLUGINS_SDK);
 	}

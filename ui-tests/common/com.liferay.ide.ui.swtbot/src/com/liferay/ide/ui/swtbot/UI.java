@@ -89,7 +89,11 @@ public interface UI {
 
 	public final String BUILD_LANG = "build-lang";
 
+	public final String BUILD_SERVICES = "Build Services";
+
 	public final String BUILD_TYPE = "Build type:";
+
+	public final String BUILD_WSDD = "Build WSDD";
 
 	public final String BUNDLE_URL = "Bundle url:";
 
@@ -183,6 +187,8 @@ public interface UI {
 	public final String DESTROYING_PROTOCALHANDLER = "Destroying ProtocolHandler";
 
 	public final String DETECTED_PORTAL_BUNDLE_TYPE = "Detected portal bundle type";
+
+	public final String DIAGRAM = "Diagram";
 
 	public final String DISABLE_JSP_SYNTAX = "Disable JSP syntax validation for custom JSP folder (recommended).";
 
@@ -476,6 +482,8 @@ public interface UI {
 
 	public final String OVERRIDDEN_FILES = "Overridden files:";
 
+	public final String OVERVIEW = "Overview";
+
 	public final String PACKAGE = "Package";
 
 	public final String PACKAGE_EXPLORER = "Package Explorer";
@@ -645,6 +653,8 @@ public interface UI {
 	public final String SHOW_VIEW = "Show View";
 
 	public final String SIMULATION_PANEL_ENTRY = "simulation-panel-entry";
+
+	public final String SOURCE = "Source";
 
 	public final String SOURCE_FOLDER = "Source folder:";
 

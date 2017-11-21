@@ -15,6 +15,7 @@
 package com.liferay.ide.ui.liferay.action;
 
 import com.liferay.ide.ui.liferay.UIAction;
+import com.liferay.ide.ui.swtbot.UI;
 import com.liferay.ide.ui.swtbot.eclipse.page.ConsoleView;
 import com.liferay.ide.ui.swtbot.eclipse.page.DeleteResourcesContinueDialog;
 import com.liferay.ide.ui.swtbot.eclipse.page.DeleteResourcesDialog;
@@ -99,6 +100,20 @@ public class ViewAction extends UIAction {
 
 	public void openServerEditor(String serverLabel) {
 		_serversView.getServers().doubleClick(serverLabel);
+	}
+
+	public void runBuildServicesSdk()
+	{
+
+		_getProjects().contextMenu(UI.BUILD_SERVICES);
+
+		ide.sleep(2000);
+	}
+
+	public void runBuildWSDDSdk() {
+		_getProjects().contextMenu(UI.BUILD_WSDD);
+
+		ide.sleep(2000);
 	}
 
 	public void serverDebug(String serverLabel) {

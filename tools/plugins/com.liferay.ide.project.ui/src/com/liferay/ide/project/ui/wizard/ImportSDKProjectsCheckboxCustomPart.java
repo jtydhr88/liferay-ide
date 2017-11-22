@@ -25,6 +25,7 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -92,6 +93,8 @@ public class ImportSDKProjectsCheckboxCustomPart extends ProjectsCheckboxCustomP
 				checkboxElementList.add(checkboxElement);
 			}
 		}
+
+		_sortProjectCheckboxElement(checkboxElementList);
 
 		return checkboxElementList;
 	}
@@ -220,6 +223,21 @@ public class ImportSDKProjectsCheckboxCustomPart extends ProjectsCheckboxCustomP
 
 	private SDKProjectsImportOp _op() {
 		return getLocalModelElement().nearest(SDKProjectsImportOp.class);
+	}
+
+	private List<ProjectCheckboxElement> _sortProjectCheckboxElement(List<ProjectCheckboxElement> checkboxElementList) {
+		Comparator<ProjectCheckboxElement> projectElementComparator = new Comparator<ProjectCheckboxElement>() {
+
+			@Override
+			public int compare(ProjectCheckboxElement o1, ProjectCheckboxElement o2) {
+				return o1.name.compareTo(o2.name);
+			}
+
+		};
+
+		checkboxElementList.sort(projectElementComparator);
+
+		return checkboxElementList;
 	}
 
 	private ProjectRecord[] _updateProjectsList(final String path) {

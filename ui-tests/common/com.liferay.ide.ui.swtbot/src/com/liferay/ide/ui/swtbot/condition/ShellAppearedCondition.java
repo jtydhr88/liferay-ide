@@ -16,30 +16,37 @@ package com.liferay.ide.ui.swtbot.condition;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 
 /**
  * @author Terry Jia
  */
-public class BrowserLoadedCondition implements ICondition {
+public class ShellAppearedCondition implements ICondition {
 
-	public BrowserLoadedCondition(SWTBot bot) {
+	public ShellAppearedCondition(SWTBot bot, String title) {
 		_bot = bot;
+
+		_title = title;
 	}
 
-	@Override
 	public String getFailureMessage() {
-		return "Broswer is still loading";
+		return "Shell \"" + _title + "\" doesn't appeared";
 	}
 
-	@Override
 	public void init(SWTBot bot) {
 	}
 
-	@Override
 	public boolean test() throws Exception {
-		return _bot.browser().isPageLoaded();
+		SWTBotShell shell = _bot.activeShell();
+
+		if (shell.getText().equals(_title)) {
+			return true;
+		}
+
+		return false;
 	}
 
-	private final SWTBot _bot;
+	private SWTBot _bot;
+	private String _title;
 
 }

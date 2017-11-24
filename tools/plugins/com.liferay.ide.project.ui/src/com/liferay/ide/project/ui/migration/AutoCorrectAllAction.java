@@ -46,6 +46,7 @@ import org.osgi.framework.ServiceReference;
 
 /**
  * @author Terry Jia
+ * @author Simon Jiang
  */
 public class AutoCorrectAllAction extends Action {
 

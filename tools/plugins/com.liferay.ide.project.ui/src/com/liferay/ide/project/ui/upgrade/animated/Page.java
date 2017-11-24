@@ -167,6 +167,10 @@ public abstract class Page extends Composite implements PageActionListener, Sele
 		return _title;
 	}
 
+	public LiferayUpgradeDataModel getUpgradeDataModel() {
+		return dataModel;
+	}
+
 	@Override
 	public void onPageAction(PageActionEvent event) {
 	}
@@ -234,11 +238,11 @@ public abstract class Page extends Composite implements PageActionListener, Sele
 	}
 
 	protected void setBackPage(boolean back) {
-		this.canBack = back;
+		canBack = back;
 	}
 
 	protected void setNextPage(boolean next) {
-		this.canNext = next;
+		canNext = next;
 	}
 
 	protected boolean showBackPage() {

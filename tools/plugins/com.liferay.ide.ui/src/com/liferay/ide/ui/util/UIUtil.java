@@ -14,13 +14,10 @@
 
 package com.liferay.ide.ui.util;
 
-import com.liferay.ide.ui.LiferayUIPlugin;
-
 import java.io.IOException;
-
 import java.net.URL;
-
 import java.util.Collections;
+import java.util.Map;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionException;
@@ -61,15 +58,16 @@ import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.internal.wizards.newresource.ResourceMessages;
 import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
-
 import org.osgi.framework.Bundle;
+
+import com.liferay.ide.ui.LiferayUIPlugin;
 
 /**
  * @author Greg Amerson
  * @author Cindy Li
  * @author Simon Jiang
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings({"restriction", "rawtypes"})
 public class UIUtil {
 
 	public static void async(Runnable runnable) {
@@ -103,7 +101,8 @@ public class UIUtil {
 		async(delayer);
 	}
 
-	public static void executeCommand(String commandId, ISelection selection)
+	@SuppressWarnings("unchecked")
+	public static void executeCommand(String commandId, ISelection selection, Map<String, Object> parameters)
 		throws ExecutionException, NotDefinedException, NotEnabledException,
 			NotHandledException {
 
@@ -118,7 +117,8 @@ public class UIUtil {
 		Command migrate = commandService.getCommand(commandId);
 
 		IHandlerService handlerService = (IHandlerService)workbench.getService(IHandlerService.class);
-
+		parameters.keySet().stream().forEach( parma -> evaluationContext.addVariable(parma, parameters.get(parma)));
+		
 		handlerService.executeCommandInContext(
 			ParameterizedCommand.generateCommand(migrate, null), null, evaluationContext);
 	}

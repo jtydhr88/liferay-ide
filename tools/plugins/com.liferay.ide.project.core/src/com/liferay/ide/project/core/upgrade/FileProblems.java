@@ -17,6 +17,7 @@ package com.liferay.ide.project.core.upgrade;
 import com.liferay.blade.api.Problem;
 
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 

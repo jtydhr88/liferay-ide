@@ -20,20 +20,19 @@ import com.liferay.ide.ui.swtbot.page.Editor;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 
 /**
- * @author Terry Jia
+ * @author Haoyi Sun
  */
-public class PomXmlEditor extends Editor {
+public class SourceEditor extends Editor {
 
-	public PomXmlEditor(SWTWorkbenchBot bot) {
+	public SourceEditor(SWTWorkbenchBot bot) {
 		super(bot);
 	}
 
-	public PomXmlEditor(SWTWorkbenchBot bot, String editorName) {
+	public SourceEditor(SWTWorkbenchBot bot, String editorName) {
 		super(bot, editorName);
 	}
 
-	public CTabItem getPomXml() {
-		return new CTabItem(getPart().bot(), POM_XML);
+	public CTabItem getSource() {
+		return new CTabItem(getPart().bot(), SOURCE);
 	}
-
 }

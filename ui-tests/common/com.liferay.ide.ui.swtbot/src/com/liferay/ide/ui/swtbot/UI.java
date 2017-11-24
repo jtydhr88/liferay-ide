@@ -178,6 +178,8 @@ public interface UI {
 
 	public final String DESELECT_ALL = "Deselect All";
 
+	public final String DESIGN = "Design";
+
 	public final String DESTROY = "destroy";
 
 	public final String DESTROYING_PROTOCALHANDLER = "Destroying ProtocolHandler";
@@ -647,6 +649,8 @@ public interface UI {
 	public final String SHOW_VIEW = "Show View";
 
 	public final String SIMULATION_PANEL_ENTRY = "simulation-panel-entry";
+
+	public final String SOURCE = "Source";
 
 	public final String SOURCE_FOLDER = "Source folder:";
 

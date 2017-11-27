@@ -44,6 +44,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
  * @author Ying Xu
  * @author Ashley Yuan
  * @author Lily Li
+ * @author Rui Wang
  */
 public class WizardAction extends UIAction {
 
@@ -113,6 +114,16 @@ public class WizardAction extends UIAction {
 		prepareImportType(LIFERAY, LIFERAY_WORKSPACE_PROJECT);
 
 		next();
+	}
+
+	public void openLiferayModuleFragmentFilesWizard() {
+
+		//ide.getNewBtn().getLiferayMoudleFragmentFiles().click();
+		//ide.getNewBtn().clickMenuItem("Liferay Module Fragment Files");
+		//ide.getNewBtn().getLiferayMoudleFragmentFiles().click();
+		MenuItem menu = ide.getNewBtn().getLiferayMoudleFragmentFiles();
+
+		menu.click();
 	}
 
 	public void openNewFragmentWizard() {

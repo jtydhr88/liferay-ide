@@ -108,6 +108,10 @@ public class ViewAction extends UIAction {
 		_jobAction.waitForBrowserLoaded();
 	}
 
+	public void openNewFragmentFileWizard() {
+		_getProjects().contextMenu("liferay Module Fragment Files");
+	}
+
 	public void openProjectFile(String... files) {
 		ide.sleep();
 

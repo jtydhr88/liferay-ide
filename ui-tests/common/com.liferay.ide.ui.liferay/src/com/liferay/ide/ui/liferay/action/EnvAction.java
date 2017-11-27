@@ -35,6 +35,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
@@ -58,6 +60,8 @@ public class EnvAction extends UIAction {
 
 		_bundleInfos = _getBundleInfos();
 		_sdkInfos = _getSdkInfos();
+
+		log = Logger.getLogger(getClass());
 	}
 
 	public IPath getEclipseWorkspacePath() {
@@ -121,7 +125,9 @@ public class EnvAction extends UIAction {
 	public IPath getLiferayPluginsSdkDir() {
 		IPath bundlesPath = getLiferayBundlesPath().append("bundles");
 
-		return bundlesPath.append(_sdkInfos[0].getSdkDir());
+		String sdkDir = _sdkInfos[0].getSdkDir() + "-" + getTimestamp();
+
+		return bundlesPath.append(sdkDir);
 	}
 
 	public String getLiferayPluginsSdkName() {
@@ -184,6 +190,14 @@ public class EnvAction extends UIAction {
 		IPath temp = getLiferayBundlesPath().append("temp");
 
 		return temp.toFile();
+	}
+
+	public long getTimestamp() {
+		if (_timestamp == 0) {
+			_timestamp = System.currentTimeMillis();
+		}
+
+		return _timestamp;
 	}
 
 	public File getValidationFolder() {
@@ -341,9 +355,11 @@ public class EnvAction extends UIAction {
 		return dist;
 	}
 
-	public void unzipPluginsSDK() throws IOException {
-		FileUtil.deleteDir(getLiferayPluginsSdkDir().toFile(), true);
+	public void resetTimestamp() {
+		_timestamp = 0;
+	}
 
+	public void unzipPluginsSDK() throws IOException {
 		File sdkDir = getLiferayPluginsSdkDir().toFile();
 
 		Assert.assertEquals(
@@ -425,6 +441,8 @@ public class EnvAction extends UIAction {
 		ZipUtil.unzip(
 			liferayServerZipFile62, liferayServerZipFolder62, liferayServerDirFile62, new NullProgressMonitor());
 	}
+
+	protected Logger log;
 
 	private BundleInfo[] _getBundleInfos() {
 		IPath bundlesCsvPath = getLiferayBundlesPath().append("bundles.csv");
@@ -518,5 +536,6 @@ public class EnvAction extends UIAction {
 	private String _liferayBundlesDir = System.getProperty("liferay.bundles.dir");
 	private IPath _liferayBundlesPath;
 	private final SdkInfo[] _sdkInfos;
+	private long _timestamp = 0;
 
 }

@@ -27,7 +27,6 @@ import com.liferay.ide.sdk.core.SDKUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.sapphire.modeling.ProgressMonitor;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 /**
@@ -35,20 +34,6 @@ import org.junit.Test;
  */
 public class LiferaySDKValidationTests extends ProjectCoreBase
 {
-
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
-
-        IPath sdkPath = ProjectCore.getDefault().getStateLocation().append(
-            "com.liferay.portal.plugins.sdk-1.0.16-withdependencies" );
-
-        if( sdkPath != null && sdkPath.toFile() != null )
-        {
-            sdkPath.toFile().delete();
-        }
-    }
 
     @Test
     public void testSDKLocationValidation() throws Exception

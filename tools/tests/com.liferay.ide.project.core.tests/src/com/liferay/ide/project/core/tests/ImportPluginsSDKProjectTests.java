@@ -41,7 +41,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 /**
@@ -50,13 +49,6 @@ import org.junit.Test;
 
 public class ImportPluginsSDKProjectTests extends ProjectCoreBase
 {
-
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
-    }
-
     private boolean isLiferayRuntimePluginClassPath( List<IClasspathEntry> entries, final String entryPath )
     {
         boolean retval = false;

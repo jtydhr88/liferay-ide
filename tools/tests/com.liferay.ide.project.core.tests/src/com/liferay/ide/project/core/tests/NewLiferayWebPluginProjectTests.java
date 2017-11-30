@@ -25,7 +25,6 @@ import com.liferay.ide.project.core.model.PluginType;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 /**
@@ -33,12 +32,6 @@ import org.junit.Test;
  */
 public class NewLiferayWebPluginProjectTests extends ProjectCoreBase
 {
-
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
-    }
 
     @Override
     protected IPath getLiferayPluginsSdkDir()

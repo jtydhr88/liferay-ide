@@ -32,7 +32,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -44,12 +43,6 @@ import org.junit.Test;
 @SuppressWarnings( "restriction" )
 public class PluginsSDKNameValidatorTests extends ProjectCoreBase
 {
-
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
-    }
 
     @Test
     @Ignore

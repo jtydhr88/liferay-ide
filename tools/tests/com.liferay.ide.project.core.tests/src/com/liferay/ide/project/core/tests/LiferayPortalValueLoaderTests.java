@@ -24,7 +24,6 @@ import com.liferay.ide.server.util.ServerUtil;
 
 import org.eclipse.wst.server.core.IRuntime;
 import org.eclipse.wst.server.core.ServerCore;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
@@ -34,13 +33,6 @@ import org.osgi.framework.Version;
  */
 public class LiferayPortalValueLoaderTests extends ProjectCoreBase
 {
-
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
-    }
-
     private LiferayPortalValueLoader loader( final IRuntime runtime )
     {
         ILiferayRuntime liferayRutime = ServerUtil.getLiferayRuntime( runtime );

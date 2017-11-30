@@ -22,7 +22,6 @@ import com.liferay.ide.project.core.model.PluginType;
 
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.platform.PathBridge;
-import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -31,12 +30,6 @@ import org.junit.Test;
  */
 public class NewLiferayPluginProjectOp625Tests extends NewLiferayPluginProjectOpBase
 {
-
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
-    }
 
     @Override
     protected String getServiceXmlDoctype()

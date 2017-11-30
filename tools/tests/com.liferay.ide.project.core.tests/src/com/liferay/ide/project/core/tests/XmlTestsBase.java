@@ -38,19 +38,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.server.core.IRuntime;
 import org.eclipse.wst.server.core.ServerCore;
-import org.junit.AfterClass;
 
 /**
  * @author Kuo Zhang
  */
 public class XmlTestsBase extends ProjectCoreBase
 {
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
-    }
-
     protected boolean checkMarker( IFile descriptorFile, String markerType, String markerMessage ) throws Exception
     {
         final IMarker[] markers = descriptorFile.findMarkers( markerType, false, IResource.DEPTH_ZERO );

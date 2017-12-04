@@ -48,7 +48,6 @@ import org.eclipse.wst.sse.core.StructuredModelManager;
 import org.eclipse.wst.sse.core.internal.provisional.IStructuredModel;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.Ignore;
 import org.w3c.dom.Node;
@@ -61,13 +60,6 @@ import org.w3c.dom.NodeList;
 @SuppressWarnings( "restriction" )
 public class LiferayLanguageFileEncodingTests extends ProjectCoreBase
 {
-
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
-    }
-
     /*
      * In order to test the encoding feature, mainly test the markers on the non-default encoding language files,
      * encode them to default then check if the markers are gone. Since the LiferayLanguagePropertiesListener does't

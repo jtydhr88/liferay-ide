@@ -27,7 +27,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
@@ -41,20 +40,9 @@ public class WorkspaceHelper {
 	public IFile createIFile(String projectName, File file) throws CoreException, IOException {
 		IJavaProject project = _getJavaProject(projectName);
 
-		IFile projectFile = project.getProject().getFile("/temp/" + file.getName());
+		IFile projectFile = project.getProject().getFile("/" + _getTimestamp() + "/" + file.getName());
 
 		IProgressMonitor npm = new NullProgressMonitor();
-
-		if (projectFile.exists()) {
-			try {
-				projectFile.delete(IFile.FORCE, npm);
-			}
-			catch (CoreException ce) {
-				IPath projectFileLocation = projectFile.getLocation();
-
-				projectFileLocation.toFile().delete();
-			}
-		}
 
 		if (!projectFile.getParent().exists() && projectFile.getParent() instanceof IFolder) {
 			IFolder parentFolder = (IFolder)projectFile.getParent();
@@ -106,6 +94,12 @@ public class WorkspaceHelper {
 		_addNaturesToProject(javaProject, new String[] {JavaCore.NATURE_ID}, monitor);
 
 		return JavaCore.create(javaProject);
+	}
+
+	private long _getTimestamp()
+	{
+		return System.currentTimeMillis();
+
 	}
 
 }

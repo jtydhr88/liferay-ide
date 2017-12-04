@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.platform.PathBridge;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -59,12 +58,6 @@ public class NewLiferayPluginProjectOp7sp3Tests extends NewLiferayPluginProjectO
     protected String getLiferayPluginsSdkZipFolder()
     {
         return "com.liferay.portal.plugins.sdk-1.0.16-withdependencies/";
-    }
-
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
     }
 
     @Override

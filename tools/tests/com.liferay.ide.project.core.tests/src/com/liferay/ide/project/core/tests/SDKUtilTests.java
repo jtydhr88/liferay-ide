@@ -27,7 +27,6 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,11 +36,6 @@ import org.junit.Test;
  */
 public class SDKUtilTests extends ProjectCoreBase
 {
-    @AfterClass
-    public static void removePluginsSDK() throws Exception
-    {
-        deleteAllWorkspaceProjects();
-    }
 
     @Override
     @Before

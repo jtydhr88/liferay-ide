@@ -15,7 +15,6 @@
 package com.liferay.ide.project.core.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -77,6 +76,7 @@ import org.eclipse.wst.server.core.IRuntime;
 import org.eclipse.wst.server.core.IRuntimeWorkingCopy;
 import org.eclipse.wst.server.core.ServerCore;
 import org.eclipse.wst.validation.internal.operations.ValidatorManager;
+import org.junit.AfterClass;
 import org.junit.Before;
 
 /**
@@ -102,16 +102,13 @@ public class ProjectCoreBase extends ServerCoreBase
                 try
                 {
                     project.refreshLocal( IResource.DEPTH_INFINITE, monitor );
+                    project.close( monitor );
+                    project.delete( true, monitor );
                 }
                 catch( Exception e)
                 {
                     //ignore
                 }
-
-                project.close( monitor );
-                project.delete( true, monitor );
-
-                assertFalse( project.exists() );
             }
         }
     }
@@ -631,6 +628,12 @@ public class ProjectCoreBase extends ServerCoreBase
         }
 
         ensureDefaultVMInstallExists();
+    }
+
+    @AfterClass
+    public static void removePluginsSDK() throws Exception
+    {
+        deleteAllWorkspaceProjects();
     }
 
     @Override

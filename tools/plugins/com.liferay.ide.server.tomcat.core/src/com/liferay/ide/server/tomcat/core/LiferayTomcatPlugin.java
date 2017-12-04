@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,18 +10,22 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- *
- *******************************************************************************/
+ */
 
 package com.liferay.ide.server.tomcat.core;
 
+import com.liferay.ide.core.util.FileUtil;
+
 import java.io.File;
 
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
+
 import org.osgi.framework.BundleContext;
 
 /**
@@ -29,217 +33,214 @@ import org.osgi.framework.BundleContext;
  *
  * @author Greg Amerson
  */
-public class LiferayTomcatPlugin extends Plugin
-{
+public class LiferayTomcatPlugin extends Plugin {
 
-    // The shared instance
-    private static LiferayTomcatPlugin plugin;
+	public static final String PLUGIN_ID = "com.liferay.ide.server.tomcat.core";
 
-    // The plugin ID
-    public static final String PLUGIN_ID = "com.liferay.ide.server.tomcat.core"; //$NON-NLS-1$
+	public static final String PREFERENCES_ADDED_EXT_PLUGIN_TOGGLE_KEY = "ADDED_EXT_PLUGIN_TOGGLE_KEY";
 
-    public static final String PREFERENCES_ADDED_EXT_PLUGIN_TOGGLE_KEY = "ADDED_EXT_PLUGIN_TOGGLE_KEY"; //$NON-NLS-1$
+	public static final String PREFERENCES_ADDED_EXT_PLUGIN_WITHOUT_ZIP_TOGGLE_KEY =
+		"ADDED_EXT_PLUGIN_WITHOUT_ZIP_TOGGLE_KEY";
 
-    public static final String PREFERENCES_ADDED_EXT_PLUGIN_WITHOUT_ZIP_TOGGLE_KEY =
-        "ADDED_EXT_PLUGIN_WITHOUT_ZIP_TOGGLE_KEY"; //$NON-NLS-1$
+	public static final String PREFERENCES_EE_UPGRADE_MSG_TOGGLE_KEY = "EE_UPGRADE_MSG_TOGGLE_KEY";
 
-    public static final String PREFERENCES_EE_UPGRADE_MSG_TOGGLE_KEY = "EE_UPGRADE_MSG_TOGGLE_KEY"; //$NON-NLS-1$
+	public static final String PREFERENCES_REMOVE_EXT_PLUGIN_TOGGLE_KEY = "REMOVE_EXT_PLUGIN_TOGGLE_KEY";
 
-    public static final String PREFERENCES_REMOVE_EXT_PLUGIN_TOGGLE_KEY = "REMOVE_EXT_PLUGIN_TOGGLE_KEY"; //$NON-NLS-1$
+	public static IStatus createErrorStatus(Exception e)
+	{
 
-    public static IStatus createErrorStatus( Exception e )
-    {
-        return createErrorStatus( PLUGIN_ID, e );
-    }
+		return createErrorStatus(PLUGIN_ID, e);
+	}
 
-    public static IStatus createErrorStatus( String msg )
-    {
-        return createErrorStatus( PLUGIN_ID, msg );
-    }
+	public static IStatus createErrorStatus(String msg)
+	{
 
-    public static IStatus createErrorStatus( String pluginId, String msg )
-    {
-        return new Status( IStatus.ERROR, pluginId, msg );
-    }
+		return createErrorStatus(PLUGIN_ID, msg);
+	}
 
-    public static IStatus createErrorStatus( String pluginId, String msg, Throwable e )
-    {
-        return new Status( IStatus.ERROR, pluginId, msg, e );
-    }
+	public static IStatus createErrorStatus(String pluginId, String msg)
+	{
 
-    public static IStatus createErrorStatus( String pluginId, Throwable t )
-    {
-        return new Status( IStatus.ERROR, pluginId, t.getMessage(), t );
-    }
+		return new Status(IStatus.ERROR, pluginId, msg);
+	}
 
-    public static IStatus createWarningStatus( String message )
-    {
-        return new Status( IStatus.WARNING, PLUGIN_ID, message );
-    }
+	public static IStatus createErrorStatus(String pluginId, String msg, Throwable e)
+	{
 
-    public static IStatus createWarningStatus( String message, String id )
-    {
-        return new Status( IStatus.WARNING, id, message );
-    }
+		return new Status(IStatus.ERROR, pluginId, msg, e);
+	}
 
-    public static IStatus createWarningStatus( String message, String id, Exception e )
-    {
-        return new Status( IStatus.WARNING, id, message, e );
-    }
+	public static IStatus createErrorStatus(String pluginId, Throwable t)
+	{
 
-    /**
-     * Returns the shared instance
-     *
-     * @return the shared instance
-     */
-    public static LiferayTomcatPlugin getDefault()
-    {
-        return plugin;
-    }
+		return new Status(IStatus.ERROR, pluginId, t.getMessage(), t);
+	}
 
-    @SuppressWarnings( "deprecation" )
-    public static IEclipsePreferences getPreferenceStore()
-    {
-        return new InstanceScope().getNode( PLUGIN_ID );
-    }
+	public static IStatus createWarningStatus(String message)
+	{
 
-    public static void logError( IStatus status )
-    {
-        getDefault().getLog().log( status );
-    }
+		return new Status(IStatus.WARNING, PLUGIN_ID, message);
+	}
 
-    public static void logError( String msg )
-    {
-        logError( createErrorStatus( msg ) );
-    }
+	public static IStatus createWarningStatus(String message, String id)
+	{
 
-    public static void logError( String msg, Exception e )
-    {
-        getDefault().getLog().log( createErrorStatus( PLUGIN_ID, msg, e ) );
-    }
+		return new Status(IStatus.WARNING, id, message);
+	}
 
-    public static void logError( Throwable t )
-    {
-        getDefault().getLog().log( new Status( IStatus.ERROR, PLUGIN_ID, t.getMessage(), t ) );
-    }
+	public static IStatus createWarningStatus(String message, String id, Exception e)
+	{
 
-    public static IStatus warning( String msg )
-    {
-        return createWarningStatus( msg, PLUGIN_ID );
-    }
+		return new Status(IStatus.WARNING, id, message, e);
+	}
 
-    public static IStatus warning( String msg, Exception e )
-    {
-        return createWarningStatus( msg, PLUGIN_ID, e );
-    }
+	public static LiferayTomcatPlugin getDefault()
+	{
 
-    /**
-     * The constructor
-     */
-    public LiferayTomcatPlugin()
-    {
-    }
+		return _plugin;
+	}
 
-    private void cleanupVersionFiles()
-    {
-        File versionProps = LiferayTomcatPlugin.getDefault().getStateLocation().append( "version.properties" ).toFile(); //$NON-NLS-1$
+	public static IEclipsePreferences getPreferenceStore()
+	{
 
-        if( versionProps.exists() )
-        {
-            if( !versionProps.delete() )
-            {
-                versionProps.deleteOnExit();
-            }
-        }
+		return DefaultScope.INSTANCE.getNode(PLUGIN_ID);
+	}
 
-        File versionTxt = LiferayTomcatPlugin.getDefault().getStateLocation().append( "version.txt" ).toFile(); //$NON-NLS-1$
+	public static void logError(IStatus status)
+	{
 
-        if( versionTxt.exists() )
-        {
-            if( !versionTxt.delete() )
-            {
-                versionTxt.deleteOnExit();
-            }
-        }
+		ILog log = getDefault().getLog();
 
-        File serverInfos =
-            LiferayTomcatPlugin.getDefault().getStateLocation().append( "serverInfos.properties" ).toFile(); //$NON-NLS-1$
+		log.log(status);
+	}
 
-        if( serverInfos.exists() )
-        {
-            if( !serverInfos.delete() )
-            {
-                serverInfos.deleteOnExit();
-            }
-        }
+	public static void logError(String msg)
+	{
 
-        File serverInfosTxt = LiferayTomcatPlugin.getDefault().getStateLocation().append( "serverInfo.txt" ).toFile(); //$NON-NLS-1$
+		logError(createErrorStatus(msg));
+	}
 
-        if( serverInfosTxt.exists() )
-        {
-            if( !serverInfosTxt.delete() )
-            {
-                serverInfosTxt.deleteOnExit();
-            }
-        }
-    }
+	public static void logError(String msg, Exception e)
+	{
 
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext )
-     */
-    public void start( BundleContext context ) throws Exception
-    {
+		ILog log = getDefault().getLog();
 
-        super.start( context );
+		log.log(createErrorStatus(PLUGIN_ID, msg, e));
+	}
 
-        plugin = this;
+	public static void logError(Throwable t)
+	{
 
-        // portalSourcePartListener = new PortalSourcePartListener();
-        //
-        // PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-        //
-        // public void run() {
-        // IWorkbenchWindow workbenchWindow =
-        // PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        //
-        // if (workbenchWindow != null) {
-        // workbenchWindow.getPartService().addPartListener((IPartListener2)
-        // portalSourcePartListener);
-        // }
-        // }
-        // });
-        //
-        // PlatformUI.getWorkbench().addWindowListener(new IWindowListener() {
-        //
-        // public void windowActivated(IWorkbenchWindow window) {
-        // }
-        //
-        // public void windowClosed(IWorkbenchWindow window) {
-        // }
-        //
-        // public void windowDeactivated(IWorkbenchWindow window) {
-        // }
-        //
-        // public void windowOpened(IWorkbenchWindow window) {
-        // window.getPartService().addPartListener((IPartListener2)
-        // portalSourcePartListener);
-        // }
-        // });
+		ILog log = getDefault().getLog();
 
-        cleanupVersionFiles();
-    }
+		log.log(new Status(IStatus.ERROR, PLUGIN_ID, t.getMessage(), t));
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext )
-     */
-    public void stop( BundleContext context ) throws Exception
-    {
-        cleanupVersionFiles();
+	public static IStatus warning(String msg)
+	{
 
-        plugin = null;
+		return createWarningStatus(msg, PLUGIN_ID);
+	}
 
-        super.stop( context );
-    }
+	public static IStatus warning(String msg, Exception e)
+	{
+
+		return createWarningStatus(msg, PLUGIN_ID, e);
+	}
+
+	public LiferayTomcatPlugin()
+	{
+	}
+
+	public void start(BundleContext context) throws Exception
+	{
+
+		super.start(context);
+
+		_plugin = this;
+
+		/*
+		 * portalSourcePartListener = new PortalSourcePartListener();
+		 * PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+		 *
+		 * public void run() {
+		 * IWorkbenchWindow workbenchWindow =
+		 * PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		 *
+		 * if (workbenchWindow != null) {
+		 * workbenchWindow.getPartService().addPartListener((IPartListener2)
+		 * portalSourcePartListener);
+		 * }
+		 * }
+		 * });
+		 *
+		 * PlatformUI.getWorkbench().addWindowListener(new IWindowListener() {
+		 *
+		 * public void windowActivated(IWorkbenchWindow window) {
+		 * }
+		 *
+		 * public void windowClosed(IWorkbenchWindow window) {
+		 * }
+		 *
+		 * public void windowDeactivated(IWorkbenchWindow window) {
+		 * }
+		 *
+		 * public void windowOpened(IWorkbenchWindow window) {
+		 * window.getPartService().addPartListener((IPartListener2)
+		 * }
+		 * });
+		 */
+		_cleanupVersionFiles();
+	}
+
+	public void stop(BundleContext context) throws Exception
+	{
+
+		_cleanupVersionFiles();
+
+		_plugin = null;
+
+		super.stop(context);
+	}
+
+	private void _cleanupVersionFiles()
+	{
+
+		IPath liferayTomcatPluginLocation = getDefault().getStateLocation();
+
+		File versionProps = liferayTomcatPluginLocation.append("version.properties").toFile();
+
+		if (FileUtil.exists(versionProps)) {
+			if (!versionProps.delete()) {
+				versionProps.deleteOnExit();
+			}
+		}
+
+		File versionTxt = liferayTomcatPluginLocation.append("version.txt").toFile();
+
+		if (FileUtil.exists(versionTxt)) {
+			if (!versionTxt.delete()) {
+				versionTxt.deleteOnExit();
+			}
+		}
+
+		File serverInfos = liferayTomcatPluginLocation.append("serverInfos.properties").toFile();
+
+		if (FileUtil.exists(serverInfos)) {
+			if (!serverInfos.delete()) {
+				serverInfos.deleteOnExit();
+			}
+		}
+
+		File serverInfosTxt = liferayTomcatPluginLocation.append("serverInfo.txt").toFile();
+
+		if (FileUtil.exists(serverInfosTxt)) {
+			if (!serverInfosTxt.delete()) {
+				serverInfosTxt.deleteOnExit();
+			}
+		}
+	}
+
+	private static LiferayTomcatPlugin _plugin;
+
 }

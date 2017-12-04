@@ -16,9 +16,13 @@ package com.liferay.ide.project.ui.migration;
 
 import com.liferay.ide.project.ui.ProjectUI;
 import com.liferay.ide.project.ui.upgrade.animated.FindBreakingChangesPage;
+import com.liferay.ide.project.ui.upgrade.animated.LiferayUpgradeDataModel;
 import com.liferay.ide.project.ui.upgrade.animated.Page;
 import com.liferay.ide.project.ui.upgrade.animated.UpgradeView;
 import com.liferay.ide.ui.util.UIUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
@@ -38,15 +42,32 @@ public class RunMigrationToolAction extends OpenJavaProjectSelectionDialogAction
 		super(text, shell);
 	}
 
+	public RunMigrationToolAction(String text, Shell shell, ISelection selection) {
+		super(text, shell);
+		_selection = selection;
+	}
+
 	@Override
 	public void run() {
-		final ISelection selection = getSelectionProjects();
+		if ((_selection == null) || _selection.isEmpty()) {
+			_selection = getSelectionProjects();
+		}
+
 		final FindBreakingChangesPage page = UpgradeView.getPage(
 			Page.findbreackingchangesPageId, FindBreakingChangesPage.class);
 
-		if (selection != null) {
+		if (_selection != null) {
 			try {
-				UIUtil.executeCommand("com.liferay.ide.project.ui.migrateProject", selection);
+				LiferayUpgradeDataModel upgradeDataModel = page.getUpgradeDataModel();
+
+				Boolean combineExistedProblem = upgradeDataModel.getCombineExistedProblem().content();
+
+				Map<String, Object> breakingChangeParameters = new HashMap<>();
+
+				breakingChangeParameters.put("CombineExistedProblem", combineExistedProblem);
+
+				UIUtil.executeCommand(
+					"com.liferay.ide.project.ui.migrateProject", _selection, breakingChangeParameters);
 			}
 			catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
 				page.setButtonState(true);
@@ -57,5 +78,7 @@ public class RunMigrationToolAction extends OpenJavaProjectSelectionDialogAction
 			page.setButtonState(true);
 		}
 	}
+
+	private ISelection _selection;
 
 }

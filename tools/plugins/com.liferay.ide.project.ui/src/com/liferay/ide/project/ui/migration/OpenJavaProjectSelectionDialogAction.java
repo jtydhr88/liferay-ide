@@ -14,19 +14,24 @@
 
 package com.liferay.ide.project.ui.migration;
 
+import com.liferay.ide.project.core.upgrade.UpgradeAssistantSettingsUtil;
 import com.liferay.ide.project.ui.ProjectUI;
 import com.liferay.ide.project.ui.dialog.JavaProjectSelectionDialog;
+
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
 
 /**
  * @author Terry Jia
@@ -41,7 +46,7 @@ public class OpenJavaProjectSelectionDialogAction extends Action {
 	}
 
 	protected ISelection getSelectionProjects() {
-		final JavaProjectSelectionDialog dialog = new JavaProjectSelectionDialog(_shell);
+		final BreakingChangeProjectDialog dialog = new BreakingChangeProjectDialog(_shell);
 
 		if (dialog.open() == Window.OK) {
 			final Object[] selectedProjects = dialog.getResult();
@@ -57,6 +62,18 @@ public class OpenJavaProjectSelectionDialogAction extends Action {
 					}
 				}
 
+				try {
+					BreakingChangeSelectedProject bkProject = new BreakingChangeSelectedProject();
+
+					projects.stream().forEach(
+						project -> bkProject.addSimpleProject(
+							new BreakingChangeSimpleProject(project.getName(), project.getLocation().toOSString())));
+					UpgradeAssistantSettingsUtil.setObjectToStore(BreakingChangeSelectedProject.class, bkProject);
+				}
+				catch (IOException ioe) {
+					ProjectUI.logError(ioe);
+				}
+
 				return new StructuredSelection(projects.toArray(new IProject[0]));
 			}
 		}
@@ -65,5 +82,51 @@ public class OpenJavaProjectSelectionDialogAction extends Action {
 	}
 
 	private Shell _shell;
+
+	private class BreakingChangeProjectDialog extends JavaProjectSelectionDialog {
+
+		public BreakingChangeProjectDialog(Shell parentShell) {
+			super(parentShell);
+		}
+
+		@Override
+		protected void initialize() {
+			try {
+				BreakingChangeSelectedProject selectedProject = UpgradeAssistantSettingsUtil.getObjectFromStore(
+					BreakingChangeSelectedProject.class);
+
+				if (selectedProject == null) {
+					return;
+				}
+
+				TableItem[] children = fTableViewer.getTable().getItems();
+
+				for (TableItem item : children) {
+					if (item.getData() != null) {
+						if (item.getData() instanceof IJavaProject) {
+							IJavaProject projectItem = (IJavaProject)item.getData();
+
+							List<BreakingChangeSimpleProject> simpleProjects = selectedProject.getSelectedProjects();
+
+							for (BreakingChangeSimpleProject sProject : simpleProjects) {
+								IProject project = projectItem.getProject();
+
+								IPath projectLocation = project.getLocation();
+
+								if (project.getName().equals(sProject.getName()) &&
+									projectLocation.toOSString().equals(sProject.getLocation())) {
+
+									item.setChecked(true);
+								}
+							}
+						}
+					}
+				}
+			}
+			catch (IOException ioe) {
+			}
+		}
+
+	}
 
 }

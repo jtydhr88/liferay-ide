@@ -73,6 +73,8 @@ public abstract class ProjectSelectionDialog extends SelectionStatusDialog {
 
 	protected abstract boolean checkProject(IJavaProject project);
 
+	// initial _fTableViewer status
+
 	/**
 	 * (non-Javadoc)
 	 *
@@ -96,9 +98,9 @@ public abstract class ProjectSelectionDialog extends SelectionStatusDialog {
 
 		createMessageArea(composite);
 
-		_fTableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER);
+		fTableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER);
 
-		_fTableViewer.addPostSelectionChangedListener(
+		fTableViewer.addPostSelectionChangedListener(
 			new ISelectionChangedListener() {
 
 				@Override
@@ -114,20 +116,20 @@ public abstract class ProjectSelectionDialog extends SelectionStatusDialog {
 
 		data.heightHint = _sizingSelectionWidgetHeight;
 		data.widthHint = _sizingSelectionWidgetWidth;
-		_fTableViewer.getTable().setLayoutData(data);
+		fTableViewer.getTable().setLayoutData(data);
 
-		_fTableViewer.setLabelProvider(new JavaElementLabelProvider());
-		_fTableViewer.setContentProvider(getContentProvider());
-		_fTableViewer.setComparator(new JavaElementComparator());
-		_fTableViewer.getControl().setFont(font);
+		fTableViewer.setLabelProvider(new JavaElementLabelProvider());
+		fTableViewer.setContentProvider(getContentProvider());
+		fTableViewer.setComparator(new JavaElementComparator());
+		fTableViewer.getControl().setFont(font);
 
 		updateFilter(true);
 
 		IJavaModel input = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
 
-		_fTableViewer.setInput(input);
+		fTableViewer.setInput(input);
 
-		_fTableViewer.setAllChecked(true);
+		initialize();
 
 		_selectionChanged(new Object[0]);
 		Dialog.applyDialogFont(composite);
@@ -135,15 +137,19 @@ public abstract class ProjectSelectionDialog extends SelectionStatusDialog {
 		return composite;
 	}
 
-	// the visual selection widget group
-
 	protected IContentProvider getContentProvider() {
 		return new JavaProjectProvider();
 	}
 
+	// the visual selection widget group
+
+	protected void initialize() {
+		fTableViewer.setAllChecked(true);
+	}
+
 	@Override
 	protected void okPressed() {
-		Object[] checkedElements = _fTableViewer.getCheckedElements();
+		Object[] checkedElements = fTableViewer.getCheckedElements();
 
 		setSelectionResult(checkedElements);
 
@@ -162,12 +168,14 @@ public abstract class ProjectSelectionDialog extends SelectionStatusDialog {
 		}
 
 		if (selected) {
-			_fTableViewer.addFilter(_fFilter);
+			fTableViewer.addFilter(_fFilter);
 		}
 		else {
-			_fTableViewer.removeFilter(_fFilter);
+			fTableViewer.removeFilter(_fFilter);
 		}
 	}
+
+	protected CheckboxTableViewer fTableViewer;
 
 	private void _addSelectionButtons(Composite composite) {
 		Composite buttonComposite = new Composite(composite, SWT.NONE);
@@ -185,7 +193,7 @@ public abstract class ProjectSelectionDialog extends SelectionStatusDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				_fTableViewer.setAllChecked(true);
+				fTableViewer.setAllChecked(true);
 				getOkButton().setEnabled(true);
 			}
 
@@ -199,7 +207,7 @@ public abstract class ProjectSelectionDialog extends SelectionStatusDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				_fTableViewer.setAllChecked(false);
+				fTableViewer.setAllChecked(false);
 				getOkButton().setEnabled(false);
 			}
 
@@ -241,8 +249,6 @@ public abstract class ProjectSelectionDialog extends SelectionStatusDialog {
 	 * The filter for the viewer
 	 */
 	private ViewerFilter _fFilter;
-
-	private CheckboxTableViewer _fTableViewer;
 
 	private class JavaProjectProvider extends StandardJavaElementContentProvider {
 

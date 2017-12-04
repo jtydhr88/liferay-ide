@@ -109,6 +109,19 @@ public class FindBreakingChangesPage extends Page implements IDoubleClickListene
 
 		final Composite findBreakingchangesContainer = SWTUtil.createComposite(this, 2, 1, GridData.FILL_BOTH, 0, 0);
 
+		Button combineExistedProblemCheckbox = SWTUtil.createCheckButton(
+			findBreakingchangesContainer, "Combine existed problems list.", null, true, 2);
+
+		combineExistedProblemCheckbox.addSelectionListener(
+			new SelectionAdapter() {
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					dataModel.setCombineExistedProblem(combineExistedProblemCheckbox.getSelection());
+				}
+
+			});
+
 		_sashForm = new SashForm(findBreakingchangesContainer, SWT.HORIZONTAL | SWT.H_SCROLL);
 
 		_sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));

@@ -41,6 +41,8 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public Value<String> getBundleUrl();
 
+	public Value<Boolean> getCombineExistedProblem();
+
 	public Value<Path> getConvertedProjectLocation();
 
 	// *** Layout ***
@@ -99,11 +101,15 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public void setBundleUrl(String bundleUrl);
 
+	public void setCombineExistedProblem(Boolean combineExistedProblem);
+
+	public void setCombineExistedProblem(String combineExistedProblem);
+
 	public void setConvertedProjectLocation(Path convertedProjectLocation);
 
-	public void setConvertedProjectLocation(String convertedProjectLocation);
-
 	// *** HasPortlet ***
+
+	public void setConvertedProjectLocation(String convertedProjectLocation);
 
 	public void setConvertLiferayWorkspace(Boolean convertLiferayWorkspace);
 
@@ -192,6 +198,10 @@ public interface LiferayUpgradeDataModel extends Element {
 	@DefaultValue(text = DEFAULT_BUNDLE_URL)
 	@Service(impl = BundleUrlValidationService.class)
 	public ValueProperty PROP_BUNDLE_URL = new ValueProperty(TYPE, "BundleUrl");
+
+	@DefaultValue(text = "true")
+	@Type(base = Boolean.class)
+	public ValueProperty PROP_COMBINE_EXISTED_PROBLEM = new ValueProperty(TYPE, "CombineExistedProblem");
 
 	// *** DownloadBundle ***
 

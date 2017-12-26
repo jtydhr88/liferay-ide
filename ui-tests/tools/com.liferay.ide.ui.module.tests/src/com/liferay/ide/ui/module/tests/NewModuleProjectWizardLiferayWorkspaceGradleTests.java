@@ -164,46 +164,12 @@ public class NewModuleProjectWizardLiferayWorkspaceGradleTests extends SwtbotBas
 	}
 
 	@Test
-	public void createMvcPortlet() {
-		String projectName = "test-mvc-portlet-in-lws";
-
-		wizardAction.openNewLiferayModuleWizard();
-
-		wizardAction.newModule.prepareGradle(projectName, MVC_PORTLET);
-
-		wizardAction.finish();
-
-		String[] projectNames = {_liferayWorkspaceName, "modules", projectName};
-
-		Assert.assertTrue(viewAction.project.visibleFileTry(projectNames));
-
-		viewAction.project.closeAndDeleteFromDisk(projectNames);
-	}
-
-	@Test
 	public void createPanelApp() {
 		String projectName = "test-panel-app-in-lws";
 
 		wizardAction.openNewLiferayModuleWizard();
 
 		wizardAction.newModule.prepareGradle(projectName, PANEL_APP);
-
-		wizardAction.finish();
-
-		String[] projectNames = {_liferayWorkspaceName, "modules", projectName};
-
-		Assert.assertTrue(viewAction.project.visibleFileTry(projectNames));
-
-		viewAction.project.closeAndDeleteFromDisk(projectNames);
-	}
-
-	@Test
-	public void createPortlet() {
-		String projectName = "test-portlet-in-lws";
-
-		wizardAction.openNewLiferayModuleWizard();
-
-		wizardAction.newModule.prepareGradle(projectName, PORTLET);
 
 		wizardAction.finish();
 
@@ -300,23 +266,6 @@ public class NewModuleProjectWizardLiferayWorkspaceGradleTests extends SwtbotBas
 	}
 
 	@Test
-	public void createServiceBuilder() {
-		String projectName = "test-service-builder-in-lws";
-
-		wizardAction.openNewLiferayModuleWizard();
-
-		wizardAction.newModule.prepareGradle(projectName, SERVICE_BUILDER);
-
-		wizardAction.finish();
-
-		String[] projectNames = {_liferayWorkspaceName, "modules", projectName};
-
-		Assert.assertTrue(viewAction.project.visibleFileTry(projectNames));
-
-		viewAction.project.closeAndDeleteFromDisk(projectNames);
-	}
-
-	@Test
 	public void createServiceWrapper() {
 		String projectName = "test-service-wrapper-in-lws";
 
@@ -368,12 +317,29 @@ public class NewModuleProjectWizardLiferayWorkspaceGradleTests extends SwtbotBas
 	}
 
 	@Test
-	public void createTheme() {
-		String projectName = "test-theme-in-lws";
+	public void createThemeContributor() {
+		String projectName = "test-theme-contributor-in-lws";
 
 		wizardAction.openNewLiferayModuleWizard();
 
-		wizardAction.newModule.prepareGradle(projectName, THEME);
+		wizardAction.newModule.prepareGradle(projectName, THEME_CONTRIBUTOR);
+
+		wizardAction.finish();
+
+		String[] projectNames = {_liferayWorkspaceName, "modules", projectName};
+
+		Assert.assertTrue(viewAction.project.visibleFileTry(projectNames));
+
+		viewAction.project.closeAndDeleteFromDisk(projectNames);
+	}
+
+	@Test
+	public void createWarHook() {
+		String projectName = "test-war-hook-in-lws";
+
+		wizardAction.openNewLiferayModuleWizard();
+
+		wizardAction.newModule.prepareGradle(projectName, WAR_HOOK);
 
 		wizardAction.finish();
 
@@ -385,16 +351,16 @@ public class NewModuleProjectWizardLiferayWorkspaceGradleTests extends SwtbotBas
 	}
 
 	@Test
-	public void createThemeContributor() {
-		String projectName = "test-theme-contributor-in-lws";
+	public void createWarMvcPortlet() {
+		String projectName = "test-war-mvc-portlet-in-lws";
 
 		wizardAction.openNewLiferayModuleWizard();
 
-		wizardAction.newModule.prepareGradle(projectName, THEME_CONTRIBUTOR);
+		wizardAction.newModule.prepareGradle(projectName, WAR_MVC_PORTLET);
 
 		wizardAction.finish();
 
-		String[] projectNames = {_liferayWorkspaceName, "modules", projectName};
+		String[] projectNames = {_liferayWorkspaceName, "wars", projectName};
 
 		Assert.assertTrue(viewAction.project.visibleFileTry(projectNames));
 

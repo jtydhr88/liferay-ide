@@ -42,6 +42,11 @@ intellij {
 	plugins 'gradle'
 }
 
+patchPluginXml {
+	sinceBuild '172'
+	untilBuild ''
+}
+
 repositories {
 	maven {
 		url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"

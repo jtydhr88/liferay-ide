@@ -199,7 +199,7 @@ public interface INewPortletClassDataModelProperties extends INewJavaClassDataMo
 
 	public static final String QUALIFIED_LIFERAY_PORTLET = "com.liferay.portal.kernel.portlet.LiferayPortlet"; //$NON-NLS-1$
 
-	public static final String QUALIFIED_MVC_PORTLET = "com.liferay.util.bridges.mvc.MVCPortlet"; //$NON-NLS-1$
+	public static final String QUALIFIED_MVC_PORTLET = "com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet"; //$NON-NLS-1$
 
 	public static final String SERVERESOURCE_OVERRIDE = "INewPortletClassDataModelProperties.SERVERESOURCE_OVERRIDE"; //$NON-NLS-1$
 

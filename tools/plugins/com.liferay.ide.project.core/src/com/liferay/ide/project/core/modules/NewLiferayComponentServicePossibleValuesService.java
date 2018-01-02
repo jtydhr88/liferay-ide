@@ -17,6 +17,8 @@ package com.liferay.ide.project.core.modules;
 import com.liferay.ide.project.core.ProjectCore;
 import com.liferay.ide.server.core.portal.PortalServer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.sapphire.FilteredListener;
@@ -49,7 +51,7 @@ public class NewLiferayComponentServicePossibleValuesService extends PossibleVal
 
 	@Override
 	public Status problem(Value<?> value) {
-		return Status.createOkStatus();
+		return Status.createWarningStatus("'" + value + "' is not among possible values");
 	}
 
 	@Override

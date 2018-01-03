@@ -27,6 +27,7 @@ import com.liferay.ide.ui.swtbot.util.CoreUtil;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 
 /**
  * @author Terry Jia
@@ -101,6 +102,14 @@ public class DialogAction extends UIAction {
 	}
 
 	public class PreferencesDialogAction {
+
+		public boolean checkLiferayIdeSiteExist() {
+			openPreferenceType(INSTALL_UPDATE, AVAILABLE_SOFTWARE_SITES);
+
+			SWTBotTable table = bot.table();
+
+			return table.containsText(LIFERAY_IDE_STABLE_RELEASES);
+		}
 
 		public void confirm() {
 			_preferencesDialog.confirm();

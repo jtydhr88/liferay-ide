@@ -17,6 +17,7 @@ package com.liferay.ide.project.core;
 import com.liferay.ide.core.AbstractLiferayProjectProvider;
 import com.liferay.ide.core.ILiferayProject;
 import com.liferay.ide.core.util.CoreUtil;
+import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.project.core.model.NewLiferayPluginProjectOp;
 import com.liferay.ide.project.core.model.NewLiferayPluginProjectOpMethods;
 import com.liferay.ide.project.core.model.PluginType;
@@ -65,6 +66,7 @@ import org.osgi.framework.Version;
  * @author Gregory Amerson
  * @author Simon Jiang
  * @author Terry Jia
+ * @author Charles Wu
  */
 public class PluginsSDKProjectProvider
 	extends AbstractLiferayProjectProvider implements NewLiferayProjectProvider<NewLiferayPluginProjectOp> {
@@ -226,6 +228,10 @@ public class PluginsSDKProjectProvider
 			File projectParent = projectDir.getParentFile();
 
 			projectParent.mkdirs();
+
+			if (!FileUtil.exists(newSDKProjectPath)) {
+				return ProjectCore.createErrorStatus("Error create project folder.");
+			}
 
 			File newSDKProjectDir = newSDKProjectPath.toFile();
 

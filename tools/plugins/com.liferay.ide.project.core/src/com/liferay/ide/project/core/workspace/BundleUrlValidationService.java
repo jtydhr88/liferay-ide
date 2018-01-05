@@ -14,7 +14,7 @@
 
 package com.liferay.ide.project.core.workspace;
 
-import org.apache.xerces.util.URI;
+import java.net.URL;
 
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.services.ValidationService;
@@ -33,7 +33,9 @@ public class BundleUrlValidationService extends ValidationService {
 		String bundleUrl = op.getBundleUrl().content();
 
 		try {
-			new URI(bundleUrl);
+			URL url = new URL(bundleUrl);
+
+			url.openStream();
 		}
 		catch (Exception e) {
 			retval = Status.createErrorStatus("The bundle URL should be a vaild URL.");

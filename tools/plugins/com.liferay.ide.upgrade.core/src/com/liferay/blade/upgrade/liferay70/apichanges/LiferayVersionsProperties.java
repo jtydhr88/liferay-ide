@@ -27,16 +27,13 @@ import com.liferay.ide.core.util.ListUtil;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-
 import java.nio.file.Files;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -112,7 +109,9 @@ public class LiferayVersionsProperties extends PropertiesFileMigrator implements
 				}
 			}
 
-			propertiesFile.setContents(new ByteArrayInputStream(contents.getBytes()), IResource.FORCE, null);
+			try(ByteArrayInputStream bos = new ByteArrayInputStream(contents.getBytes())){
+				propertiesFile.setContents(bos, IResource.FORCE, null);	
+			}
 
 			return problemsFixed;
 		}

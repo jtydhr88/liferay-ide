@@ -82,6 +82,11 @@ public class AutoCorrectAllAction extends Action {
 									Set<String> fixed = new HashSet<>();
 
 									for (Problem problem : problems) {
+
+										if ( problem.getStatus() == Problem.STATUS_IGNORE ) {
+											continue;
+										}
+
 										final IResource file = MigrationUtil.getIResourceFromProblem(problem);
 
 										if ( FileUtil.notExists(file) ) {

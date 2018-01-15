@@ -43,23 +43,25 @@ import org.osgi.service.component.annotations.Component;
 )
 public class DeprecatedMethodsMigrator extends JavaFileMigrator {
 
+	static {
+		_deprecatedMethods = getDeprecatedMethods();
+	}
+	
 	@Override
 	public List<Problem> analyze(File file) {
 		List<Problem> problems = new ArrayList<>();
-
-		JSONArray[] deprecatedMethods = getDeprecatedMethods();
-
-		for (int i = 0; i < deprecatedMethods.length; i++) {
-			JSONArray deprecatedMethodsArray = deprecatedMethods[i];
+		String fileExtension = new Path(file.getAbsolutePath()).getFileExtension();
+		
+		for (int i = 0; i < _deprecatedMethods.length; i++) {
+			JSONArray deprecatedMethodsArray = _deprecatedMethods[i];
 
 			for (int j = 0; j < deprecatedMethodsArray.length(); j++) {
 				_tempMethod = deprecatedMethodsArray.getJSONObject(j);
 
-				List<SearchResult> searchResults = searchFile(file, createFileChecker(type, file));
+				List<SearchResult> searchResults = searchFile(file, createFileChecker(type, file, fileExtension));
 
 				if (searchResults != null) {
 					for (SearchResult searchResult : searchResults) {
-						String fileExtension = new Path(file.getAbsolutePath()).getFileExtension();
 
 						int makerType = Problem.MARKER_ERROR;
 
@@ -81,7 +83,7 @@ public class DeprecatedMethodsMigrator extends JavaFileMigrator {
 		return problems;
 	}
 
-	public JSONArray[] getDeprecatedMethods() {
+	public static JSONArray[] getDeprecatedMethods() {
 		if (_deprecatedMethods == null) {
 			List<JSONArray> deprecatedMethodsList = new ArrayList<>();
 
@@ -91,10 +93,9 @@ public class DeprecatedMethodsMigrator extends JavaFileMigrator {
 				fqn + "deprecatedMethods62.json", fqn + "deprecatedMethods61.json",
 				fqn + "deprecatedMethodsNoneVersionFile.json"
 			};
-
+			Class<? extends DeprecatedMethodsMigrator> class1 = DeprecatedMethodsMigrator.class;
+			
 			for (int i = 0; i < jsonFilePaths.length; i++) {
-				Class<? extends DeprecatedMethodsMigrator> class1 = getClass();
-
 				try (InputStream in = class1.getResourceAsStream(jsonFilePaths[i])) {
 					String jsonContent = CoreUtil.readStreamToString(in);
 
@@ -137,8 +138,8 @@ public class DeprecatedMethodsMigrator extends JavaFileMigrator {
 		return searchResults;
 	}
 
-	private static JSONObject _tempMethod = null;
+	private JSONObject _tempMethod = null;
 
-	private JSONArray[] _deprecatedMethods;
+	private static JSONArray[] _deprecatedMethods;
 
 }

@@ -36,7 +36,6 @@ import com.liferay.ide.project.ui.upgrade.animated.UpgradeView;
 import com.liferay.ide.ui.util.UIUtil;
 
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -76,7 +75,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -86,6 +84,7 @@ import org.osgi.framework.ServiceReference;
  * @author Andy Wu
  * @author Lovett Li
  * @author Terry Jia
+ * @author Simon Jiang
  */
 @SuppressWarnings("unchecked")
 public class MigrateProjectHandler extends AbstractHandler {
@@ -192,7 +191,6 @@ public class MigrateProjectHandler extends AbstractHandler {
 
 				try {
 					final ServiceReference<Migration> sr = context.getServiceReference(Migration.class);
-
 					final Migration m = context.getService(sr);
 
 					List<Problem> allProblems = null;
@@ -209,8 +207,6 @@ public class MigrateProjectHandler extends AbstractHandler {
 						container = UpgradeAssistantSettingsUtil.getObjectFromStore(MigrationProblemsContainer.class);
 					}
 
-					MigrationProblems[] migrationProblemsArray = null;
-
 					List<MigrationProblems> migrationProblemsList = new ArrayList<>();
 
 					if (container == null) {
@@ -218,11 +214,7 @@ public class MigrateProjectHandler extends AbstractHandler {
 					}
 
 					if (container.getProblemsArray() != null) {
-						migrationProblemsArray = container.getProblemsArray();
-					}
-
-					if (migrationProblemsArray != null) {
-						List<MigrationProblems> mpList = Arrays.asList(migrationProblemsArray);
+						List<MigrationProblems> mpList = Arrays.asList(container.getProblemsArray());
 
 						for (MigrationProblems mp : mpList) {
 							migrationProblemsList.add(mp);
@@ -260,10 +252,10 @@ public class MigrateProjectHandler extends AbstractHandler {
 
 							MigrationProblems migrationProblems = new MigrationProblems();
 
-							List<FileProblems> fileProblemsList = FileProblemsUtil.newFileProblemsListFrom(
+							FileProblems[] fileProblems = FileProblemsUtil.newFileProblemsListFrom(
 								allProblems.toArray(new Problem[0]));
 
-							migrationProblems.setProblems(fileProblemsList.toArray(new FileProblems[0]));
+							migrationProblems.setProblems(fileProblems);
 
 							migrationProblems.setType("Code Problems");
 							migrationProblems.setSuffix(projectName[j]);
@@ -284,7 +276,7 @@ public class MigrateProjectHandler extends AbstractHandler {
 										String initProblemFilePath = locations[0].toFile().getPath();
 
 										if (problemFilePath.equals(initProblemFilePath)) {
-											problems[n] = fileProblemsList.get(0);
+											problems[n] = fileProblems[0];
 
 											break;
 										}

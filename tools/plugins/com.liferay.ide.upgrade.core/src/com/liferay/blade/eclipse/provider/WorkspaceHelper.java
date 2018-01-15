@@ -64,7 +64,9 @@ public class WorkspaceHelper {
 
 		byte[] bytes = Files.readAllBytes(file.toPath());
 
-		projectFile.create(new ByteArrayInputStream(bytes), IFile.FORCE, npm);
+		try (ByteArrayInputStream bos = new ByteArrayInputStream(bytes)) {
+			projectFile.create(bos, IFile.FORCE, npm);
+		}
 
 		return projectFile;
 	}

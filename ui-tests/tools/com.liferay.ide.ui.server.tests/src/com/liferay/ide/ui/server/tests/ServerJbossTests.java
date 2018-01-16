@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -24,7 +25,7 @@ import org.junit.Test;
 public class ServerJbossTests extends SwtbotBase {
 
 	@Test
-	public void addLiferayRuntime() {
+	public void addLiferay7RuntimeFromPreferences() {
 	}
 
 }

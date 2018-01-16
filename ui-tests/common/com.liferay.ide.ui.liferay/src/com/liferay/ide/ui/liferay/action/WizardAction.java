@@ -16,6 +16,7 @@ package com.liferay.ide.ui.liferay.action;
 
 import com.liferay.ide.ui.liferay.UIAction;
 import com.liferay.ide.ui.liferay.page.wizard.NewFragmentFilesWizard;
+import com.liferay.ide.ui.liferay.page.wizard.NewKaleoWorkflowWizard;
 import com.liferay.ide.ui.liferay.page.wizard.NewLiferayComponentWizard;
 import com.liferay.ide.ui.liferay.page.wizard.NewRuntime62Wizard;
 import com.liferay.ide.ui.liferay.page.wizard.NewRuntime7Wizard;
@@ -209,6 +210,7 @@ public class WizardAction extends UIAction {
 	public NewFragmentWizardAction newFragment = new NewFragmentWizardAction();
 	public NewFragmentFilesWizardAction newFragmentFiles = new NewFragmentFilesWizardAction();
 	public NewFragmentInfoWizardAction newFragmentInfo = new NewFragmentInfoWizardAction();
+	public NewKaleoWorkflowWizardAction newKaleoWorkflow = new NewKaleoWorkflowWizardAction();
 	public NewLiferayComponentWizardAction newLiferayComponent = new NewLiferayComponentWizardAction();
 	public NewLiferayJsfWizardAction newLiferayJsf = new NewLiferayJsfWizardAction();
 	public NewLiferayWorkspaceWizardAction newLiferayWorkspace = new NewLiferayWorkspaceWizardAction();
@@ -344,6 +346,69 @@ public class WizardAction extends UIAction {
 		}
 
 		private final NewFragmentWizard _newFragmentWizard = new NewFragmentWizard(bot);
+
+	}
+
+	public class NewKaleoWorkflowWizardAction {
+
+		public void addResourceAction(String resourceAction) {
+			_newKaleoWorkflowWizard.getAddResourceActionBtn().click();
+			_newKaleoWorkflowWizard.getResourceAction().setText(resourceAction);
+		}
+
+		public void addRole() {
+			_newKaleoWorkflowWizard.getAddRoleBtn().click();
+		}
+
+		public void deleteRole() {
+			_newKaleoWorkflowWizard.getDeleteRoleBtn().click();
+		}
+
+		public void prepareEmailAddress(String emailAddress) {
+			_newKaleoWorkflowWizard.getEmailAddress().setText(emailAddress);
+		}
+
+		public void prepareRoleId(String roleId) {
+			_newKaleoWorkflowWizard.getRoleId().setText(roleId);
+		}
+
+		public void prepareScriptLanguage(String scriptLanguage) {
+			_newKaleoWorkflowWizard.getScriptLanguage().setSelection(scriptLanguage);
+		}
+
+		public void prepareSreenName(String screenName) {
+			_newKaleoWorkflowWizard.getScreenName().setText(screenName);
+		}
+
+		public void prepareUserId(String userId) {
+			_newKaleoWorkflowWizard.getUserId().setText(userId);
+		}
+
+		public void selectAssignCreator() {
+			_newKaleoWorkflowWizard.getAssignCreator().click();
+		}
+
+		public void selectAssignResourceActions() {
+			_newKaleoWorkflowWizard.getAssignResourceActions().click();
+		}
+
+		public void selectAssignRoleById() {
+			_newKaleoWorkflowWizard.getAssignRoleById().click();
+		}
+
+		public void selectAssignRoleType() {
+			_newKaleoWorkflowWizard.getAssignRoleType().click();
+		}
+
+		public void selectAssignScriptedAssignment() {
+			_newKaleoWorkflowWizard.getAssignScriptedAssignment().click();
+		}
+
+		public void selectAssignUser() {
+			_newKaleoWorkflowWizard.getAssignUser().click();
+		}
+
+		private final NewKaleoWorkflowWizard _newKaleoWorkflowWizard = new NewKaleoWorkflowWizard(bot);
 
 	}
 

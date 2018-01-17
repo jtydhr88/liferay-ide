@@ -71,7 +71,7 @@ public class WizardAction extends UIAction {
 
 		_jobAction.waitForShellClosed(title);
 
-		ide.sleep(2000);
+		ide.sleepLinux(2000);
 	}
 
 	public Button getFinishBtn() {
@@ -248,6 +248,10 @@ public class WizardAction extends UIAction {
 			if (!serverName.equals(StringPool.EMPTY)) {
 				_importLiferayWorkspaceProjectWizard.getServerName().setText(serverName);
 			}
+		}
+
+		public void prepareBundleUrl(String bundleUrl) {
+			_importLiferayWorkspaceProjectWizard.getBundleUrl().setText(bundleUrl);
 		}
 
 		private final ImportLiferayWorkspaceWizard _importLiferayWorkspaceProjectWizard =

@@ -165,15 +165,18 @@ public class SDKUtil {
 		IProject retval = null;
 		IProject[] projects = CoreUtil.getAllProjects();
 
-		for (IProject project : projects) {
-			if (isValidSDKLocation(project.getLocation().toOSString())) {
-				if (retval != null) {
-					throw new CoreException(
-						SDKCorePlugin.createErrorStatus(
-							new IllegalStateException("Workspace can't have more than one SDK project open")));
-				}
+		if (CoreUtil.isNotNullOrEmpty(projects)) {
+			for (IProject project : projects) {
+				if (project != null && isValidSDKLocation(project.getLocation().toOSString())) {
+					if (retval != null) {
+						throw new CoreException(SDKCorePlugin.createErrorStatus(
+								new IllegalStateException("Workspace can't have more than one SDK project open")
+							)
+						);
+					}
 
-				retval = project;
+					retval = project;
+				}
 			}
 		}
 

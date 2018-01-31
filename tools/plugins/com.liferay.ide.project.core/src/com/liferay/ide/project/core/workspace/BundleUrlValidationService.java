@@ -14,13 +14,13 @@
 
 package com.liferay.ide.project.core.workspace;
 
-import org.apache.xerces.util.URI;
-
+import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.services.ValidationService;
 
 /**
  * @author Terry Jia
+ * @author Simon Jiang
  */
 public class BundleUrlValidationService extends ValidationService {
 
@@ -31,11 +31,9 @@ public class BundleUrlValidationService extends ValidationService {
 		BaseLiferayWorkspaceOp op = _op();
 
 		String bundleUrl = op.getBundleUrl().content();
+		UrlValidator urlValidator = new UrlValidator();
 
-		try {
-			new URI(bundleUrl);
-		}
-		catch (Exception e) {
+		if ( (bundleUrl!=null) && !urlValidator.isValid(bundleUrl)) {
 			retval = Status.createErrorStatus("The bundle URL should be a vaild URL.");
 		}
 

@@ -22,6 +22,8 @@ import com.liferay.ide.project.core.AbstractProjectBuilder;
 import com.liferay.ide.project.core.IWorkspaceProjectBuilder;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.OutputStream;
 
 import java.nio.file.Files;
@@ -34,6 +36,8 @@ import org.apache.maven.lifecycle.MavenExecutionPlan;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 
@@ -70,6 +74,7 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Gregory Amerson
+ * @author Charles Wu
  */
 @SuppressWarnings("restriction")
 public class MavenProjectBuilder extends AbstractProjectBuilder implements IWorkspaceProjectBuilder {
@@ -257,6 +262,40 @@ public class MavenProjectBuilder extends AbstractProjectBuilder implements IWork
 	}
 
 	public IStatus initBundle(IProject project, String bundleUrl, IProgressMonitor monitor) throws CoreException {
+		if (bundleUrl != null) {
+			IFile pomFile = project.getFile("pom.xml");
+
+			MavenXpp3Reader mavenReader = new MavenXpp3Reader();
+			MavenXpp3Writer mavenWriter = new MavenXpp3Writer();
+
+			try (FileReader reader = new FileReader(pomFile.getLocation().toFile())) {
+
+				Model model = mavenReader.read(reader);
+				try (FileWriter fileWriter = new FileWriter(pomFile.getLocation().toFile())) {
+					if (model != null) {
+						List<Plugin> plugins = model.getBuild().getPlugins();
+
+						for (Plugin plugin : plugins) {
+							if (plugin.getArtifactId().equals("com.liferay.portal.tools.bundle.support")) {
+								Xpp3Dom configuration = new Xpp3Dom("configuration");
+								Xpp3Dom url = new Xpp3Dom("url");
+
+								url.setValue(bundleUrl);
+
+								configuration.addChild(url);
+
+								plugin.setConfiguration(configuration);
+							}
+						}
+						mavenWriter.write(fileWriter, model);
+					}
+				}
+			}
+			catch (Exception e) {
+				LiferayMavenCore.logError("Could not write file in" + pomFile.getLocation().toOSString(), e);
+			}
+		}
+
 		IMavenProjectFacade facade = MavenUtil.getProjectFacade(project, monitor);
 
 		if (_execMavenLaunch(project, MavenGoalUtil.getMavenInitBundleGoal(project), facade, monitor)) {

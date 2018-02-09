@@ -23,7 +23,11 @@ import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.server.core.ILiferayServerBehavior;
 import com.liferay.ide.server.core.LiferayServerCore;
+import com.liferay.ide.server.core.gogo.BundleCommand;
+import com.liferay.ide.server.core.gogo.BundleStartCommand;
+import com.liferay.ide.server.core.gogo.BundleStopCommand;
 import com.liferay.ide.server.core.gogo.GogoBundleDeployer;
+import com.liferay.ide.server.core.portal.BundleDTOWithStatus.ResponseState;
 import com.liferay.ide.server.util.PingThread;
 import com.liferay.ide.server.util.ServerUtil;
 
@@ -767,39 +771,43 @@ public class PortalServerBehavior extends ServerBehaviourDelegate
             {
                 try
                 {
-                    final String symbolicName = bundleProject.getSymbolicName();
-
-                    GogoBundleDeployer helper = new GogoBundleDeployer();
-
-                    long bundleId = helper.getBundleId( symbolicName );
-
-                    if( bundleId > 0 )
+                    GogoBundleDeployer deployer = ServerUtil.createBundleHelper(getPortalRuntime(), getServer());
+                    if( action.equals( "start" ) )
                     {
-                        if( action.equals( "start" ) )
-                        {
-                            String error = helper.start( bundleId );
+                        BundleCommand startCommand = new BundleStartCommand(bundleProject);
+                        startCommand.setHelper(deployer);
+                        startCommand.run();
+                        BundleDTOWithStatus generateResponse = startCommand.getResponseStatus();
 
-                            if( error == null )
-                            {
-                                setModuleState( new IModule[] { module }, IServer.STATE_STARTED );
-                            }
-                            else
-                            {
-                                LiferayServerCore.logError( "Unable to start this bundle" );
-                            }
+                        if ( generateResponse.getResponseState()!= ResponseState.ok) {
+                            LiferayServerCore.error("Unable to start bundle " +  generateResponse.getStatus());
                         }
-                        else if( action.equals( "stop" ) )
-                        {
-                            String error = helper.stop( bundleId );
+                        else {
+                            String status = generateResponse.getStatus();
 
-                            if( error == null )
-                            {
-                                setModuleState( new IModule[] { module }, IServer.STATE_STOPPED );
+                            if ( status != null ) {
+                                LiferayServerCore.logInfo(LiferayServerCore.info(status));
                             }
-                            else
-                            {
-                                LiferayServerCore.logError( "Unable to stop this bundle" );
-                            }
+                            setModuleState( new IModule[] { module }, IServer.STATE_STARTED );
+                        }
+                    }
+                    else if( action.equals( "stop" ) )
+                    {
+                        BundleCommand stopCommand = new BundleStopCommand(bundleProject);
+                        stopCommand.setHelper(deployer);
+                        stopCommand.run();
+                        BundleDTOWithStatus generateResponse = stopCommand.getResponseStatus();
+
+                        if ( generateResponse.getResponseState()!= ResponseState.ok) {
+	                        LiferayServerCore.error("Unable to stop bundle " +  generateResponse.getStatus());
+                        }
+                        else {
+	                        String status = generateResponse.getStatus();
+
+	                        if ( status != null ) {
+		                        LiferayServerCore.logInfo(LiferayServerCore.info(status));
+	                        }
+	                        setModuleState( new IModule[] { module }, IServer.STATE_STOPPED );
                         }
                     }
                 }
@@ -920,7 +928,7 @@ public class PortalServerBehavior extends ServerBehaviourDelegate
 
     public GogoBundleDeployer createBundleDeployer() throws Exception
     {
-        return ServerUtil.createBundleDeployer( getPortalRuntime(), getServer() );
+        return ServerUtil.createBundleHelper( getPortalRuntime(), getServer() );
     }
 
     private static final String[] JMX_EXCLUDE_ARGS = new String []

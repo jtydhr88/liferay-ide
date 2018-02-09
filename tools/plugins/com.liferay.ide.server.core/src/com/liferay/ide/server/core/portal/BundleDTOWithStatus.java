@@ -25,6 +25,7 @@ public class BundleDTOWithStatus extends BundleDTO
 {
 
     public String _status;
+    private ResponseState _responseState;
 
     public BundleDTOWithStatus( long id, String status, String symbolicName )
     {
@@ -41,5 +42,21 @@ public class BundleDTOWithStatus extends BundleDTO
         symbolicName = original.symbolicName;
         version = original.version;
         _status = status;
+    }
+    
+    public String getStatus() {
+    	return _status;
+    }
+    
+    public void setResponseState(ResponseState responseState) {
+    	_responseState = responseState;
+    }
+    
+    public ResponseState getResponseState() {
+    	return _responseState;
+    }
+    
+    public enum ResponseState{
+    	ok,error
     }
 }

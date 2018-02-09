@@ -494,7 +494,7 @@ public class LiferayServerCore extends Plugin
 
     public static IStatus info( String msg )
     {
-        return new Status( IStatus.INFO, PLUGIN_ID, msg );
+        return new Status( IStatus.OK, PLUGIN_ID, msg );
     }
 
     public static void logError( Exception e )
@@ -530,6 +530,11 @@ public class LiferayServerCore extends Plugin
     public static void logInfo( String msg )
     {
         logInfo( info( msg ) );
+    }
+
+    public static void logWarning( String msg )
+    {
+        getDefault().getLog().log( new Status( IStatus.WARNING, PLUGIN_ID, msg, null ) );
     }
 
     public static void setPreference( String key, String value )

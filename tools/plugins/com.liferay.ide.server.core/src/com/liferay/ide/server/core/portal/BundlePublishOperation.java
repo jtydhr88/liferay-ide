@@ -85,7 +85,7 @@ public class BundlePublishOperation extends PublishOperation
 
     protected GogoBundleDeployer createBundleDeployer() throws Exception
     {
-        return ServerUtil.createBundleDeployer( portalRuntime, server );
+        return ServerUtil.createBundleHelper( portalRuntime, server );
     }
 
 }

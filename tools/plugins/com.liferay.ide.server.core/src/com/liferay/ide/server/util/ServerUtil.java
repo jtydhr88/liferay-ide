@@ -119,10 +119,10 @@ public class ServerUtil
         }
     }
 
-    public static GogoBundleDeployer createBundleDeployer( PortalRuntime portalRuntime, IServer server )
+    public static GogoBundleDeployer createBundleHelper( PortalRuntime portalRuntime, IServer server )
         throws Exception
     {
-        return new GogoBundleDeployer(server.getHost(), 11311);
+        return GogoBundleDeployer.getInstance(server.getHost(), 11311);
     }
 
     public static IStatus createErrorStatus( String msg )

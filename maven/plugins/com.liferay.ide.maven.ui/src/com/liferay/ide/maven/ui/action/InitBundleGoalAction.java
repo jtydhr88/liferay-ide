@@ -16,15 +16,19 @@ package com.liferay.ide.maven.ui.action;
 
 import com.liferay.ide.maven.core.ILiferayMavenConstants;
 import com.liferay.ide.maven.core.MavenGoalUtil;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
+import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
 
 /**
  * @author Gregory Amerson
  * @author Terry Jia
+ * @author Charles Wu
  */
 public class InitBundleGoalAction extends MavenGoalAction {
+
+	@Override
+	protected void afterGoal() {
+		LiferayWorkspaceUtil.initPortalRuntime();
+	}
 
 	@Override
 	protected String getMavenGoals() {
@@ -35,9 +39,4 @@ public class InitBundleGoalAction extends MavenGoalAction {
 	protected String getPluginKey() {
 		return ILiferayMavenConstants.LIFERAY_MAVEN_PLUGINS_BUNDLE_SUPPORT_KEY;
 	}
-
-	@Override
-	protected void updateProject(IProject p, IProgressMonitor monitor) {
-	}
-
 }

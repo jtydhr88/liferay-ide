@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,8 +10,7 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- *
- *******************************************************************************/
+ */
 
 package com.liferay.ide.server.tomcat.core;
 
@@ -23,6 +22,7 @@ import com.liferay.ide.server.core.portal.AbstractPortalBundle;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +39,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -49,290 +50,268 @@ import org.w3c.dom.NodeList;
  * @author Simon Jiang
  * @author Terry Jia
  */
-public class PortalTomcatBundle extends AbstractPortalBundle
-{
-    public PortalTomcatBundle( IPath path )
-    {
-       super(path);
-    }
+public class PortalTomcatBundle extends AbstractPortalBundle {
 
-    public PortalTomcatBundle( Map<String, String> appServerProperties )
-    {
-       super(appServerProperties);
-    }
+	public PortalTomcatBundle(IPath path) {
+		super(path);
+	}
 
-    @Override
-    protected IPath getAppServerLibDir()
-    {
-        return getAppServerDir().append( "lib" ); //$NON-NLS-1$
-    }
+	public PortalTomcatBundle(Map<String, String> appServerProperties) {
+		super(appServerProperties);
+	}
 
-    @Override
-    public IPath getAppServerDeployDir()
-    {
-        return getAppServerDir().append( "webapps" ); //$NON-NLS-1$
-    }
+	@Override
+	public IPath getAppServerDeployDir() {
+		return getAppServerDir().append("webapps");
+	}
 
-    @Override
-    public IPath getAppServerLibGlobalDir()
-    {
-        return getAppServerDir().append( "/lib/ext" );
-    }
+	@Override
+	public IPath getAppServerLibGlobalDir() {
+		return getAppServerDir().append("/lib/ext");
+	}
 
-    @Override
-    public String getHttpPort()
-    {
-        String retVal = "8080";
+	@Override
+	public IPath getAppServerPortalDir() {
+		IPath retval = null;
 
-        File serverXmlFile = new File( getAppServerDir().toPortableString(), "conf/server.xml" );
+		if (bundlePath != null) {
+			retval = bundlePath.append("webapps/ROOT");
+		}
 
-        String portValue = getHttpPortValue( serverXmlFile, "Connector", "protocol", "HTTP/1.1", "port" );
+		return retval;
+	}
 
-        if( !CoreUtil.empty( portValue ) )
-        {
-            return portValue;
-        }
+	@Override
+	public String getDisplayName() {
+		return "Tomcat";
+	}
 
-        return retVal;
-    }
+	@Override
+	public String getHttpPort() {
+		String retVal = "8080";
 
-    @Override
-    public void setHttpPort( String port )
-    {
-        setHttpPortValue(
-            new File( getAppServerDir().toPortableString(), "conf/server.xml" ), "Connector", "protocol", "HTTP/1.1",
-            "port", port );
-    }
+		File serverXmlFile = new File(getAppServerDir().toPortableString(), "conf/server.xml");
 
-    @Override
-    public String getMainClass()
-    {
-        return "org.apache.catalina.startup.Bootstrap";
-    }
+		String portValue = getHttpPortValue(serverXmlFile, "Connector", "protocol", "HTTP/1.1", "port");
 
-    @Override
-    public IPath getAppServerPortalDir()
-    {
-        IPath retval = null;
+		if (!CoreUtil.empty(portValue)) {
+			return portValue;
+		}
 
-        if( this.bundlePath != null )
-        {
-            retval = this.bundlePath.append( "webapps/ROOT" );
-        }
+		return retVal;
+	}
 
-        return retval;
-    }
+	@Override
+	public String getMainClass() {
+		return "org.apache.catalina.startup.Bootstrap";
+	}
 
-    @Override
-    public IPath[] getRuntimeClasspath()
-    {
-        final List<IPath> paths = new ArrayList<IPath>();
+	@Override
+	public IPath[] getRuntimeClasspath() {
+		List<IPath> paths = new ArrayList<>();
 
-        final IPath binPath = this.bundlePath.append( "bin" );
+		IPath binPath = bundlePath.append("bin");
 
-        if( binPath.toFile().exists() )
-        {
-            paths.add( binPath.append( "bootstrap.jar" ) );
+		if (binPath.toFile().exists()) {
+			paths.add(binPath.append("bootstrap.jar"));
 
-            final IPath juli = binPath.append( "tomcat-juli.jar" );
+			IPath juli = binPath.append("tomcat-juli.jar");
 
-            if( juli.toFile().exists() )
-            {
-                paths.add( juli );
-            }
-        }
+			if (FileUtil.exists(juli.toFile())) {
+				paths.add(juli);
+			}
+		}
 
-        return paths.toArray( new IPath[0] );
-    }
+		return paths.toArray(new IPath[0]);
+	}
 
-    @Override
-    public String[] getRuntimeStartProgArgs()
-    {
-        final String[] retval = new String[1];
-        retval[0] = "start";
-        return retval;
-    }
+	@Override
+	public String[] getRuntimeStartProgArgs() {
+		String[] retval = new String[1];
 
-    @Override
-    public String[] getRuntimeStopProgArgs()
-    {
-        final String[] retval = new String[1];
-        retval[0] = "stop";
-        return retval;
-    }
+		retval[0] = "start";
 
-    @Override
-    public String[] getRuntimeStartVMArgs()
-    {
-        return getRuntimeVMArgs();
-    }
+		return retval;
+	}
 
-    @Override
-    public String[] getRuntimeStopVMArgs()
-    {
-        return getRuntimeVMArgs();
-    }
+	@Override
+	public String[] getRuntimeStartVMArgs() {
+		return _getRuntimeVMArgs();
+	}
 
-    private String[] getRuntimeVMArgs()
-    {
-        final List<String> args = new ArrayList<String>();
+	@Override
+	public String[] getRuntimeStopProgArgs() {
+		String[] retval = new String[1];
 
-        args.add( "-Dcatalina.base=" + "\"" + this.bundlePath.toPortableString() + "\"" );
-        args.add( "-Dcatalina.home=" + "\"" + this.bundlePath.toPortableString() + "\"" );
-        args.add( "-Dcom.sun.management.jmxremote" );
-        args.add( "-Dcom.sun.management.jmxremote.authenticate=false" );
-        args.add( "-Dcom.sun.management.jmxremote.port=" + getJmxRemotePort() );
-        args.add( "-Dcom.sun.management.jmxremote.ssl=false" );
-        args.add( "-Dfile.encoding=UTF8" );
-        args.add( "-Djava.endorsed.dirs=" + "\"" + this.bundlePath.append( "endorsed" ).toPortableString() + "\"" );
-        args.add( "-Djava.io.tmpdir=" + "\"" + this.bundlePath.append( "temp" ).toPortableString() + "\"" );
-        args.add( "-Djava.net.preferIPv4Stack=true" );
-        args.add( "-Djava.util.logging.config.file=" + "\"" + this.bundlePath.append( "conf/logging.properties" ) +
-            "\"" );
-        args.add( "-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager" );
-        args.add( "-Dorg.apache.catalina.loader.WebappClassLoader.ENABLE_CLEAR_REFERENCES=false" );
-        args.add( "-Duser.timezone=GMT" );
+		retval[0] = "stop";
 
-        return args.toArray( new String[0] );
-    }
+		return retval;
+	}
 
-    private String getShellExtension()
-    {
-        return Platform.OS_WIN32.equals( Platform.getOS() ) ? "bat" : "sh";
-    }
+	@Override
+	public String[] getRuntimeStopVMArgs() {
+		return _getRuntimeVMArgs();
+	}
 
-    @Override
-    public String getType()
-    {
-        return "tomcat";
-    }
+	@Override
+	public String getType() {
+		return "tomcat";
+	}
 
-    @Override
-    public String getDisplayName()
-    {
-        return "Tomcat";
-    }
+	@Override
+	public IPath[] getUserLibs() {
+		List<IPath> libs = new ArrayList<>();
 
-    @Override
-    public IPath[] getUserLibs()
-    {
-        List<IPath> libs = new ArrayList<IPath>();
-        try
-        {
-            List<File>  portallibFiles = FileListing.getFileListing( new File( getAppServerPortalDir().append( "WEB-INF/lib" ).toPortableString() ) );
-            for( File lib : portallibFiles )
-            {
-                if( lib.exists() && lib.getName().endsWith( ".jar" ) ) //$NON-NLS-1$
-                {
-                    libs.add( new Path( lib.getPath() ) );
-                }
-            }
+		try {
+			IPath libDir = getAppServerPortalDir().append("WEB-INF/lib");
 
-            List<File>  libFiles = FileListing.getFileListing( new File( getAppServerLibDir().toPortableString() ) );
-            for( File lib : libFiles )
-            {
-                if( lib.exists() && lib.getName().endsWith( ".jar" ))
-                {
-                    libs.add( new Path( lib.getPath() ) );
-                }
-            }
+			List<File> portallibFiles = FileListing.getFileListing(new File(libDir.toPortableString()));
 
-            List<File>  extlibFiles = FileListing.getFileListing( new File( getAppServerLibGlobalDir().toPortableString() ) );
-            for( File lib : extlibFiles )
-            {
-                if( lib.exists() && lib.getName().endsWith( ".jar" ) )
-                {
-                    libs.add( new Path( lib.getPath() ) );
-                }
-            }
-        }
-        catch( FileNotFoundException e )
-        {
-        }
+			for (File lib : portallibFiles) {
+				if (FileUtil.exists(lib) && lib.getName().endsWith(".jar")) {
+					libs.add(new Path(lib.getPath()));
+				}
+			}
 
-        return libs.toArray( new IPath[libs.size()] );
-    }
+			List<File> libFiles = FileListing.getFileListing(new File(getAppServerLibDir().toPortableString()));
 
-    private void setHttpPortValue(
-        File xmlFile, String tagName, String attriName, String attriValue, String targetName, String value )
-    {
-        DocumentBuilder db = null;
+			for (File lib : libFiles) {
+				if (FileUtil.exists(lib) && lib.getName().endsWith(".jar")) {
+					libs.add(new Path(lib.getPath()));
+				}
+			}
 
-        DocumentBuilderFactory dbf = null;
+			List<File> extlibFiles = FileListing.getFileListing(
+				new File(getAppServerLibGlobalDir().toPortableString()));
 
-        try
-        {
-            dbf = DocumentBuilderFactory.newInstance();
+			for (File lib : extlibFiles) {
+				if (FileUtil.exists(lib) && lib.getName().endsWith(".jar")) {
+					libs.add(new Path(lib.getPath()));
+				}
+			}
+		}
+		catch (FileNotFoundException fnfe) {
+		}
 
-            db = dbf.newDocumentBuilder();
+		return libs.toArray(new IPath[libs.size()]);
+	}
 
-            Document document = db.parse( xmlFile );
+	@Override
+	public void setHttpPort(String port) {
+		_setHttpPortValue(
+			new File(getAppServerDir().toPortableString(), "conf/server.xml"), "Connector", "protocol", "HTTP/1.1",
+			"port", port);
+	}
 
-            NodeList connectorNodes = document.getElementsByTagName( tagName );
+	@Override
+	protected IPath getAppServerLibDir() {
+		return getAppServerDir().append("lib");
+	}
 
-            for( int i = 0; i < connectorNodes.getLength(); i++ )
-            {
-                Node node = connectorNodes.item( i );
+	@Override
+	protected int getDefaultJMXRemotePort() {
+		int retval = 8099;
 
-                NamedNodeMap attributes = node.getAttributes();
+		IPath setenv = bundlePath.append("bin/setenv." + _getShellExtension());
 
-                Node protocolNode = attributes.getNamedItem( attriName );
+		String contents = FileUtil.readContents(setenv.toFile());
 
-                if( protocolNode != null )
-                {
-                    if( protocolNode.getNodeValue().equals( attriValue ) )
-                    {
-                        Node portNode = attributes.getNamedItem( targetName );
+		String port = null;
 
-                        portNode.setNodeValue( value );
+		if (contents != null) {
+			_matcher = Pattern.compile(
+				".*-Dcom.sun.management.jmxremote.port(\\s*)=(\\s*)([0-9]+).*").matcher(contents);
 
-                        break;
-                    }
-                }
-            }
+			if (_matcher.matches()) {
+				port = _matcher.group(3);
+			}
+		}
 
-            TransformerFactory factory = TransformerFactory.newInstance();
+		if (port != null) {
+			retval = Integer.parseInt(port);
+		}
 
-            Transformer transformer = factory.newTransformer();
+		return retval;
+	}
 
-            DOMSource domSource = new DOMSource( document );
+	private String[] _getRuntimeVMArgs() {
+		List<String> args = new ArrayList<>();
 
-            StreamResult result = new StreamResult( xmlFile );
+		args.add("-Dcatalina.base=\"" + bundlePath.toPortableString() + "\"");
+		args.add("-Dcatalina.home=\"" + bundlePath.toPortableString() + "\"");
+		args.add("-Dcom.sun.management.jmxremote");
+		args.add("-Dcom.sun.management.jmxremote.authenticate=false");
+		args.add("-Dcom.sun.management.jmxremote.port=" + getJmxRemotePort());
+		args.add("-Dcom.sun.management.jmxremote.ssl=false");
+		args.add("-Dfile.encoding=UTF8");
+		args.add("-Djava.endorsed.dirs=\"" + bundlePath.append("endorsed").toPortableString() + "\"");
+		args.add("-Djava.io.tmpdir=\"" + bundlePath.append("temp").toPortableString() + "\"");
+		args.add("-Djava.net.preferIPv4Stack=true");
+		args.add("-Djava.util.logging.config.file=\"" + bundlePath.append("conf/logging.properties") + "\"");
+		args.add("-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager");
+		args.add("-Dorg.apache.catalina.loader.WebappClassLoader.ENABLE_CLEAR_REFERENCES=false");
+		args.add("-Duser.timezone=GMT");
 
-            transformer.transform( domSource, result );
-        }
-        catch( Exception e )
-        {
-            LiferayServerCore.logError( e );
-        }
-    }
+		return args.toArray(new String[0]);
+	}
 
-    @Override
-    protected int getDefaultJMXRemotePort()
-    {
-        int retval = 8099;
+	private String _getShellExtension() {
+		if (Platform.OS_WIN32.equals(Platform.getOS())) {
+			return "bat";
+		}
 
-        final IPath setenv = this.bundlePath.append( "bin/setenv." + getShellExtension() );
-        final String contents = FileUtil.readContents( setenv.toFile() );
-        String port = null;
+		return "sh";
+	}
 
-        if( contents != null )
-        {
-            final Matcher matcher =
-            Pattern.compile( ".*-Dcom.sun.management.jmxremote.port(\\s*)=(\\s*)([0-9]+).*" ).matcher(
-                contents );
+	private void _setHttpPortValue(
+		File xmlFile, String tagName, String attriName, String attriValue, String targetName, String value) {
 
-            if( matcher.matches() )
-            {
-                port = matcher.group( 3 );
-            }
-        }
+		DocumentBuilder db = null;
 
-        if( port != null )
-        {
-            retval = Integer.parseInt( port );
-        }
+		DocumentBuilderFactory dbf = null;
 
-        return retval;
-    }
+		try {
+			dbf = DocumentBuilderFactory.newInstance();
+
+			db = dbf.newDocumentBuilder();
+
+			Document document = db.parse(xmlFile);
+
+			NodeList connectorNodes = document.getElementsByTagName(tagName);
+
+			for (int i = 0; i < connectorNodes.getLength(); i++) {
+				Node node = connectorNodes.item(i);
+
+				NamedNodeMap attributes = node.getAttributes();
+
+				Node protocolNode = attributes.getNamedItem(attriName);
+
+				if (protocolNode != null) {
+					if (protocolNode.getNodeValue().equals(attriValue)) {
+						Node portNode = attributes.getNamedItem(targetName);
+
+						portNode.setNodeValue(value);
+
+						break;
+					}
+				}
+			}
+
+			TransformerFactory factory = TransformerFactory.newInstance();
+
+			Transformer transformer = factory.newTransformer();
+
+			DOMSource domSource = new DOMSource(document);
+
+			StreamResult result = new StreamResult(xmlFile);
+
+			transformer.transform(domSource, result);
+		}
+		catch (Exception e) {
+			LiferayServerCore.logError(e);
+		}
+	}
+
+	private Matcher _matcher;
+
 }

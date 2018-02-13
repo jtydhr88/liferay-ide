@@ -16,9 +16,6 @@ package com.liferay.ide.maven.ui.action;
 
 import com.liferay.ide.maven.core.ILiferayMavenConstants;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 /**
  * @author Gregory Amerson
  */
@@ -28,9 +25,4 @@ public class DirectDeployGoalAction extends MavenGoalAction {
 	protected String getMavenGoals() {
 		return "package " + ILiferayMavenConstants.PLUGIN_GOAL_DIRECT_DEPLOY;
 	}
-
-	@Override
-	protected void updateProject(IProject p, IProgressMonitor monitor) {
-	}
-
 }

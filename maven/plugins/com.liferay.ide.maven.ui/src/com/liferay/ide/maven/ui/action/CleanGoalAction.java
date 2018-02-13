@@ -17,9 +17,6 @@ package com.liferay.ide.maven.ui.action;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.maven.core.ILiferayMavenConstants;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.osgi.framework.Version;
 
 /**
@@ -46,9 +43,4 @@ public class CleanGoalAction extends MavenGoalAction {
 	protected String getPluginKey() {
 		return ILiferayMavenConstants.LIFERAY_MAVEN_PLUGINS_BUNDLE_SUPPORT_KEY;
 	}
-
-	@Override
-	protected void updateProject(IProject p, IProgressMonitor monitor) {
-	}
-
 }

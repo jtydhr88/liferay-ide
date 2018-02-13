@@ -29,18 +29,22 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 /**
  * @author Lovett Li
  * @author Terry Jia
+ * @author Simon Jiang
  */
 public abstract class GradleTaskAction extends AbstractObjectAction {
 
 	public GradleTaskAction() {
 	}
 
-	public void run(IAction action) {
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
+		super.selectionChanged(action, selection);
 		if (fSelection instanceof IStructuredSelection) {
 			Object[] elems = ((IStructuredSelection)fSelection).toArray();
 
@@ -60,9 +64,16 @@ public abstract class GradleTaskAction extends AbstractObjectAction {
 			}
 
 			if (FileUtil.notExists(gradleBuildFile)) {
+				setEnableTaskAction(action);
 				return;
 			}
 
+			setEnableTaskAction(action);
+		}
+	}
+
+	public void run(IAction action) {
+		if (fSelection instanceof IStructuredSelection) {
 			Job job = new Job(project.getName() + " - " + getGradleTask()) {
 
 				@Override
@@ -122,6 +133,10 @@ public abstract class GradleTaskAction extends AbstractObjectAction {
 	}
 
 	protected void afterTask() {
+	}
+
+	protected void setEnableTaskAction(IAction action) {
+		action.setEnabled(true);
 	}
 
 	protected abstract String getGradleTask();

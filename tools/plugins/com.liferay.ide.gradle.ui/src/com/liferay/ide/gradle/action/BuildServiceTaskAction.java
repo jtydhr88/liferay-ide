@@ -16,61 +16,108 @@ package com.liferay.ide.gradle.action;
 
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.gradle.core.GradleUtil;
+import com.liferay.ide.project.core.util.SearchFilesVisitor;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.action.IAction;
+import org.gradle.tooling.GradleConnector;
+import org.gradle.tooling.ModelBuilder;
+import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.model.eclipse.EclipseProject;
 
 /**
  * @author Lovett Li
  * @author Terry Jia
  * @author Andy Wu
+ * @author Simon Jiang
  */
 public class BuildServiceTaskAction extends GradleTaskAction {
 
-	protected void afterTask() {
-		boolean refresh = false;
+	private IProject getParentProject(IProject checkProject) {
 
-		IProject[] projects = CoreUtil.getClasspathProjects(project);
+		ProjectConnection connection = null;
 
-		for (IProject project : projects) {
-			List<IFolder> folders = CoreUtil.getSourceFolders(JavaCore.create(project));
+		GradleConnector connector =
+			GradleConnector.newConnector().forProjectDirectory(
+				checkProject.getLocation().toFile());
 
-			if (folders.isEmpty()) {
-				refresh = true;
-			}
-			else {
-				try {
-					project.refreshLocal(IResource.DEPTH_INFINITE, null);
-				}
-				catch (CoreException ce) {
-				}
-			}
+		connection = connector.connect();
+
+		ModelBuilder<EclipseProject> modelBuilder =
+			connection.model(EclipseProject.class);
+		EclipseProject eclipseProject = modelBuilder.get();
+		EclipseProject serviceParentEclipseProject = eclipseProject.getParent();
+
+		if (serviceParentEclipseProject != null) {
+			return CoreUtil.getProject(
+				serviceParentEclipseProject.getProjectDirectory());
 		}
 
-		List<IFolder> folders = CoreUtil.getSourceFolders(JavaCore.create(project));
+		return null;
+	}
 
-		if (folders.isEmpty() || refresh) {
+	public boolean getServiceParentProject(IProject checkProject) {
 
-			// refresh this project will also transmit to refresh -api project
+		if (checkProject != null) {
+			List<IFile> serviceXmlFiles = new SearchFilesVisitor().searchFiles(
+				checkProject, "service.xml");
 
-			GradleUtil.refreshGradleProject(project);
+			if (serviceXmlFiles.size() == 1) {
+				IPath servicePath = serviceXmlFiles.get(0).getFullPath();
+				IPath serviceProjectLocation = servicePath.removeLastSegments(1);
+				IProject serviceProject = CoreUtil.getProject(servicePath.segment(servicePath.segmentCount()-2));
+
+				if ((servicePath.segmentCount() == 2) && checkProject.equals(serviceProject)) {
+					project = serviceProject;
+					return true;
+				}
+				else {
+					if (servicePath.segmentCount() == 3) {
+						String paretnProjectName = serviceProjectLocation.segment(serviceProjectLocation.segmentCount()-2);
+						IProject sbProject = CoreUtil.getProject(paretnProjectName);
+						if ( checkProject.equals(sbProject)) {
+							project = sbProject;
+							return true;
+						}
+					}
+					else {
+						return false;
+					}
+				}
+			}
+			else if (serviceXmlFiles.size() > 1) {
+				return false;
+			}
+			else if (serviceXmlFiles.size() == 0) {
+				return getServiceParentProject(getParentProject(checkProject));
+			}
 		}
 		else {
-			try {
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-			catch (CoreException ce) {
-			}
+			return false;
 		}
+
+		return false;
+	}
+
+	@Override
+	protected void setEnableTaskAction(IAction action) {
+
+		boolean enabled = getServiceParentProject(project);
+		action.setEnabled(enabled);
+	}
+
+	protected void afterTask() {
+
+		GradleUtil.refreshGradleProject(project);
 	}
 
 	@Override
 	protected String getGradleTask() {
+
 		return "buildService";
 	}
 

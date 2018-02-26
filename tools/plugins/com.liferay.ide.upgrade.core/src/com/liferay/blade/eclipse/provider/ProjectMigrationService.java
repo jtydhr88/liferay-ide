@@ -21,18 +21,17 @@ import com.liferay.blade.api.Problem;
 import com.liferay.blade.api.ProgressMonitor;
 import com.liferay.blade.api.Reporter;
 import com.liferay.blade.util.FileHelper;
+import com.liferay.ide.core.util.ValidationUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -279,6 +278,14 @@ public class ProjectMigrationService implements Migration {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 				if (dir.endsWith(".git")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith(".settings")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (ValidationUtil.isProjectTargetDirFile(dir.toFile())) {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 

@@ -12,9 +12,7 @@
  * details.
  */
 
-package com.liferay.ide.project.core.util;
-
-import com.liferay.ide.core.util.CoreUtil;
+package com.liferay.ide.core.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,20 +40,24 @@ public class ValidationUtil {
 	public static boolean isProjectTargetDirFile(File file) {
 		IProject project = CoreUtil.getProject(file);
 
+		if ( project == null ) {
+			return false;
+		}
+
 		IFolder targetFolder = project.getFolder("target");
+
+		if ( targetFolder == null || !targetFolder.exists() ) {
+			return false;
+		}
 
 		boolean inTargetDir = false;
 
-		File targetDir = null;
+		File targetDir = targetFolder.getLocation().toFile();
 
-		if (targetFolder.exists()) {
-			targetDir = targetFolder.getLocation().toFile();
-
-			try {
-				inTargetDir = file.getCanonicalPath().startsWith(targetDir.getCanonicalPath());
-			}
-			catch (IOException ioe) {
-			}
+		try {
+			inTargetDir = file.getCanonicalPath().startsWith(targetDir.getCanonicalPath());
+		}
+		catch (IOException ioe) {
 		}
 
 		return inTargetDir;

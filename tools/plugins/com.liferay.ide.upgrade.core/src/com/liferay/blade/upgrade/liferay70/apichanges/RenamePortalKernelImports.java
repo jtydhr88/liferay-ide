@@ -47,6 +47,11 @@ import org.osgi.service.component.annotations.Component;
 	service = {AutoMigrator.class, FileMigrator.class})
 public class RenamePortalKernelImports extends ImportStatementMigrator {
 
+	static {
+		_imports = _getImports();
+	}
+	
+	private static Map<String, String> _imports;
 	// In my code I didn't handle the following package or class as I didn't
 	// find them in
 	// 6.2.x portal-service source or they are wrong.
@@ -160,16 +165,14 @@ public class RenamePortalKernelImports extends ImportStatementMigrator {
 	}
 
 	public RenamePortalKernelImports() {
-		super(_getImports());
+		super(_imports);
 	}
 
 	@Override
 	public List<SearchResult> searchFile(File file, JavaFile javaFile) {
 		List<SearchResult> searchResults = new ArrayList<>();
 
-		Map<String, String> imports = _getImports();
-
-		List<SearchResult> importResult = javaFile.findImports(imports.keySet().toArray(new String[0]));
+		List<SearchResult> importResult = javaFile.findImports(_imports.keySet().toArray(new String[0]));
 
 		if (!importResult.isEmpty()) {
 			for (SearchResult result : importResult) {
@@ -179,7 +182,7 @@ public class RenamePortalKernelImports extends ImportStatementMigrator {
 				boolean skip = false;
 
 				if (result.searchContext != null) {
-					for (String fixed : imports.values().toArray(new String[0])) {
+					for (String fixed : _imports.values().toArray(new String[0])) {
 						if (result.searchContext.contains(fixed)) {
 							skip = true;
 							break;

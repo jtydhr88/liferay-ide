@@ -20,7 +20,6 @@ import com.liferay.blade.api.MigrationListener;
 import com.liferay.blade.api.Problem;
 import com.liferay.blade.api.ProgressMonitor;
 import com.liferay.blade.api.Reporter;
-import com.liferay.blade.util.FileHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,17 +38,24 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Gregory Amerson
  * @author Terry Jia
+ * @author Simon Jiang
  */
 @Component
 public class ProjectMigrationService implements Migration {
@@ -65,13 +71,20 @@ public class ProjectMigrationService implements Migration {
 		_fileMigratorTracker = new ServiceTracker<>(context, FileMigrator.class, null);
 
 		_fileMigratorTracker.open();
+		
+		_executor = Executors.newCachedThreadPool();
 	}
 
+	@Deactivate
+	public void deactivate(BundleContext context) {
+		_executor.shutdown();
+	}	
+	
 	@Override
 	public List<Problem> findProblems(File projectDir, ProgressMonitor monitor) {
 		monitor.beginTask("Searching for migration problems in " + projectDir, -1);
 
-		List<Problem> problems = new ArrayList<>();
+		List<Problem> problems =  Collections.synchronizedList(new ArrayList<Problem>());
 
 		monitor.beginTask("Analyzing files", -1);
 
@@ -91,7 +104,7 @@ public class ProjectMigrationService implements Migration {
 
 	@Override
 	public List<Problem> findProblems(Set<File> files, ProgressMonitor monitor) {
-		List<Problem> problems = new ArrayList<>();
+		List<Problem> problems = Collections.synchronizedList(new ArrayList<Problem>());
 
 		monitor.beginTask("Analyzing files", -1);
 
@@ -139,48 +152,48 @@ public class ProjectMigrationService implements Migration {
 		}
 
 		OutputStream fos = null;
+		try {
+			if ((args != null) && (args.length > 0)) {
+				if (args[0] instanceof File) {
+					File outputFile = (File)args[0];
 
-		if ((args != null) && (args.length > 0)) {
-			if (args[0] instanceof File) {
-				File outputFile = (File)args[0];
-
-				try {
 					outputFile.getParentFile().mkdirs();
 					outputFile.createNewFile();
 					fos = Files.newOutputStream(outputFile.toPath());
 				}
-				catch (IOException ioe) {
-					ioe.printStackTrace();
+				else if (args[0] instanceof OutputStream) {
+					fos = (OutputStream)args[0];
 				}
 			}
-			else if (args[0] instanceof OutputStream) {
-				fos = (OutputStream)args[0];
+	
+			if (!problems.isEmpty()) {
+				reporter.beginReporting(detail, fos);
+	
+				for (Problem problem : problems) {
+					reporter.report(problem);
+				}
+	
+				reporter.endReporting();
 			}
+
+			
 		}
-
-		if (!problems.isEmpty()) {
-			reporter.beginReporting(detail, fos);
-
-			for (Problem problem : problems) {
-				reporter.report(problem);
+		catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+		finally {
+			try {
+				if ( fos!=null ) {
+					fos.close();
+				}
 			}
-
-			reporter.endReporting();
+			catch (IOException e) {
+				e.printStackTrace();
+			}	
 		}
 	}
 
-	protected FileVisitResult analyzeFile(File file, List<Problem> problems, ProgressMonitor monitor) {
-		try {
-			String fileContent = _fileHelper.readFile(file);
-
-			if ((fileContent == null) || (fileContent.trim().length() < 1)) {
-				return FileVisitResult.CONTINUE;
-			}
-		}
-		catch (Exception e) {
-			return FileVisitResult.CONTINUE;
-		}
-
+	protected FileVisitResult analyzeFile(File file, final List<Problem> problems, ProgressMonitor monitor) {
 		Path path = file.toPath();
 
 		String fileName = path.getFileName().toString();
@@ -192,28 +205,23 @@ public class ProjectMigrationService implements Migration {
 		ServiceReference<FileMigrator>[] fileMigrators = _fileMigratorTracker.getServiceReferences();
 
 		if ((fileMigrators != null) && (fileMigrators.length > 0)) {
-			for (ServiceReference<FileMigrator> fm : fileMigrators) {
-				if (monitor.isCanceled()) {
-					return FileVisitResult.TERMINATE;
-				}
 
-				List<String> fileExtensions = Arrays.asList(((String)fm.getProperty("file.extensions")).split(","));
+			List<ServiceReference<FileMigrator>> fileMigratorList = Stream.of(fileMigrators).filter(predicate -> 
+				Arrays.asList(((String)predicate.getProperty("file.extensions")).split(",")).contains(extension)).collect(Collectors.toList());
 
-				if ((fileExtensions != null) && fileExtensions.contains(extension)) {
-					FileMigrator fmigrator = _context.getService(fm);
+			if (fileMigratorList.size() >0 ) {
+				try {
+					CountDownLatch latch=new CountDownLatch(fileMigratorList.size());
 
-					try {
-						List<Problem> fileProblems = fmigrator.analyze(file);
-
-						if ((fileProblems != null) && !fileProblems.isEmpty()) {
-							problems.addAll(fileProblems);
+					for (ServiceReference<FileMigrator> fm : fileMigratorList) {
+						if (monitor.isCanceled()) {
+							return FileVisitResult.TERMINATE;
 						}
+						_executor.execute(new MultipleFindingProblem(file, problems, fm, latch));
 					}
-					catch (Exception e) {
-						e.printStackTrace();
-					}
-
-					_context.ungetService(fm);
+					latch.await();
+				}
+				catch( Exception e) {
 				}
 			}
 
@@ -223,12 +231,62 @@ public class ProjectMigrationService implements Migration {
 		return FileVisitResult.CONTINUE;
 	}
 
-	private void _countTotal(File dir) {
+	private class MultipleFindingProblem implements Runnable{
+		private List<Problem> _migratorProblems = null;
+		private ServiceReference<FileMigrator> _migrator;
+		private CountDownLatch _migratorLatch;   
+		private File _myAnalyzeFile;
+
+		public MultipleFindingProblem( final File file, List<Problem> problems, final ServiceReference<FileMigrator> migrator, 
+			CountDownLatch migratorLatch) {
+			_migratorProblems = problems;
+			_myAnalyzeFile = file;
+			_migrator = migrator;
+			_migratorLatch = migratorLatch;
+		}
+
+		@Override
+		public void run() {
+			try {
+				FileMigrator fmigrator = _context.getService(_migrator);
+
+				List<Problem> fileProblems = fmigrator.analyze(_myAnalyzeFile);
+
+				if ((fileProblems != null) && !fileProblems.isEmpty()) {
+					_migratorProblems.addAll(fileProblems);
+				}
+			}
+			catch(Exception e) {
+			}
+			finally {
+				_context.ungetService(_migrator);
+				_migratorLatch.countDown();
+			}
+		}
+	}
+
+	private void _countTotal(File startDir) {
 		FileVisitor<Path> visitor = new SimpleFileVisitor<Path>() {
 
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 				if (dir.endsWith(".git")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith(".settings")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("target") && dir.startsWith(startDir.getPath())) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("WEB-INF/classes")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("WEB-INF/service")) {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 
@@ -239,7 +297,7 @@ public class ProjectMigrationService implements Migration {
 			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
 				File file = path.toFile();
 
-				if (file.isFile()) {
+				if (file.isFile() && attrs.isRegularFile() && attrs.size() >0) {
 					_total++;
 				}
 
@@ -249,7 +307,7 @@ public class ProjectMigrationService implements Migration {
 		};
 
 		try {
-			Files.walkFileTree(dir.toPath(), visitor);
+			Files.walkFileTree(startDir.toPath(), visitor);
 		}
 		catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -273,12 +331,28 @@ public class ProjectMigrationService implements Migration {
 		}
 	}
 
-	private void _walkFiles(File dir, List<Problem> problems, ProgressMonitor monitor) {
+	private void _walkFiles(File startDir, List<Problem> problems, ProgressMonitor monitor) {
 		FileVisitor<Path> visitor = new SimpleFileVisitor<Path>() {
 
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 				if (dir.endsWith(".git")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith(".settings")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("target") && dir.startsWith(startDir.getPath())) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("WEB-INF/classes")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("WEB-INF/service")) {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 
@@ -293,7 +367,7 @@ public class ProjectMigrationService implements Migration {
 
 				File file = path.toFile();
 
-				if (file.isFile()) {
+				if (file.isFile() && attrs.isRegularFile() && attrs.size() >0) {
 					FileVisitResult result = analyzeFile(file, problems, monitor);
 
 					if (result.equals(FileVisitResult.TERMINATE)) {
@@ -307,7 +381,7 @@ public class ProjectMigrationService implements Migration {
 		};
 
 		try {
-			Files.walkFileTree(dir.toPath(), visitor);
+			Files.walkFileTree(startDir.toPath(), visitor);
 		}
 		catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -318,8 +392,9 @@ public class ProjectMigrationService implements Migration {
 	private static int _total = 0;
 
 	private BundleContext _context;
-	private FileHelper _fileHelper = new FileHelper();
 	private ServiceTracker<FileMigrator, FileMigrator> _fileMigratorTracker;
 	private ServiceTracker<MigrationListener, MigrationListener> _migrationListenerTracker;
+	private ExecutorService _executor;
+	
 
 }

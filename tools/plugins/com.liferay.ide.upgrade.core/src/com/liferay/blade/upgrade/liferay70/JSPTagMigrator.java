@@ -63,6 +63,7 @@ public abstract class JSPTagMigrator extends AbstractFileMigrator<JSPFile> imple
 		_newAttrValues = newAttrValues;
 		_tagNames = tagNames;
 		_newTagNames = newTagNames;
+		_class = getClass();
 	}
 
 	@Override
@@ -222,28 +223,21 @@ public abstract class JSPTagMigrator extends AbstractFileMigrator<JSPFile> imple
 		List<SearchResult> searchResults = new ArrayList<>();
 
 		for (String tagName : _tagNames) {
-			List<SearchResult> jspTagResults = new ArrayList<>();
 
-			if (ListUtil.isNotEmpty(_tagNames) && (_attrNames.length == 0) && (_attrValues.length == 0)) {
-				jspTagResults = jspFileChecker.findJSPTags(tagName);
+			if (ListUtil.isNotEmpty(_tagNames) && ListUtil.isEmpty(_attrNames) && ListUtil.isEmpty(_attrValues)) {
+				searchResults.addAll(jspFileChecker.findJSPTags(tagName));
 			}
-			else if (ListUtil.isNotEmpty(_tagNames) && ListUtil.isNotEmpty(_attrNames) && (_attrValues.length == 0)) {
-				jspTagResults = jspFileChecker.findJSPTags(tagName, _attrNames);
+			else if (ListUtil.isNotEmpty(_tagNames) && ListUtil.isNotEmpty(_attrNames) && ListUtil.isEmpty(_attrValues)) {
+				searchResults.addAll(jspFileChecker.findJSPTags(tagName, _attrNames));
 			}
 			else if (ListUtil.isNotEmpty(_tagNames) && ListUtil.isNotEmpty(_attrNames) && ListUtil.isNotEmpty(_attrValues)) {
-				jspTagResults = jspFileChecker.findJSPTags(tagName, _attrNames, _attrValues);
-			}
-
-			if (ListUtil.isNotEmpty(jspTagResults)) {
-				searchResults.addAll(jspTagResults);
+				searchResults.addAll(jspFileChecker.findJSPTags(tagName, _attrNames, _attrValues));
 			}
 		}
 
 		if (ListUtil.isNotEmpty(_newAttrNames) || ListUtil.isNotEmpty(_newAttrValues) || ListUtil.isNotEmpty(_newTagNames)) {
 			for (SearchResult searchResult : searchResults) {
-				Class<? extends JSPTagMigrator> class1 = getClass();
-
-				searchResult.autoCorrectContext = "jsptag:" + class1.getName();
+				searchResult.autoCorrectContext = "jsptag:" + _class.getName();
 			}
 		}
 
@@ -256,5 +250,6 @@ public abstract class JSPTagMigrator extends AbstractFileMigrator<JSPFile> imple
 	private final String[] _newAttrValues;
 	private final String[] _newTagNames;
 	private final String[] _tagNames;
+	private Class<? extends JSPTagMigrator> _class;
 
 }

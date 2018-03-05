@@ -62,10 +62,10 @@ public abstract class AbstractFileMigrator<T extends SourceFile> implements File
 	@Override
 	public List<Problem> analyze(File file) {
 		List<Problem> problems = new ArrayList<>();
+		String fileExtension = new Path(file.getAbsolutePath()).getFileExtension();
+		List<SearchResult> searchResults = searchFile(file, createFileChecker(type, file, fileExtension));
 
-		List<SearchResult> searchResults = searchFile(file, createFileChecker(type, file));
-
-		if (searchResults != null) {
+		if (ListUtil.isNotEmpty(searchResults)) {
 			String sectionHtml = MarkdownParser.getSection("BREAKING_CHANGES.markdown", sectionKey);
 
 			if ((sectionHtml != null) && sectionHtml.equals("#legacy")) {
@@ -73,8 +73,6 @@ public abstract class AbstractFileMigrator<T extends SourceFile> implements File
 			}
 
 			for (SearchResult searchResult : searchResults) {
-				String fileExtension = new Path(file.getAbsolutePath()).getFileExtension();
-
 				if (searchResult != null) {
 					problems.add(
 						new Problem(
@@ -89,9 +87,7 @@ public abstract class AbstractFileMigrator<T extends SourceFile> implements File
 		return problems;
 	}
 
-	protected T createFileChecker(Class<T> type, File file) {
-		String fileExtension = new Path(file.getAbsolutePath()).getFileExtension();
-
+	protected T createFileChecker(Class<T> type, File file, String fileExtension) {
 		try {
 			Collection<ServiceReference<T>> refs = context.getServiceReferences(
 				type, "(file.extension=" + fileExtension + ")");

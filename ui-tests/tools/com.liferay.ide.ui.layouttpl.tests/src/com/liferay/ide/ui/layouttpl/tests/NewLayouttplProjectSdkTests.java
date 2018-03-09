@@ -58,12 +58,6 @@ public class NewLayouttplProjectSdkTests extends SwtbotBase {
 
 		editorAction.close();
 
-		String layoutWapTpl = "blank_columns.wap.tpl";
-
-		viewAction.project.openFile(project.getNameLayout(), "docroot", layoutWapTpl);
-
-		editorAction.close();
-
 		viewAction.project.closeAndDelete(project.getNameLayout());
 	}
 

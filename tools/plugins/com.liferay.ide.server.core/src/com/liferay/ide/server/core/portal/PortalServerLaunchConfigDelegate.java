@@ -31,6 +31,7 @@ import org.eclipse.jdt.launching.ExecutionArguments;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.eclipse.wst.server.core.IRuntime;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.IServerListener;
 import org.eclipse.wst.server.core.ServerEvent;
@@ -57,6 +58,15 @@ public class PortalServerLaunchConfigDelegate extends AbstractJavaLaunchConfigur
 //            {
 //                server.publish( IServer.PUBLISH_INCREMENTAL, monitor );
 //            }
+
+            IRuntime runtime = server.getRuntime();
+
+            PortalRuntime portalRuntime = (PortalRuntime) runtime.loadAdapter( PortalRuntime.class, monitor );
+
+            if( !portalRuntime.validate().isOK() )
+            {
+                throw new CoreException( LiferayServerCore.error( "This server runtime is invalid,please check it." ) );
+            }
 
             launchServer( server, config, mode, launch, monitor );
         }

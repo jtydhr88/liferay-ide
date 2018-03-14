@@ -47,14 +47,14 @@ public class BladeCLI {
 
 		File bladeJar = new File(temp, "blade.jar");
 
-		if (!bladeJar.exists()) {
-			ClassLoader bladeClassLoader = BladeCLI.class.getClassLoader();
+		bladeJar.delete();
 
-			try (InputStream in = bladeClassLoader.getResourceAsStream("/libs/blade.jar")) {
-				FileUtil.writeFile(bladeJar, in);
-			}
-			catch (IOException ioe) {
-			}
+		ClassLoader bladeClassLoader = BladeCLI.class.getClassLoader();
+
+		try (InputStream in = bladeClassLoader.getResourceAsStream("/libs/blade.jar")) {
+			FileUtil.writeFile(bladeJar, in);
+		}
+		catch (IOException ioe) {
 		}
 
 		javaTask.setJar(bladeJar);

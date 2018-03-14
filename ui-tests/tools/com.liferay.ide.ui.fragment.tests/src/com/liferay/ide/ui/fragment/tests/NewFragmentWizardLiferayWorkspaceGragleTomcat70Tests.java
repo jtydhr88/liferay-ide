@@ -28,10 +28,10 @@ import org.junit.rules.RuleChain;
  */
 public class NewFragmentWizardLiferayWorkspaceGragleTomcat70Tests extends NewFragmentWizardLiferayWorkspaceGradleBase {
 
-	public static PureTomcat70Support tomcat = new PureTomcat70Support(bot);
-
 	@ClassRule
 	public static RuleChain chain = RuleUtil.getTomcat7xRuleChain(bot, tomcat);
+
+	public static PureTomcat70Support tomcat = new PureTomcat70Support(bot);
 
 	@Test
 	public void createFragmentChangeModulesDir() {

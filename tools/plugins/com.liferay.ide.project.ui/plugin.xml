@@ -256,6 +256,13 @@
             properties="notLiferayProjectInSDK"
             type="org.eclipse.core.resources.IProject">
       </propertyTester>
+      <propertyTester
+            class="com.liferay.ide.project.ui.workspace.LiferayWorkspaceProjectPropertyTester"
+            id="com.liferay.ide.project.ui.isLiferayWorkspaceProject"
+            namespace="com.liferay.ide.project.ui"
+            properties="isLiferayWorkspaceProject"
+            type="org.eclipse.core.resources.IProject">
+      </propertyTester>
    </extension>
 
 
@@ -1729,5 +1736,21 @@
             class="com.liferay.ide.project.ui.quickfix.LiferayDependencyQuickFix"
             id="com.liferay.ide.project.ui.quickfix.liferayQuickFix">
       </quickFixProcessor>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+      <deleteParticipant
+            class="com.liferay.ide.project.ui.workspace.LiferayWorkspaceProjectDeleteParticipant"
+            id="com.liferay.ide.project.ui.workspace.liferayWorkspaceProjectDeleteParticipant"
+            name="liferayWorkspaceProjectDeleteParticipant">
+			<enablement>
+	            <adapt
+	                  type="org.eclipse.core.resources.IProject">
+	               <test
+	                     property="com.liferay.ide.project.ui.isLiferayWorkspaceProject">
+	               </test>
+	            </adapt>
+			</enablement>
+	  </deleteParticipant>
    </extension>
 </plugin>

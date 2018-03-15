@@ -34,7 +34,7 @@ import org.eclipse.jdt.core.JavaModelException;
 public abstract class BaseLiferayProject implements ILiferayProject {
 
 	public BaseLiferayProject(IProject project) {
-		_project = project;
+		this.project = project;
 	}
 
 	public <T> T adapt(Class<T> adapterType) {
@@ -56,11 +56,11 @@ public abstract class BaseLiferayProject implements ILiferayProject {
 	}
 
 	public IProject getProject() {
-		return _project;
+		return project;
 	}
 
 	public IFolder getSourceFolder(String classification) {
-		List<IFolder> folders = CoreUtil.getSourceFolders(JavaCore.create(_project));
+		List<IFolder> folders = CoreUtil.getSourceFolders(JavaCore.create(project));
 
 		if (ListUtil.isEmpty(folders)) {
 			return null;
@@ -111,6 +111,6 @@ public abstract class BaseLiferayProject implements ILiferayProject {
 		return false;
 	}
 
-	private IProject _project;
+	protected IProject project;
 
 }

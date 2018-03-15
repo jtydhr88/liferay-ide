@@ -454,6 +454,7 @@ public class LiferayMavenProjectConfigurator extends AbstractProjectConfigurator
 
 				if (projectFacet.getId().contains("liferay.")) {
 					retval = fv;
+
 					break;
 				}
 			}

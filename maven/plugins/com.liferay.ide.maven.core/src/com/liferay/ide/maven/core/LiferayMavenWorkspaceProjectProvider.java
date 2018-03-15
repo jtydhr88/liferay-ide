@@ -14,9 +14,11 @@
 
 package com.liferay.ide.maven.core;
 
+import com.liferay.ide.core.ILiferayProject;
 import com.liferay.ide.project.core.ProjectCore;
 import com.liferay.ide.project.core.modules.BladeCLI;
 import com.liferay.ide.project.core.modules.BladeCLIException;
+import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
 import com.liferay.ide.project.core.util.ProjectUtil;
 import com.liferay.ide.project.core.workspace.NewLiferayWorkspaceOp;
 import com.liferay.ide.project.core.workspace.NewLiferayWorkspaceProjectProvider;
@@ -34,6 +36,7 @@ import org.eclipse.sapphire.platform.PathBridge;
 /**
  * @author Joye Luo
  * @author Andy Wu
+ * @author Simon Jiang
  */
 public class LiferayMavenWorkspaceProjectProvider
 	extends LiferayMavenProjectProvider implements NewLiferayWorkspaceProjectProvider<NewLiferayWorkspaceOp> {
@@ -95,6 +98,24 @@ public class LiferayMavenWorkspaceProjectProvider
 		}
 
 		return retval;
+	}
+
+	@Override
+	public synchronized ILiferayProject provide(Object adaptable) {
+		if (adaptable instanceof IProject) {
+			final IProject project = (IProject)adaptable;
+
+			try {
+				if (MavenUtil.isMavenProject(project) && LiferayWorkspaceUtil.isValidWorkspace(project)) {
+					return new LiferayMavenWorkspaceProject(project);
+				}
+			}
+			catch (Exception e) {
+				return null;
+			}
+		}
+
+		return null;
 	}
 
 	@Override

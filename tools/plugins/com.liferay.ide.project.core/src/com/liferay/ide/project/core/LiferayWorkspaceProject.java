@@ -12,14 +12,12 @@
  * details.
  */
 
-package com.liferay.ide.gradle.core;
+package com.liferay.ide.project.core;
 
 import com.liferay.ide.core.BaseLiferayProject;
 import com.liferay.ide.core.ILiferayPortal;
 import com.liferay.ide.core.IWorkspaceProject;
 import com.liferay.ide.core.util.FileUtil;
-import com.liferay.ide.project.core.IProjectBuilder;
-import com.liferay.ide.project.core.IWorkspaceProjectBuilder;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.core.portal.PortalBundle;
 
@@ -31,7 +29,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * @author Andy Wu
+ * @author Simon Jiang
  */
 public class LiferayWorkspaceProject extends BaseLiferayProject implements IWorkspaceProject {
 
@@ -56,12 +54,6 @@ public class LiferayWorkspaceProject extends BaseLiferayProject implements IWork
 			}
 		}
 
-		if (IProjectBuilder.class.equals(adapterType) || IWorkspaceProjectBuilder.class.equals(adapterType)) {
-			IProjectBuilder projectBuilder = new GradleProjectBuilder(getProject());
-
-			return adapterType.cast(projectBuilder);
-		}
-
 		return super.adapt(adapterType);
 	}
 
@@ -79,6 +71,4 @@ public class LiferayWorkspaceProject extends BaseLiferayProject implements IWork
 	public List<IPath> getTargetPlatformArtifacts() {
 		return Collections.emptyList();
 	}
-
-
 }

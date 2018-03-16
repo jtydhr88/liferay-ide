@@ -131,8 +131,13 @@ public class LiferayGradleWorkspaceProjectProvider
 		if (adaptable instanceof IProject) {
 			final IProject project = (IProject)adaptable;
 
-			if (LiferayWorkspaceUtil.isValidWorkspace(project)) {
-				return new LiferayWorkspaceProject(project);
+			try {
+				if (GradleUtil.isGradleProject(project) && LiferayWorkspaceUtil.isValidWorkspace(project)) {
+					return new LiferayGradleWorkspaceProject(project);
+				}
+			}
+			catch( Exception e) {
+				return null;
 			}
 		}
 

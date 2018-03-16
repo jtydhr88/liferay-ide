@@ -22,6 +22,7 @@ import org.eclipse.sapphire.modeling.Path;
 import org.eclipse.sapphire.modeling.ProgressMonitor;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.modeling.annotations.AbsolutePath;
+import org.eclipse.sapphire.modeling.annotations.DefaultValue;
 import org.eclipse.sapphire.modeling.annotations.DelegateImplementation;
 import org.eclipse.sapphire.modeling.annotations.Derived;
 import org.eclipse.sapphire.modeling.annotations.FileSystemResourceType;
@@ -32,6 +33,7 @@ import org.eclipse.sapphire.modeling.annotations.ValidFileSystemResourceType;
 
 /**
  * @author Andy Wu
+ * @author Charles Wu
  */
 public interface ImportLiferayWorkspaceOp extends BaseLiferayWorkspaceOp {
 
@@ -47,6 +49,8 @@ public interface ImportLiferayWorkspaceOp extends BaseLiferayWorkspaceOp {
 
 	public Value<Path> getWorkspaceLocation();
 
+	public Value<Boolean> getInstallerFlag();
+
 	public void setBuildType(String value);
 
 	public void setHasBundlesDir(Boolean value);
@@ -56,6 +60,8 @@ public interface ImportLiferayWorkspaceOp extends BaseLiferayWorkspaceOp {
 	public void setWorkspaceLocation(Path value);
 
 	public void setWorkspaceLocation(String value);
+
+	public void setInstallerFlag(Boolean value);
 
 	// BuildType
 
@@ -74,6 +80,10 @@ public interface ImportLiferayWorkspaceOp extends BaseLiferayWorkspaceOp {
 	@Service(impl = HasBundlesDirDerivedValueService.class)
 	@Type(base = Boolean.class)
 	public ValueProperty PROP_HAS_BUNDLES_DIR = new ValueProperty(TYPE, "hasBundlesDir");
+
+	@DefaultValue(text = "false")
+	@Type(base = Boolean.class)
+	public ValueProperty PROP_INSTALLER_FLAG = new ValueProperty(TYPE, "InstallerFlag");
 
 	// ServerName
 

@@ -29,6 +29,7 @@ import org.eclipse.sapphire.platform.StatusBridge;
 
 /**
  * @author Andy Wu
+ * @author Charles Wu
  */
 public class ImportLiferayWorkspaceOpMethods {
 
@@ -53,6 +54,7 @@ public class ImportLiferayWorkspaceOpMethods {
 			boolean initBundle = op.getProvisionLiferayBundle().content();
 			boolean hasBundlesDir = op.getHasBundlesDir().content();
 			String bundleUrl = op.getBundleUrl().content(false);
+			boolean installerFlag = op.getInstallerFlag().content();
 
 			IStatus importStatus;
 
@@ -69,7 +71,7 @@ public class ImportLiferayWorkspaceOpMethods {
 				return retval;
 			}
 
-			if (initBundle || hasBundlesDir) {
+			if (!installerFlag && (initBundle || hasBundlesDir)) {
 				String serverRuntimeName = op.getServerName().content();
 				IPath bundlesLocation = null;
 

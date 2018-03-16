@@ -14,6 +14,7 @@
 
 package com.liferay.ide.studio.ui;
 
+import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
 import com.liferay.ide.project.core.workspace.ImportLiferayWorkspaceOp;
 import com.liferay.ide.project.ui.workspace.ImportLiferayWorkspaceWizard;
 import com.liferay.ide.ui.LiferayWorkspacePerspectiveFactory;
@@ -31,7 +32,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.sapphire.platform.ProgressMonitorBridge;
@@ -48,6 +51,7 @@ import org.eclipse.ui.intro.config.IIntroAction;
 
 /**
  * @author Andy Wu
+ * @author Charles Wu
  */
 @SuppressWarnings("restriction")
 public class ImportLiferayWorkspaceFromInstallerAction implements IIntroAction {
@@ -85,6 +89,8 @@ public class ImportLiferayWorkspaceFromInstallerAction implements IIntroAction {
 
 				op.setProvisionLiferayBundle(true);
 
+				op.setInstallerFlag(true);
+
 				if (op.validation().ok()) {
 					op.execute(ProgressMonitorBridge.create(monitor));
 
@@ -96,6 +102,17 @@ public class ImportLiferayWorkspaceFromInstallerAction implements IIntroAction {
 			}
 
 		};
+
+		job.addJobChangeListener(
+			new JobChangeAdapter() {
+
+				@Override
+				public void done(IJobChangeEvent event) {
+					LiferayWorkspaceUtil.addPortalRuntime();
+				}
+
+			}
+		);
 
 		job.schedule();
 

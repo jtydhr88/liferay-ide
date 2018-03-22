@@ -62,10 +62,12 @@ public class LiferayDependencyQuickFix implements IQuickFixProcessor {
 
 		List<IJavaCompletionProposal> resultingCollections = new ArrayList<>();
 
-		for (int i = 0; i < locations.length; i++) {
-			IProblemLocation curr = locations[i];
-
+		for (IProblemLocation curr : locations) {
 			List<IJavaCompletionProposal> newProposals = _process(context, curr);
+
+			if (ListUtil.isEmpty(newProposals)) {
+				return null;
+			}
 
 			for (IJavaCompletionProposal newProposal : newProposals) {
 				boolean existed = false;
@@ -146,13 +148,9 @@ public class LiferayDependencyQuickFix implements IQuickFixProcessor {
 	}
 
 	private List<IJavaCompletionProposal> _process(IInvocationContext context, IProblemLocation problem) {
-		int id = problem.getProblemId();
-
-		if (id == 0) {
-			return null;
-		}
-
 		List<IJavaCompletionProposal> proposals = new ArrayList<>();
+
+		int id = problem.getProblemId();
 
 		switch (id) {
 			case IProblem.ImportNotFound:

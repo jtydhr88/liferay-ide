@@ -228,6 +228,9 @@ public class LiferayDependencyQuickFix implements IQuickFixProcessor {
 
 			fullyQualifiedName = node.getFullyQualifiedName();
 		}
+		else {
+			return null;
+		}
 
 		List<String> serviceWrapperList;
 		List<String> servicesList;

@@ -14,26 +14,23 @@
 
 package com.liferay.ide.ui.fragment.tests;
 
-import com.liferay.ide.ui.fragment.tests.base.NewFragmentWizardGradleBase;
-import com.liferay.ide.ui.liferay.support.server.PureTomcat70DxpSupport;
+import com.liferay.ide.ui.fragment.tests.base.NewFragmentWizardMavenBase;
+import com.liferay.ide.ui.liferay.support.server.PureTomcat70Support;
 import com.liferay.ide.ui.liferay.util.RuleUtil;
 
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
 /**
- * @author Terry Jia
- */
-public class NewFragmentWizardGradleTomcat70DxpTests extends NewFragmentWizardGradleBase {
+ * @author Ashley Yuan
+ * @author Ying Xu
+ */public class NewFragmentWizardMavenTomcat70Tests extends NewFragmentWizardMavenBase{
+	public static PureTomcat70Support tomcat = new PureTomcat70Support(bot);
 
 	@ClassRule
 	public static RuleChain chain = RuleUtil.getTomcat7xRuleChain(bot, tomcat);
 
-	public static PureTomcat70DxpSupport tomcat = new PureTomcat70DxpSupport(bot);
-
-	@Ignore("ignore as the failed on DXP SP7, need to fix")
 	@Test
 	public void createFragmentWithJsp() {
 		super.createFragmentWithJsp();

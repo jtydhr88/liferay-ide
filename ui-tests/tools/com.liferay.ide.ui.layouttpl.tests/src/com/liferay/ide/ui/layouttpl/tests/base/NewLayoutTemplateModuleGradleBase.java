@@ -12,21 +12,19 @@
  * details.
  */
 
-package com.liferay.ide.ui.layouttpl.tests;
+package com.liferay.ide.ui.layouttpl.tests.base;
 
 import com.liferay.ide.ui.liferay.SwtbotBase;
 import com.liferay.ide.ui.liferay.support.project.ProjectSupport;
 
 import org.junit.Assert;
 import org.junit.Rule;
-import org.junit.Test;
 
 /**
  * @author Ying Xu
  */
-public class NewLayoutTemplateModuleGradleTests extends SwtbotBase {
+public class NewLayoutTemplateModuleGradleBase extends SwtbotBase {
 
-	@Test
 	public void createLayoutTemplate() {
 		wizardAction.openNewLiferayModuleWizard();
 

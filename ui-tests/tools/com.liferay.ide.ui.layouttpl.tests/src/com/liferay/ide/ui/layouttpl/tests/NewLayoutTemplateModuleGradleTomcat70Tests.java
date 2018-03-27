@@ -14,17 +14,27 @@
 
 package com.liferay.ide.ui.layouttpl.tests;
 
-import com.liferay.ide.ui.liferay.SwtbotBase;
+import com.liferay.ide.ui.layouttpl.tests.base.NewLayoutTemplateModuleGradleBase;
+import com.liferay.ide.ui.liferay.support.server.PureTomcat70Support;
+import com.liferay.ide.ui.liferay.util.RuleUtil;
 
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
- * @author Terry Jia
+ * @author Ying Xu
  */
-public class DeployLayouttplTests extends SwtbotBase {
+public class NewLayoutTemplateModuleGradleTomcat70Tests extends NewLayoutTemplateModuleGradleBase {
+
+	public static PureTomcat70Support tomcat = new PureTomcat70Support(bot);
+
+	@ClassRule
+	public static RuleChain chain = RuleUtil.getTomcat7xRuleChain(bot, tomcat);
 
 	@Test
-	public void deployLayoutTemplate() {
+	public void createLayoutTemplate() {
+		super.createLayoutTemplate();
 	}
 
 }

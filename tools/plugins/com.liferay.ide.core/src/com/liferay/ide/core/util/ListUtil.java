@@ -72,4 +72,18 @@ public class ListUtil {
 		return !isEmpty(array);
 	}
 
+	public static boolean contains(Object[] sources, Object containValue) {
+		if (!isEmpty(sources)){
+			for( Object obj : sources) {
+				if ( obj.equals(containValue)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		else {
+			return false;
+		}
+	}
+
 }

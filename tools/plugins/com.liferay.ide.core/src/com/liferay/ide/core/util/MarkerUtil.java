@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author Gregory Amerson
+ * @author Charles Wu
  */
 public class MarkerUtil {
 
@@ -39,10 +40,13 @@ public class MarkerUtil {
 
 			for (IMarker marker : markers) {
 				try {
-					if ((sourceId == null) ||
-						((sourceId != null) && marker.getAttribute(IMarker.SOURCE_ID).equals(sourceId))) {
+					if (marker != null) {
 
-						marker.delete();
+						String markerSourceId = (String)marker.getAttribute(IMarker.SOURCE_ID);
+
+						if ( sourceId ==null || markerSourceId ==null || markerSourceId.equals(sourceId)) {
+							marker.delete();
+						}
 					}
 				}
 				catch (CoreException ce) {

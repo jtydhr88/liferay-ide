@@ -190,6 +190,7 @@ public class LiferayGradleProject extends BaseLiferayProject implements IBundleP
 					for (File outputFile : outputFiles) {
 						if (outputFile.getName().endsWith(".war")) {
 							bundleFile = outputFile;
+
 							break;
 						}
 					}

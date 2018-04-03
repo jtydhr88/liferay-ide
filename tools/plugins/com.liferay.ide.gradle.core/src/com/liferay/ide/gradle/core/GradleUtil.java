@@ -17,6 +17,7 @@ package com.liferay.ide.gradle.core;
 import com.google.common.base.Optional;
 
 import com.gradleware.tooling.toolingutils.binding.Validator;
+
 import com.liferay.ide.core.util.FileUtil;
 
 import java.io.File;

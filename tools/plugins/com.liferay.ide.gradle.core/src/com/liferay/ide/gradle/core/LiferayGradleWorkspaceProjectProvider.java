@@ -30,6 +30,7 @@ import com.liferay.ide.server.util.ServerUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+
 import java.util.Optional;
 
 import org.eclipse.core.resources.IFile;
@@ -131,14 +132,19 @@ public class LiferayGradleWorkspaceProjectProvider
 		if (adaptable instanceof IProject) {
 			final IProject project = (IProject)adaptable;
 
-			if (LiferayWorkspaceUtil.isValidWorkspace(project)) {
-				return new LiferayWorkspaceProject(project);
+			try {
+				if (GradleUtil.isGradleProject(project) && LiferayWorkspaceUtil.isValidWorkspace(project)) {
+					return new LiferayGradleWorkspaceProject(project);
+				}
+			}
+			catch (Exception e) {
+				return null;
 			}
 		}
 
-		return Optional.ofNullable(
-			adaptable
-		).filter(
+		Optional<Object> optional = Optional.ofNullable(adaptable);
+
+		return optional.filter(
 			i -> i instanceof IServer
 		).map(
 			IServer.class::cast
@@ -147,23 +153,7 @@ public class LiferayGradleWorkspaceProjectProvider
 		).map(
 			liferayRuntime -> liferayRuntime.getLiferayHome()
 		).map(
-			LiferayGradleWorkspaceProjectProvider::getWorkspaceProjectFromLiferayHome
-		).orElse(
-			null
-		);
-	}
-
-	private static IWorkspaceProject getWorkspaceProjectFromLiferayHome(final IPath liferayHome) {
-		return Optional.ofNullable(
-			LiferayWorkspaceUtil.getWorkspaceProject()
-		).filter(
-			workspaceProject -> {
-				IPath workspaceLocation = workspaceProject.getRawLocation();
-
-				return workspaceLocation.isPrefixOf(liferayHome);
-			}
-		).map(
-			workspaceProject -> LiferayCore.create(IWorkspaceProject.class, workspaceProject)
+			LiferayGradleWorkspaceProjectProvider::_getWorkspaceProjectFromLiferayHome
 		).orElse(
 			null
 		);
@@ -176,6 +166,22 @@ public class LiferayGradleWorkspaceProjectProvider
 		// TODO validation gradle project location
 
 		return retval;
+	}
+
+	private static IWorkspaceProject _getWorkspaceProjectFromLiferayHome(final IPath liferayHome) {
+		Optional<IProject> optional = Optional.ofNullable(LiferayWorkspaceUtil.getWorkspaceProject());
+
+		return optional.filter(
+			workspaceProject -> {
+				IPath workspaceLocation = workspaceProject.getRawLocation();
+
+				return workspaceLocation.isPrefixOf(liferayHome);
+			}
+		).map(
+			workspaceProject -> LiferayCore.create(IWorkspaceProject.class, workspaceProject)
+		).orElse(
+			null
+		);
 	}
 
 }

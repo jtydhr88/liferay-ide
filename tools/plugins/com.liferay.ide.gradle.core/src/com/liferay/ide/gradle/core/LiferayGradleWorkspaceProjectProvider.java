@@ -183,7 +183,7 @@ public class LiferayGradleWorkspaceProjectProvider
 	public String getInitBundleUrl(String workspaceLocation) {
 		return LiferayWorkspaceUtil.getGradleProperty(
 			workspaceLocation, LiferayWorkspaceUtil.LIFERAY_WORKSPACE_BUNDLE_URL,
-			BaseLiferayWorkspaceOp.DEFAULT_BUNDLE_URL
+			BaseLiferayWorkspaceOp.LIFERAY_71_BUNDLE_URL
 		);
 	}
 

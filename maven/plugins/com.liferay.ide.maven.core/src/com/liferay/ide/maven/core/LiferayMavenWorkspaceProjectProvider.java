@@ -143,10 +143,10 @@ public class LiferayMavenWorkspaceProjectProvider
 			}
 		}
 		catch (Exception e) {
-			return BaseLiferayWorkspaceOp.DEFAULT_BUNDLE_URL;
+			return BaseLiferayWorkspaceOp.LIFERAY_71_BUNDLE_URL;
 		}
 
-		return BaseLiferayWorkspaceOp.DEFAULT_BUNDLE_URL;
+		return BaseLiferayWorkspaceOp.LIFERAY_71_BUNDLE_URL;
 	}
 
 	@Override

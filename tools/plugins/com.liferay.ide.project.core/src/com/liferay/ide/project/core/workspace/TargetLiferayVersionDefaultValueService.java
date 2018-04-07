@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.ide.project.core.modules;
+package com.liferay.ide.project.core.workspace;
 
 import com.liferay.ide.project.core.ProjectCore;
 
@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.sapphire.DefaultValueService;
 
 /**
- * @author Joye Luo
+ * @author Haoyi Sun
  */
 public class TargetLiferayVersionDefaultValueService extends DefaultValueService {
 
@@ -37,7 +37,8 @@ public class TargetLiferayVersionDefaultValueService extends DefaultValueService
 		IPreferencesService prefService = Platform.getPreferencesService();
 
 		String defaultLiferayVersion = prefService.getString(
-			ProjectCore.PLUGIN_ID, ProjectCore.PREF_DEFAULT_MODULE_PROJECT_LIFERAY_VERSION_OPTION, null, prefContexts);
+			ProjectCore.PLUGIN_ID, ProjectCore.PREF_DEFAULT_WORKSPACE_PROJECT_LIFERAY_VERSION_OPTION, null,
+			prefContexts);
 
 		if (defaultLiferayVersion != null) {
 			retval = defaultLiferayVersion;

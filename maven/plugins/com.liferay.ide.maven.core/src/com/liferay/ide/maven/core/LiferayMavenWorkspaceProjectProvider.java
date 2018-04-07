@@ -54,6 +54,8 @@ public class LiferayMavenWorkspaceProjectProvider
 
 		IPath wsLocation = location.append(wsName);
 
+		String liferayVersion = op.getLiferayVersion().content();
+
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("--base ");
@@ -62,7 +64,10 @@ public class LiferayMavenWorkspaceProjectProvider
 		sb.append("\" ");
 		sb.append("init ");
 		sb.append("-b ");
-		sb.append("maven");
+		sb.append("maven ");
+		sb.append("-v ");
+		sb.append(liferayVersion);
+		sb.append(" ");
 
 		try {
 			BladeCLI.execute(sb.toString());

@@ -45,11 +45,15 @@ public interface NewLiferayWorkspaceOp extends BaseLiferayWorkspaceOp {
 	@Override
 	public Status execute(ProgressMonitor monitor);
 
+	public Value<String> getLiferayVersion();
+
 	public Value<Path> getLocation();
 
 	public Value<Boolean> getUseDefaultLocation();
 
 	public Value<String> getWorkspaceName();
+
+	public void setLiferayVersion(String value);
 
 	public void setLocation(Path value);
 
@@ -61,7 +65,11 @@ public interface NewLiferayWorkspaceOp extends BaseLiferayWorkspaceOp {
 
 	public void setWorkspaceName(String value);
 
-	// ProjectLocation
+	@Listeners(value = SelectLiferayVersionChangedListener.class)
+	@Label(standard = "liferay version")
+	@Service(impl = TargetLiferayVersionDefaultValueService.class)
+	@Service(impl = TargetLiferayVersionPossibleValuesService.class)
+	public ValueProperty PROP_LIFERAY_VERSION = new ValueProperty(TYPE, "LiferayVersion");
 
 	@AbsolutePath
 	@Enablement(expr = "${ UseDefaultLocation == 'false' }")
@@ -73,20 +81,14 @@ public interface NewLiferayWorkspaceOp extends BaseLiferayWorkspaceOp {
 	@ValidFileSystemResourceType(FileSystemResourceType.FOLDER)
 	public ValueProperty PROP_LOCATION = new ValueProperty(TYPE, "Location");
 
-	// ServerName
-
 	@Service(impl = NewLiferayWorkspaceServerNameService.class)
 	public ValueProperty PROP_SERVER_NAME = new ValueProperty(TYPE, BaseLiferayWorkspaceOp.PROP_SERVER_NAME);
-
-	// UseDefaultLocation
 
 	@DefaultValue(text = "true")
 	@Label(standard = "use default location")
 	@Listeners(WorkspaceUseDefaultLocationListener.class)
 	@Type(base = Boolean.class)
 	public ValueProperty PROP_USE_DEFAULT_LOCATION = new ValueProperty(TYPE, "UseDefaultLocation");
-
-	// WorkspaceName
 
 	@Label(standard = "Project name")
 	@Required

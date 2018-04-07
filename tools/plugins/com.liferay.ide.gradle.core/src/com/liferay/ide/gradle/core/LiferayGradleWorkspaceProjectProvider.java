@@ -63,14 +63,19 @@ public class LiferayGradleWorkspaceProjectProvider
 
 		IPath wsLocation = location.append(wsName);
 
+		String liferayVersion = op.getLiferayVersion().content();
+
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("--base ");
 		sb.append("\"");
 		sb.append(wsLocation.toFile().getAbsolutePath());
 		sb.append("\" ");
-		sb.append("");
-		sb.append("init");
+		sb.append(" ");
+		sb.append("init ");
+		sb.append("-v ");
+		sb.append(liferayVersion);
+		sb.append(" ");
 
 		try {
 			BladeCLI.execute(sb.toString());

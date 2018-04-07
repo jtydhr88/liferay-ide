@@ -75,8 +75,11 @@ public class ProjectCore extends Plugin {
 
 	// The plugin ID
 
-	public static final String PRE_DEFAULT_MODULE_PROJECT_LIFERAY_VERSION_OPTION =
+	public static final String PREF_DEFAULT_MODULE_PROJECT_LIFERAY_VERSION_OPTION =
 		"module-project-default-liferay-version-option";
+
+	public static final String PREF_DEFAULT_WORKSPACE_PROJECT_LIFERAY_VERSION_OPTION =
+		"workspace-project-default-liferay-version-option";
 
 	public static final String PREF_CREATE_NEW_PORLET = "create-new-portlet";
 

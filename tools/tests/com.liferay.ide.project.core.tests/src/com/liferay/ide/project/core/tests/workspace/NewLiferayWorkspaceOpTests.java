@@ -23,11 +23,13 @@ import static org.junit.Assert.assertTrue;
 import com.liferay.ide.core.ILiferayProjectImporter;
 import com.liferay.ide.core.LiferayCore;
 import com.liferay.ide.core.util.CoreUtil;
+import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.PropertiesUtil;
 import com.liferay.ide.core.util.ZipUtil;
 import com.liferay.ide.project.core.modules.NewLiferayModuleProjectOp;
 import com.liferay.ide.project.core.tests.ProjectCoreBase;
 import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
+import com.liferay.ide.project.core.workspace.BaseLiferayWorkspaceOp;
 import com.liferay.ide.project.core.workspace.NewLiferayWorkspaceOp;
 
 import java.io.File;
@@ -41,122 +43,177 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.sapphire.modeling.ProgressMonitor;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author Andy Wu
  */
-public class NewLiferayWorkspaceOpTests extends ProjectCoreBase
-{
+public class NewLiferayWorkspaceOpTests extends ProjectCoreBase {
 
-    @BeforeClass
-    public static void removeAllProjects() throws Exception
-    {
-        IProgressMonitor monitor = new NullProgressMonitor();
+	@Before
+	public void removeAllProjects() throws Exception {
+		IProgressMonitor monitor = new NullProgressMonitor();
 
-        for( IProject project : CoreUtil.getAllProjects() )
-        {
-            project.delete( true, monitor );
+		for (IProject project : CoreUtil.getAllProjects()) {
+			project.delete(true, monitor);
 
-            assertFalse( project.exists() );
-        }
-    }
+			assertFalse(project.exists());
+		}
+	}
 
-    @Test
-    public void testNewLiferayWorkspaceOp() throws Exception
-    {
-        ILiferayProjectImporter importer = LiferayCore.getImporter( "gradle" );
+	@Test
+	public void testNewLiferayWorkspaceOp() throws Exception {
+		ILiferayProjectImporter importer = LiferayCore.getImporter("gradle");
 
-        File eclipseWorkspaceLocation = CoreUtil.getWorkspaceRoot().getLocation().toFile();
+		File eclipseWorkspaceLocation = CoreUtil.getWorkspaceRoot().getLocation().toFile();
 
-        URL projectZipUrl =
-            Platform.getBundle( "com.liferay.ide.project.core.tests" ).getEntry( "projects/existingProject.zip" );
+		URL projectZipUrl =
+			Platform.getBundle("com.liferay.ide.project.core.tests").getEntry("projects/existingProject.zip");
 
-        final File projectZipFile = new File( FileLocator.toFileURL( projectZipUrl ).getFile() );
+		final File projectZipFile = new File(FileLocator.toFileURL(projectZipUrl).getFile());
 
-        ZipUtil.unzip( projectZipFile, eclipseWorkspaceLocation );
+		ZipUtil.unzip(projectZipFile, eclipseWorkspaceLocation);
 
-        File projectFolder = new File( eclipseWorkspaceLocation, "existingProject" );
+		File projectFolder = new File(eclipseWorkspaceLocation, "existingProject");
 
-        waitForBuildAndValidation();
+		waitForBuildAndValidation();
 
-        importer.importProjects( projectFolder.getAbsolutePath(), new NullProgressMonitor() );
+		importer.importProjects(projectFolder.getAbsolutePath(), new NullProgressMonitor());
 
-        NewLiferayWorkspaceOp op = NewLiferayWorkspaceOp.TYPE.instantiate();
+		NewLiferayWorkspaceOp op = NewLiferayWorkspaceOp.TYPE.instantiate();
 
-        op.setWorkspaceName( "existingProject" );
+		op.setWorkspaceName("existingProject");
 
-        String message = op.validation().message();
+		String message = op.validation().message();
 
-        assertNotNull( message );
+		assertNotNull(message);
 
-        assertEquals( "A project with that name(ignore case) already exists.", message );
+		assertEquals("A project with that name(ignore case) already exists.", message);
 
-        op.setWorkspaceName( "ExistingProject" );
+		op.setWorkspaceName("ExistingProject");
 
-        message = op.validation().message();
+		message = op.validation().message();
 
-        assertTrue( message.equals( "A project with that name(ignore case) already exists." ) );
+		assertTrue(message.equals("A project with that name(ignore case) already exists."));
 
-        String projectName = "test-liferay-workspace";
+		String projectName = "test-liferay-workspace";
 
-        IPath workspaceLocation = CoreUtil.getWorkspaceRoot().getLocation();
+		IPath workspaceLocation = CoreUtil.getWorkspaceRoot().getLocation();
 
-        op.setWorkspaceName( projectName );
-        op.setUseDefaultLocation( false );
-        op.setLocation( workspaceLocation.toPortableString() );
+		op.setProjectProvider("gradle-liferay-workspace");
+		op.setWorkspaceName(projectName);
+		op.setUseDefaultLocation(false);
+		op.setLocation(workspaceLocation.toPortableString());
 
-        op.execute( new ProgressMonitor() );
+		op.execute(new ProgressMonitor());
 
-        String wsLocation = workspaceLocation.append( projectName ).toPortableString();
+		String wsLocation = workspaceLocation.append(projectName).toPortableString();
 
-        File wsFile = new File( wsLocation );
+		File wsFile = new File(wsLocation);
 
-        assertTrue( wsFile.exists() );
+		assertTrue(wsFile.exists());
 
-        assertTrue( LiferayWorkspaceUtil.isValidWorkspaceLocation( wsLocation ) );
+		assertTrue(LiferayWorkspaceUtil.isValidWorkspaceLocation(wsLocation));
 
-        File propertiesFile = new File( wsFile, "gradle.properties" );
-        Properties prop = PropertiesUtil.loadProperties( propertiesFile );
-        prop.setProperty( LiferayWorkspaceUtil.LIFERAY_WORKSPACE_WARS_DIR, "wars,wars2" );
-        PropertiesUtil.saveProperties( prop, propertiesFile );
+		File propertiesFile = new File(wsFile, "gradle.properties");
+		Properties prop = PropertiesUtil.loadProperties(propertiesFile);
+		prop.setProperty(LiferayWorkspaceUtil.LIFERAY_WORKSPACE_WARS_DIR, "wars,wars2");
+		PropertiesUtil.saveProperties(prop, propertiesFile);
 
-        NewLiferayModuleProjectOp moduleProjectOp = NewLiferayModuleProjectOp.TYPE.instantiate();
+		NewLiferayModuleProjectOp moduleProjectOp = NewLiferayModuleProjectOp.TYPE.instantiate();
 
-        moduleProjectOp.setProjectName( "testThemeWarDefault" );
-        moduleProjectOp.setProjectTemplateName( "theme" );
+		moduleProjectOp.setProjectName("testThemeWarDefault");
+		moduleProjectOp.setProjectTemplateName("theme");
 
-        moduleProjectOp.execute( new ProgressMonitor() );
+		moduleProjectOp.execute(new ProgressMonitor());
 
-        waitForBuildAndValidation();
+		waitForBuildAndValidation();
 
-        assertTrue( CoreUtil.getProject( "testThemeWarDefault" ).exists() );
+		assertTrue(CoreUtil.getProject("testThemeWarDefault").exists());
 
-        moduleProjectOp = NewLiferayModuleProjectOp.TYPE.instantiate();
+		moduleProjectOp = NewLiferayModuleProjectOp.TYPE.instantiate();
 
-        moduleProjectOp.setProjectName( "testThemeWarNotDefault" );
-        moduleProjectOp.setProjectTemplateName( "theme" );
-        moduleProjectOp.setUseDefaultLocation( false );
-        moduleProjectOp.setLocation( wsLocation + "/wars" );
+		moduleProjectOp.setProjectName("testThemeWarNotDefault");
+		moduleProjectOp.setProjectTemplateName("theme");
+		moduleProjectOp.setUseDefaultLocation(false);
+		moduleProjectOp.setLocation(wsLocation + "/wars");
 
-        moduleProjectOp.execute( new ProgressMonitor() );
+		moduleProjectOp.execute(new ProgressMonitor());
 
-        waitForBuildAndValidation();
+		waitForBuildAndValidation();
 
-        assertTrue( CoreUtil.getProject( "testThemeWarNotDefault" ).exists() );
+		assertTrue(CoreUtil.getProject("testThemeWarNotDefault").exists());
 
-        moduleProjectOp = NewLiferayModuleProjectOp.TYPE.instantiate();
+		moduleProjectOp = NewLiferayModuleProjectOp.TYPE.instantiate();
 
-        moduleProjectOp.setProjectName( "testThemeWar2" );
-        moduleProjectOp.setProjectTemplateName( "theme" );
-        moduleProjectOp.setUseDefaultLocation( false );
-        moduleProjectOp.setLocation( wsLocation + "/wars2" );
+		moduleProjectOp.setProjectName("testThemeWar2");
+		moduleProjectOp.setProjectTemplateName("theme");
+		moduleProjectOp.setUseDefaultLocation(false);
+		moduleProjectOp.setLocation(wsLocation + "/wars2");
 
-        moduleProjectOp.execute( new ProgressMonitor() );
+		moduleProjectOp.execute(new ProgressMonitor());
 
-        waitForBuildAndValidation();
+		waitForBuildAndValidation();
 
-        assertTrue( CoreUtil.getProject( "testThemeWar2" ).exists() );
-    }
+		assertTrue(CoreUtil.getProject("testThemeWar2").exists());
+	}
+
+	@Test
+	public void testNewGradleLiferayWorkspaceWithBundle71() throws Exception {
+		NewLiferayWorkspaceOp op = NewLiferayWorkspaceOp.TYPE.instantiate();
+
+		String projectName = "test-liferay-workspace";
+
+		op.setWorkspaceName(projectName);
+		op.setLiferayVersion("7.1");
+
+		IPath workspaceLocation = CoreUtil.getWorkspaceRoot().getLocation();
+
+		op.setProjectProvider("gradle-liferay-workspace");
+		op.setLocation(workspaceLocation.toPortableString());
+		op.setProvisionLiferayBundle(false);
+		op.execute(new ProgressMonitor());
+
+		String wsLocation = workspaceLocation.append(projectName).toPortableString();
+
+		File wsFile = new File(wsLocation);
+
+		File propertiesFile = new File(wsFile, "gradle.properties");
+
+		Properties prop = PropertiesUtil.loadProperties(propertiesFile);
+
+		String wsBundleUrl = (String) prop.get("liferay.workspace.bundle.url");
+
+		assertEquals(wsBundleUrl, BaseLiferayWorkspaceOp.LIFERAY_71_BUNDLE_URL);
+	}
+
+	@Test
+	public void testNewMavenLiferayWorkspaceWithBundle71() throws Exception {
+		NewLiferayWorkspaceOp op = NewLiferayWorkspaceOp.TYPE.instantiate();
+
+		String projectName = "test-liferay-workspace";
+
+		op.setWorkspaceName(projectName);
+		op.setLiferayVersion("7.1");
+
+		IPath workspaceLocation = CoreUtil.getWorkspaceRoot().getLocation();
+
+		op.setProjectProvider("maven-liferay-workspace");
+		op.setLocation(workspaceLocation.toPortableString());
+		op.setProvisionLiferayBundle(false);
+		op.execute(new ProgressMonitor());
+
+		String wsLocation = workspaceLocation.append(projectName).toPortableString();
+
+		File wsFile = new File(wsLocation);
+
+		File xmlFile = new File(wsFile, "pom.xml");
+
+		String xml = FileUtil.readContents(xmlFile);
+
+		boolean is71BundleUrl = xml.contains(BaseLiferayWorkspaceOp.LIFERAY_71_BUNDLE_URL);
+
+		assertTrue(is71BundleUrl);
+	}
 }

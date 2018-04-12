@@ -197,6 +197,14 @@ public class NewLiferayPluginProjectWizard extends BaseProjectWizard<NewLiferayP
 
 		final IConfigurationElement[] elements = extension.getConfigurationElements();
 
+		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+		for (StackTraceElement e : stackTrace) {
+			if ("checkValidProjectTypes".equals(e.getMethodName())) {
+				return;
+			}
+		}
+
 		for (final IConfigurationElement element : elements) {
 			if ("wizard".equals(element.getName())) {
 				UIUtil.async(

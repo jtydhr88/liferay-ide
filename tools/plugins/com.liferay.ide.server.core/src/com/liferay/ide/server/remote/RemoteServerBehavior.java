@@ -80,7 +80,7 @@ public class RemoteServerBehavior extends ServerBehaviourDelegate
 
     public boolean canConnect()
     {
-        IStatus status = SocketUtil.canConnect( getServer().getHost(), getRemoteServer().getHTTPPort() );
+        IStatus status = SocketUtil.canConnect( getServer().getHost(), getRemoteServer().getHttpPort() );
 
         if( status != null && status.isOK() )
         {
@@ -88,7 +88,7 @@ public class RemoteServerBehavior extends ServerBehaviourDelegate
         }
         else
         {
-            status = SocketUtil.canConnectProxy( getServer().getHost(), getRemoteServer().getHTTPPort() );
+            status = SocketUtil.canConnectProxy( getServer().getHost(), getRemoteServer().getHttpPort() );
 
             if( status != null && status.isOK() )
             {

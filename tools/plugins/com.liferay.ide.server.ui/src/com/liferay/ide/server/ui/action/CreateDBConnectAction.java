@@ -93,9 +93,9 @@ public class CreateDBConnectAction extends AbstractServerRunningAction
         {
             if( bundleExtPath.toFile().exists() )
             {
-                final InputStream extInputStream = Files.newInputStream( bundleExtPath.toFile().toPath() );
-                pluginPackageProperties.load( extInputStream );
-                extInputStream.close();
+                try(InputStream extInputStream = Files.newInputStream( bundleExtPath.toFile().toPath() )){
+                	pluginPackageProperties.load( extInputStream );	
+                }
 
                 final String driverName = (String) pluginPackageProperties.getProperty( JDBC_DRIVER_CLASS_NAME );
 
@@ -105,9 +105,9 @@ public class CreateDBConnectAction extends AbstractServerRunningAction
 
                     if( setupWizardPath.toFile().exists() )
                     {
-                        final InputStream setupInputStream = Files.newInputStream( setupWizardPath.toFile().toPath() );
-                        pluginPackageProperties.load( setupInputStream );
-                        setupInputStream.close();
+                        try(InputStream setupInputStream = Files.newInputStream( setupWizardPath.toFile().toPath() )){
+                        	pluginPackageProperties.load( setupInputStream );	
+                        }
                     }
                 }
             }
@@ -117,9 +117,9 @@ public class CreateDBConnectAction extends AbstractServerRunningAction
 
                 if( setupWizardPath.toFile().exists() )
                 {
-                    final InputStream setupInputStream = Files.newInputStream( setupWizardPath.toFile().toPath() );
-                    pluginPackageProperties.load( setupInputStream );
-                    setupInputStream.close();
+                    try(InputStream setupInputStream = Files.newInputStream( setupWizardPath.toFile().toPath() )){
+                    	pluginPackageProperties.load( setupInputStream );	
+                    }
                 }
             }
         }

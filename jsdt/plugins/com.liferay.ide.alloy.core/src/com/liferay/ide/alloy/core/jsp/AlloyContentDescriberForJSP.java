@@ -51,22 +51,22 @@ public class AlloyContentDescriberForJSP implements ITextContentDescriber {
 
 			inputStreamField.setAccessible(true);
 
-			InputStream inputStream = (InputStream)inputStreamField.get(contents);
+			try(InputStream inputStream = (InputStream)inputStreamField.get(contents)){
+				Class<?> ipStream = inputStream.getClass();
 
-			Class<?> ipStream = inputStream.getClass();
+				Field fileStoreField = ipStream.getDeclaredField("target");
 
-			Field fileStoreField = ipStream.getDeclaredField("target");
+				fileStoreField.setAccessible(true);
 
-			fileStoreField.setAccessible(true);
+				IFileStore fileStore = (IFileStore)fileStoreField.get(inputStream);
 
-			IFileStore fileStore = (IFileStore)fileStoreField.get(inputStream);
+				if (fileStore != null) {
+					IFile[] files = CoreUtil.getWorkspaceRoot().findFilesForLocationURI(fileStore.toURI());
 
-			if (fileStore != null) {
-				IFile[] files = CoreUtil.getWorkspaceRoot().findFilesForLocationURI(fileStore.toURI());
-
-				for (IFile file : files) {
-					if (ProjectUtil.isPortletProject(file.getProject()) || LiferayNature.hasNature(file.getProject())) {
-						return VALID;
+					for (IFile file : files) {
+						if (ProjectUtil.isPortletProject(file.getProject()) || LiferayNature.hasNature(file.getProject())) {
+							return VALID;
+						}
 					}
 				}
 			}

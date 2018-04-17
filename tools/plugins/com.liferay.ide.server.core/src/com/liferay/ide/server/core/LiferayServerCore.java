@@ -742,9 +742,9 @@ public class LiferayServerCore extends Plugin
                     }
                 }
 
-                final OutputStream fos = Files.newOutputStream( runtimesGlobalFile.toPath() );
-
-                runtimeMementos.save( fos );
+                try(OutputStream fos = Files.newOutputStream( runtimesGlobalFile.toPath() )){
+					runtimeMementos.save( fos );
+                }
             }
             catch( Exception e )
             {
@@ -823,9 +823,9 @@ public class LiferayServerCore extends Plugin
 
                 if( mementos.size() > 0 )
                 {
-                    final OutputStream fos = Files.newOutputStream( globalServersFile.toPath() );
-
-                    serverMementos.save( fos );
+                    try(OutputStream fos = Files.newOutputStream( globalServersFile.toPath() )){
+                        serverMementos.save( fos );
+                    }
                 }
             }
             catch( Exception e )

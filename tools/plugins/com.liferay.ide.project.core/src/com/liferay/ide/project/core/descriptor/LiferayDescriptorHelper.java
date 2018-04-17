@@ -23,9 +23,8 @@ import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.project.core.ProjectCore;
 
 import java.io.ByteArrayInputStream;
-
+import java.io.InputStream;
 import java.text.MessageFormat;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +38,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.wst.sse.core.StructuredModelManager;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
-
 import org.osgi.framework.Version;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -140,8 +137,8 @@ public abstract class LiferayDescriptorHelper {
 		public void createDefaultDescriptor(String templateString, String version) {
 			String content = MessageFormat.format(templateString, version, version.replace('.', '_'));
 
-			try {
-				file.create(new ByteArrayInputStream(content.getBytes("UTF-8")), IResource.FORCE, null);
+			try(InputStream input = new ByteArrayInputStream(content.getBytes("UTF-8"))) {
+				file.create(input, IResource.FORCE, null);
 			}
 			catch (Exception e) {
 				LiferayCore.logError(e);

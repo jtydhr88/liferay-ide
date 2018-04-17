@@ -28,7 +28,7 @@ import com.liferay.ide.project.core.IProjectBuilder;
 import com.liferay.ide.project.core.util.ProjectUtil;
 
 import java.io.File;
-
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +47,6 @@ import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
@@ -297,8 +296,9 @@ public class LiferayGradleProject extends BaseLiferayProject implements IBundleP
 			return false;
 		}
 
-		try {
-			String content = FileUtil.readContents(bndFile.getContents());
+		try(InputStream inputStream = bndFile.getContents()) {
+
+			String content = FileUtil.readContents(inputStream);
 
 			if (content.contains("Fragment-Host")) {
 				return true;

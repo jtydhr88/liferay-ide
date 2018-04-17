@@ -37,13 +37,12 @@ import com.liferay.ide.server.util.ServerUtil;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -60,7 +59,6 @@ import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.modeling.Path;
 import org.eclipse.sapphire.platform.PathBridge;
 import org.eclipse.wst.server.core.IRuntime;
-
 import org.osgi.framework.Version;
 
 /**
@@ -438,8 +436,9 @@ public class PluginsSDKProjectProvider
 
 				contents = contents.replace("${sdk.dir}/ivy.xml", "../../ivy.xml");
 
-				ivyFile.setContents(
-					new ByteArrayInputStream(contents.getBytes("UTF-8")), IResource.FORCE, new NullProgressMonitor());
+				try(InputStream inputStream = new ByteArrayInputStream(contents.getBytes("UTF-8"))){
+					ivyFile.setContents(inputStream, IResource.FORCE, new NullProgressMonitor());
+				}
 			}
 			catch (Exception e) {
 				ProjectCore.logError(e);

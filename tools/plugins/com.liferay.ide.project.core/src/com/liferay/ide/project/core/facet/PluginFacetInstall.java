@@ -27,9 +27,8 @@ import com.liferay.ide.server.util.ServerUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import java.io.InputStream;
 import java.nio.file.Files;
-
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -185,7 +184,9 @@ public abstract class PluginFacetInstall implements IDelegate, IPluginProjectDat
 				return;
 			}
 			else if (projectEntry instanceof IFile) {
-				((IFile)projectEntry).setContents(Files.newInputStream(newFile.toPath()), IResource.FORCE, null);
+				try(InputStream inputStream = Files.newInputStream(newFile.toPath())){
+					((IFile)projectEntry).setContents(inputStream, IResource.FORCE, null);	
+				}
 			}
 		}
 		else if (projectEntry instanceof IFolder) {
@@ -194,7 +195,9 @@ public abstract class PluginFacetInstall implements IDelegate, IPluginProjectDat
 			newProjectFolder.create(true, true, null);
 		}
 		else if (projectEntry instanceof IFile) {
-			((IFile)projectEntry).create(Files.newInputStream(newFile.toPath()), IResource.FORCE, null);
+			try(InputStream inputStream = Files.newInputStream(newFile.toPath())){
+				((IFile)projectEntry).create(inputStream, IResource.FORCE, null);	
+			}
 		}
 	}
 

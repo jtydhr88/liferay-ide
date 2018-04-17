@@ -22,8 +22,9 @@ import com.liferay.ide.sdk.core.SDKManager;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Date;
@@ -150,9 +151,9 @@ public class ServerStartup implements IStartup
 
     private void importGlobalRuntimes( File runtimesFile )
     {
-        try
+        try(InputStream inputStream = new FileInputStream ( runtimesFile ))
         {
-            final IMemento runtimesMemento = XMLMemento.loadMemento( new FileInputStream ( runtimesFile ) );
+            final IMemento runtimesMemento = XMLMemento.loadMemento( inputStream );
 
             if( runtimesMemento != null )
             {
@@ -198,17 +199,17 @@ public class ServerStartup implements IStartup
                 }
             }
         }
-        catch( FileNotFoundException e )
+        catch( IOException e )
         {
         }
     }
 
     private void importGlobalSDKs( File sdksFile )
     {
-        try
+        try(InputStream inputStream = new FileInputStream ( sdksFile ) )
         {
             final SDKManager manager = SDKManager.getInstance();
-            final IMemento sdksMemento = XMLMemento.loadMemento( new FileInputStream ( sdksFile ) );
+            final IMemento sdksMemento = XMLMemento.loadMemento(inputStream);
 
             if( sdksMemento != null )
             {
@@ -233,16 +234,16 @@ public class ServerStartup implements IStartup
                 }
             }
         }
-        catch( FileNotFoundException e )
+        catch( IOException e )
         {
         }
     }
 
     private void importGlobalServers( File serversFile )
     {
-        try
+        try(InputStream inputStream = new FileInputStream ( serversFile ))
         {
-            final IMemento serversMemento = XMLMemento.loadMemento( new FileInputStream ( serversFile ) );
+            final IMemento serversMemento = XMLMemento.loadMemento( inputStream );
 
             if( serversMemento != null )
             {
@@ -297,7 +298,7 @@ public class ServerStartup implements IStartup
                 }
             }
         }
-        catch( FileNotFoundException e )
+        catch( IOException e )
         {
         }
     }

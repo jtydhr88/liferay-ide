@@ -20,16 +20,14 @@ import com.liferay.ide.core.util.FileUtil;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-
+import java.io.InputStream;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
 import org.eclipse.core.runtime.FileLocator;
-
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ModelBuilder;
 import org.gradle.tooling.ProjectConnection;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
@@ -74,7 +72,9 @@ public class GradleTooling {
 				scriptFile.createNewFile();
 			}
 
-			FileUtil.writeFileFromStream(scriptFile, new ByteArrayInputStream(initScriptContents.getBytes()));
+			try(InputStream inputStream = new ByteArrayInputStream(initScriptContents.getBytes())){
+				FileUtil.writeFileFromStream(scriptFile, inputStream);
+			}
 
 			ModelBuilder<T> builder = modelBuilder.withArguments("--init-script", scriptFile.getAbsolutePath());
 

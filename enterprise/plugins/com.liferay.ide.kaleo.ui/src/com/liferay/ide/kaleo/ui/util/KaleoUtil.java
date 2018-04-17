@@ -18,7 +18,7 @@ import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.server.core.ILiferayServer;
 
 import java.io.ByteArrayInputStream;
-
+import java.io.InputStream;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
@@ -31,15 +31,12 @@ import org.eclipse.wst.validation.internal.ValOperation;
 import org.eclipse.wst.validation.internal.ValType;
 import org.eclipse.wst.validation.internal.ValidationResultSummary;
 import org.eclipse.wst.validation.internal.ValidationRunner;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -102,26 +99,28 @@ public class KaleoUtil {
 
 			};
 
-			Document doc = FileUtil.readXML(new ByteArrayInputStream(title.getBytes()), null, errorHandle);
+			try(InputStream inputStream = new ByteArrayInputStream(title.getBytes())){
+				Document doc = FileUtil.readXML(inputStream, null, errorHandle);
 
-			String defaultLocale = doc.getDocumentElement().getAttribute("default-locale");
+				String defaultLocale = doc.getDocumentElement().getAttribute("default-locale");
 
-			NodeList titles = doc.getElementsByTagName("Title");
+				NodeList titles = doc.getElementsByTagName("Title");
 
-			for (int i = 0; i < titles.getLength(); i++) {
-				Node titleNode = titles.item(i);
+				for (int i = 0; i < titles.getLength(); i++) {
+					Node titleNode = titles.item(i);
 
-				String titleValue = titleNode.getTextContent();
+					String titleValue = titleNode.getTextContent();
 
-				NamedNodeMap nameNodeMap = titleNode.getAttributes();
+					NamedNodeMap nameNodeMap = titleNode.getAttributes();
 
-				Node node = nameNodeMap.getNamedItem("language-id");
+					Node node = nameNodeMap.getNamedItem("language-id");
 
-				String languageId = node.getNodeValue();
+					String languageId = node.getNodeValue();
 
-				if (languageId.equals(defaultLocale)) {
-					jsonTitleMap.put(languageId, titleValue);
-					break;
+					if (languageId.equals(defaultLocale)) {
+						jsonTitleMap.put(languageId, titleValue);
+						break;
+					}
 				}
 			}
 		}

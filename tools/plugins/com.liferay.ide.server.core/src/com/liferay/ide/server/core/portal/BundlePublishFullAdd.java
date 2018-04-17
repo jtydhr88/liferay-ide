@@ -23,6 +23,7 @@ import com.liferay.ide.server.core.gogo.GogoBundleDeployer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 
@@ -59,10 +60,10 @@ public class BundlePublishFullAdd extends BundlePublishOperation
 
         if( autoDeployPath.toFile().exists() )
         {
-            try
+            try(InputStream inputStream = Files.newInputStream( output.toFile().toPath() ))
             {
                 FileUtil.writeFileFromStream(
-                    autoDeployPath.append( output.lastSegment() ).toFile(), Files.newInputStream( output.toFile().toPath() ) );
+                    autoDeployPath.append( output.lastSegment() ).toFile(), inputStream);
 
                 retval = Status.OK_STATUS;
             }

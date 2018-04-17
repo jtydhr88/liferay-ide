@@ -101,8 +101,8 @@ public class LayeredModulePathFactory {
             return new LayersConfig();
         }
         Reader reader = null;
-        try {
-            reader = new InputStreamReader(Files.newInputStream(layersList.toPath()), "UTF-8");
+        try(InputStream inputStream = Files.newInputStream(layersList.toPath())) {
+            reader = new InputStreamReader(inputStream, "UTF-8");
             Properties props = new Properties();
             props.load(reader);
 

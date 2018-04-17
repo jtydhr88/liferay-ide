@@ -20,6 +20,7 @@ import com.liferay.ide.core.util.CoreUtil;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -81,11 +82,13 @@ public class JavaUtil
 
             if( contents != null )
             {
-                Manifest mf = new Manifest( new ByteArrayInputStream( contents.getBytes() ) );
-                Attributes a = mf.getMainAttributes();
-                String val = a.getValue( propertyName );
+				try(InputStream input = new ByteArrayInputStream( contents.getBytes() )){
+                    Manifest mf = new Manifest( input );
+                    Attributes a = mf.getMainAttributes();
+                    String val = a.getValue( propertyName );
 
-                return val;
+                    return val;
+				}
             }
         }
         catch( IOException ioe )

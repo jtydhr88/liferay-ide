@@ -101,30 +101,23 @@ public abstract class AbstractRemoteServerPublisher implements IRemoteServerPubl
 
                 zip.putNextEntry( zipEntry );
 
-                InputStream contents = ( (IFile) resource ).getContents();
+                try(InputStream inputStream = ( (IFile) resource ).getContents()){
+                    if( adjustGMTOffset )
+                    {
+                        TimeZone currentTimeZone = TimeZone.getDefault();
+                        Calendar currentDt = new GregorianCalendar( currentTimeZone, Locale.getDefault() );
 
-                if( adjustGMTOffset )
-                {
-                    TimeZone currentTimeZone = TimeZone.getDefault();
-                    Calendar currentDt = new GregorianCalendar( currentTimeZone, Locale.getDefault() );
+                        // Get the Offset from GMT taking current TZ into account
+                        int gmtOffset =
+                            currentTimeZone.getOffset(
+                                currentDt.get( Calendar.ERA ), currentDt.get( Calendar.YEAR ),
+                                currentDt.get( Calendar.MONTH ), currentDt.get( Calendar.DAY_OF_MONTH ),
+                                currentDt.get( Calendar.DAY_OF_WEEK ), currentDt.get( Calendar.MILLISECOND ) );
 
-                    // Get the Offset from GMT taking current TZ into account
-                    int gmtOffset =
-                        currentTimeZone.getOffset(
-                            currentDt.get( Calendar.ERA ), currentDt.get( Calendar.YEAR ),
-                            currentDt.get( Calendar.MONTH ), currentDt.get( Calendar.DAY_OF_MONTH ),
-                            currentDt.get( Calendar.DAY_OF_WEEK ), currentDt.get( Calendar.MILLISECOND ) );
+                        zipEntry.setTime( System.currentTimeMillis() + ( gmtOffset * -1 ) );
+                    }
 
-                    zipEntry.setTime( System.currentTimeMillis() + ( gmtOffset * -1 ) );
-                }
-
-                try
-                {
-                    IOUtils.copy( contents, zip );
-                }
-                finally
-                {
-                    contents.close();
+                    IOUtils.copy( inputStream, zip );
                 }
 
                 break;

@@ -376,7 +376,8 @@ public class ServerUtil
     {
         String fragmentHostName = null;
 
-        try(JarInputStream jarStream = new JarInputStream( Files.newInputStream( bundleFile.toPath() ) ))
+        try(InputStream input = Files.newInputStream( bundleFile.toPath() );
+        		JarInputStream jarStream = new JarInputStream( input ))
         {
             fragmentHostName = jarStream.getManifest().getMainAttributes().getValue( "Fragment-Host" );
 

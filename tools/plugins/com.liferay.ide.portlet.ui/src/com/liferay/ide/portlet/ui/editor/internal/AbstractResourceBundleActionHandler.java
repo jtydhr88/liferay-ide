@@ -22,9 +22,9 @@ import com.liferay.ide.portlet.core.util.PortletUtil;
 import com.liferay.ide.portlet.ui.PortletUIPlugin;
 
 import java.io.ByteArrayInputStream;
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.List;
 import java.util.ListIterator;
 
@@ -123,7 +123,12 @@ public abstract class AbstractResourceBundleActionHandler extends PropertyEditor
 						while (rbFilesIterator.hasNext()) {
 							IFile rbFile = rbFilesIterator.next();
 
-							rbFile.create(new ByteArrayInputStream(rbFileBuffer.toString().getBytes()), true, monitor);
+							try(InputStream inputStream = new ByteArrayInputStream(rbFileBuffer.toString().getBytes())){
+								rbFile.create(inputStream, true, monitor);
+							}
+							catch (IOException e) {
+								throw new CoreException(PortletUIPlugin.createErrorStatus(e));
+							}
 
 							monitor.worked(1);
 						}

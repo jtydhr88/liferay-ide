@@ -344,9 +344,9 @@ public class LiferayTomcatUtil
 
         File file = idePropertiesPath.toFile();
 
-        try
+        try(OutputStream outputStream = Files.newOutputStream( file.toPath() ))
         {
-            props.store( Files.newOutputStream( file.toPath() ), null );
+            props.store( outputStream, null );
         }
         catch( Exception e )
         {
@@ -720,12 +720,13 @@ public class LiferayTomcatUtil
         {
             ExternalPropertiesConfiguration props = new ExternalPropertiesConfiguration();
 
-            try( InputStream newInputStream = Files.newInputStream( externalPropertiesFile.toPath() ))
+            try( InputStream newInputStream = Files.newInputStream( externalPropertiesFile.toPath() );
+					OutputStream outputStream = Files.newOutputStream( externalPropertiesFile.toPath() ))
             {
                 props.load( newInputStream );
                 props.setProperty( "include-and-override", portalIdePropFile.getAbsolutePath() ); //$NON-NLS-1$
                 props.setHeader( "# Last modified by Liferay IDE " + new Date() ); //$NON-NLS-1$
-                props.save( Files.newOutputStream( externalPropertiesFile.toPath() ) );
+                props.save( outputStream );
 
                 retval = externalPropertiesFile;
             }

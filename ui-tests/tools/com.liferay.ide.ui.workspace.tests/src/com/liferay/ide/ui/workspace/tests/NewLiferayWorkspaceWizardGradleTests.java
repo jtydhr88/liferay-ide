@@ -14,6 +14,8 @@
 
 package com.liferay.ide.ui.workspace.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import com.liferay.ide.ui.liferay.SwtbotBase;
 import com.liferay.ide.ui.liferay.support.project.ProjectSupport;
 
@@ -158,6 +160,25 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 		String[] newModuleNames = {project.getName(), newWarsFolderName};
 
 		viewAction.project.closeAndDelete(newModuleNames);
+
+		viewAction.project.closeAndDelete(project.getName());
+	}
+
+	@Test
+	public void createLiferayWorkspaceChooseVersion71() {
+		wizardAction.openNewLiferayWorkspaceWizard();
+
+		wizardAction.newLiferayWorkspace.selectDownloadLiferayBundle();
+
+		wizardAction.newLiferayWorkspace.prepareGradle(project.getName(), "7.1");
+
+		String bundleUrl = wizardAction.newLiferayWorkspace.getBundleUrl();
+
+		assertTrue(bundleUrl.contains("7.1"));
+
+		wizardAction.newLiferayWorkspace.deselectDownloadLiferayBundle();
+
+		wizardAction.finish();
 
 		viewAction.project.closeAndDelete(project.getName());
 	}

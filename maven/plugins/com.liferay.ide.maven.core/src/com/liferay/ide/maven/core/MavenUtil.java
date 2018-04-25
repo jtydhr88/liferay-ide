@@ -24,10 +24,8 @@ import com.liferay.ide.server.util.ServerUtil;
 
 import java.io.File;
 import java.io.FileReader;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,9 +44,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
-
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -72,6 +68,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.IMavenProjectImportResult;
 import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
+import org.eclipse.m2e.core.project.IProjectCreationListener;
 import org.eclipse.m2e.core.project.LocalProjectScanner;
 import org.eclipse.m2e.core.project.MavenProjectInfo;
 import org.eclipse.m2e.core.project.ProjectImportConfiguration;
@@ -79,9 +76,7 @@ import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.WarPluginConfiguration;
 import org.eclipse.wst.xml.core.internal.provisional.format.NodeFormatter;
-
 import org.osgi.framework.Version;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -489,7 +484,13 @@ public class MavenUtil {
 		return false;
 	}
 
-	public static List<IMavenProjectImportResult> importProject(String location, IProgressMonitor monitor)
+	public static List<IMavenProjectImportResult> importProject(String location, IProgressMonitor monitor)throws CoreException, InterruptedException
+	{
+		return importProject(location, null, monitor);
+	}
+
+	public static List<IMavenProjectImportResult> importProject(
+			String location, IProjectCreationListener createListener, IProgressMonitor monitor)
 		throws CoreException, InterruptedException {
 
 		MavenModelManager mavenModelManager = MavenPlugin.getMavenModelManager();
@@ -515,7 +516,8 @@ public class MavenUtil {
 
 		IProjectConfigurationManager projectConfigurationManager = MavenPlugin.getProjectConfigurationManager();
 
-		return projectConfigurationManager.importProjects(mavenProjects, importConfiguration, monitor);
+		return projectConfigurationManager.importProjects(
+			mavenProjects, importConfiguration, createListener, monitor);
 	}
 
 	public static boolean isMavenProject(IProject project) throws CoreException {

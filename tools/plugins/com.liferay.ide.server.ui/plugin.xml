@@ -647,4 +647,11 @@
 			serverTypes="com.liferay.ide.server.portal">
 		</serverToolTip>
 	</extension>
+	<extension
+	   point="org.eclipse.wst.server.ui.deleteServerDialogExtension">
+		<deleteServerDialogExtension
+			class="com.liferay.ide.server.ui.action.LiferayPortalDeleteServerAction"
+		  id="com.liferay.ide.server.ui.deleteServerDialogExtension">
+		</deleteServerDialogExtension>
+	</extension>
 </plugin>

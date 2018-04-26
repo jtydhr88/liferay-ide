@@ -55,27 +55,15 @@ repositories {
 }
 
 task downloadBlade(type: Download) {
-	def pomFile = new File("../build/parent/pom.xml")
-
-	def project = new XmlSlurper().parse(pomFile)
-
-	def bladeLatestUrl = new URL(project.properties.'blade-latest-download-url'.toString())
-
-	src bladeLatestUrl
+	src 'https://liferay-test-01.ci.cloudbees.com/job/liferay-blade-cli/503/artifact/build/libs/blade.jar'
 	dest 'src/main/resources/libs/blade.jar'
 	onlyIfModified true
 }
 
 task verifyBlade(type: Verify, dependsOn: downloadBlade) {
-	def pomFile = new File("../build/parent/pom.xml")
-
-	def project = new XmlSlurper().parse(pomFile)
-
-	def bladeLatestMd5 = project.properties.'blade-latest-md5'.toString()
-
 	src 'src/main/resources/libs/blade.jar'
 	algorithm 'MD5'
-	checksum bladeLatestMd5
+	checksum '63a276735cacd7dbbb8f2e64f32abc7e'
 }
 
 compileJava {

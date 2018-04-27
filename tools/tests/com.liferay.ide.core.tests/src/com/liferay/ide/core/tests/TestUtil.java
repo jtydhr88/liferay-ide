@@ -87,6 +87,15 @@ public class TestUtil {
 		}
 	}
 
+	public static void waitingForJobStart(int time) {
+		try {
+			Thread.sleep(time);
+		}
+		catch (InterruptedException ie) {
+			ie.printStackTrace();
+		}
+	}
+
 	private static void _copyDir(File src, File dst, boolean deleteDst) throws IOException {
 		if (!src.isDirectory()) {
 			throw new IllegalArgumentException("Not a directory:" + src.getAbsolutePath());

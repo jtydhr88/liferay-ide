@@ -20,6 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.liferay.ide.core.tests.TestUtil;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.project.core.workspace.BaseLiferayWorkspaceOp;
@@ -31,6 +32,7 @@ import java.util.stream.Stream;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.m2e.tests.common.JobHelpers;
 import org.eclipse.sapphire.modeling.ProgressMonitor;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.wst.server.core.IServer;
@@ -51,10 +53,12 @@ public class NewMavenLiferayWorkspaceOpTests
     {
         for( IProject project : CoreUtil.getAllProjects() )
         {
+        	project.close(new NullProgressMonitor());
             project.delete( true, new NullProgressMonitor() );
         }
     }
 
+    @SuppressWarnings("restriction")
     @Test
     public void testNewMavenLiferayWorkspaceSetUrl() throws Exception
     {
@@ -76,6 +80,10 @@ public class NewMavenLiferayWorkspaceOpTests
 
         op.execute( new ProgressMonitor() );
 
+        TestUtil.waitingForJobStart(10000);
+
+        JobHelpers.waitForJobsToComplete();
+
         String projectLocation = workspaceLocation.append( projectName ).toPortableString();
 
         File pomFile = new File( projectLocation, "pom.xml" );
@@ -92,6 +100,7 @@ public class NewMavenLiferayWorkspaceOpTests
 
     }
 
+    @SuppressWarnings("restriction")
     @Test
     public void testNewMavenLiferayWorkspaceInitBundle() throws Exception
     {
@@ -114,6 +123,10 @@ public class NewMavenLiferayWorkspaceOpTests
             bundleUrl );
 
         op.execute( new ProgressMonitor() );
+
+        TestUtil.waitingForJobStart(10000);
+
+        JobHelpers.waitForJobsToComplete();
 
         String projectLocation = workspaceLocation.append( projectName ).toPortableString();
 

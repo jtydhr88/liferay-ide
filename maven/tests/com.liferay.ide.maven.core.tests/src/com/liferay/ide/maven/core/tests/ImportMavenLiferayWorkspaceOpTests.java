@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.m2e.tests.common.JobHelpers;
 import org.eclipse.sapphire.modeling.ProgressMonitor;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.wst.server.core.IServer;
@@ -44,6 +45,7 @@ import org.junit.Test;
  * @author Andy Wu
  * @author Joye Luo
  */
+@SuppressWarnings("restriction")
 public class ImportMavenLiferayWorkspaceOpTests
 {
     @Before
@@ -88,6 +90,18 @@ public class ImportMavenLiferayWorkspaceOpTests
         assertTrue( validationStatus.ok() );
 
         op.execute( new ProgressMonitor() );
+
+        JobHelpers.waitForJobs(job -> {
+
+            String jobName = job.getName();
+
+            if (jobName.equals("Init Liferay Bundle")) {
+                return true;
+            }
+
+            return false;
+
+        }, 30 * 60 * 1000);
 
         File bundleDir = new File( wsFolder, "bundles" );
         assertTrue( bundleDir.exists() );
@@ -150,6 +164,18 @@ public class ImportMavenLiferayWorkspaceOpTests
         op.setBundleUrl( bundleUrl );
 
         op.execute( new ProgressMonitor() );
+
+        JobHelpers.waitForJobs(job -> {
+
+            String jobName = job.getName();
+
+            if (jobName.equals("Init Liferay Bundle")) {
+                return true;
+            }
+
+            return false;
+
+        }, 30 * 60 * 1000);
 
         content = FileUtil.readContents( pomFile );
 

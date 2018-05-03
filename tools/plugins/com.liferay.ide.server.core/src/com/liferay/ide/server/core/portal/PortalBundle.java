@@ -37,10 +37,6 @@ public interface PortalBundle extends ILiferayPortal {
 
 	public String getDisplayName();
 
-	public String getHttpPort();
-
-	public int getJmxRemotePort();
-
 	public IPath getLiferayHome();
 
 	public String getMainClass();
@@ -65,6 +61,6 @@ public interface PortalBundle extends ILiferayPortal {
 
 	public IPath[] getUserLibs();
 
-	public void setHttpPort(String port);
+	public PortalBundleConfiguration initBundleConfiguration();
 
 }

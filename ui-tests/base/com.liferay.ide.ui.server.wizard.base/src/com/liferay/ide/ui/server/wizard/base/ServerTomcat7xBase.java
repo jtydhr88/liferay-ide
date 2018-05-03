@@ -15,6 +15,11 @@
 package com.liferay.ide.ui.server.wizard.base;
 
 import com.liferay.ide.ui.liferay.ServerTestBase;
+import com.liferay.ide.ui.liferay.page.editor.ServerEditor;
+import com.liferay.ide.ui.liferay.page.editor.ServerTable;
+import com.liferay.ide.ui.swtbot.page.SWTBotHyperlink;
+
+import org.junit.Assert;
 
 /**
  * @author Terry Jia
@@ -174,52 +179,10 @@ public class ServerTomcat7xBase extends ServerTestBase {
 		resetTestServer();
 	}
 
-	public void serverEditorPortsChange() {
-		dialogAction.openPreferencesDialog();
-
-		dialogAction.preferences.openServerRuntimeEnvironmentsTry();
-
-		dialogAction.serverRuntimeEnvironments.openNewRuntimeWizard();
-
-		wizardAction.newRuntime.prepare7();
-
-		wizardAction.next();
-
-		wizardAction.newRuntime7.prepare(testServer.getServerName(), testServer.getFullServerDir());
-
-		wizardAction.finish();
-
-		dialogAction.preferences.confirm();
-
-		wizardAction.openNewLiferayServerWizard();
-
-		wizardAction.newServer.prepare(testServer.getServerName());
-
-		wizardAction.finish();
-
-		viewAction.servers.openEditor(testServer.getStoppedLabel());
-
-		editorAction.server.setHttpPort("8081");
-
-		editorAction.save();
-
-		editorAction.close();
-
-		viewAction.servers.openEditor(testServer.getStoppedLabel());
-
-		editorAction.server.setHttpPort("8080");
-
-		editorAction.save();
-
-		editorAction.close();
-
-		resetTestServer();
-	}
-
 	public void serverEditorPortsChangeAndStart() {
-		dialogAction.openPreferencesDialog();
+		String serverName = "Liferay 7-server-port-change";
 
-		dialogAction.preferences.openServerRuntimeEnvironmentsTry();
+		dialogAction.openPreferencesDialog();
 
 		dialogAction.serverRuntimeEnvironments.openNewRuntimeWizard();
 
@@ -227,7 +190,7 @@ public class ServerTomcat7xBase extends ServerTestBase {
 
 		wizardAction.next();
 
-		wizardAction.newRuntime7.prepare(testServer.getServerName(), testServer.getFullServerDir());
+		wizardAction.newRuntime7.prepare(getTestServer().getServerName(), getTestServer().getFullServerDir());
 
 		wizardAction.finish();
 
@@ -235,33 +198,59 @@ public class ServerTomcat7xBase extends ServerTestBase {
 
 		wizardAction.openNewLiferayServerWizard();
 
-		wizardAction.newServer.prepare(testServer.getServerName());
+		wizardAction.newServer.prepare(serverName);
 
 		wizardAction.finish();
 
-		viewAction.servers.openEditor(testServer.getStoppedLabel());
+		String serverStoppedLabel = serverName + "  [Stopped]";
 
-		editorAction.server.setHttpPort("8082");
+		viewAction.servers.openEditor(serverStoppedLabel);
+
+		ServerEditor serverEditor = new ServerEditor(bot);
+
+		ServerTable serverPortTable = serverEditor.getServerPortTable();
+
+		String[] serverPortValues = serverPortTable.getServerPortsInfo();
+
+		String[] newPortValues = new String[serverPortValues.length];
+
+		for (int i = 0; i < serverPortValues.length; i++) {
+			serverPortTable.click(i, 1);
+			Integer newPortValue = Integer.valueOf(serverPortValues[i]) + 1;
+
+			serverPortTable.setText(serverPortValues[i], newPortValue.toString());
+			newPortValues[i] = newPortValue.toString();
+		}
 
 		editorAction.save();
-
 		editorAction.close();
 
-		viewAction.servers.start(testServer.getStoppedLabel());
+		viewAction.servers.openEditor(serverStoppedLabel);
+		ServerTable serverPortChangedTable = serverEditor.getServerPortTable();
 
-		jobAction.waitForServerStarted(testServer.getServerName());
+		String[] serverPortChangedValues = serverPortChangedTable.getServerPortsInfo();
 
-		viewAction.servers.stop(testServer.getStartedLabel());
+		Assert.assertArrayEquals(serverPortChangedValues, newPortValues);
 
-		jobAction.waitForServerStopped(testServer.getServerName());
+		SWTBotHyperlink resetHyperlink = serverEditor.getHyperlink();
 
-		viewAction.servers.openEditor(testServer.getStoppedLabel());
-
-		editorAction.server.setHttpPort("8080");
+		resetHyperlink.click();
 
 		editorAction.save();
-
 		editorAction.close();
+
+		viewAction.servers.openEditor(serverStoppedLabel);
+		ServerTable serverPortResetTable = serverEditor.getServerPortTable();
+
+		String[] serverPortResetValues = serverPortResetTable.getServerPortsInfo();
+
+		Assert.assertArrayEquals(serverPortResetValues, serverPortValues);
+
+		dialogAction.openPreferencesDialog();
+
+		dialogAction.serverRuntimeEnvironments.deleteRuntimeTryConfirm(serverName);
+
+		dialogAction.preferences.confirm();
 
 		resetTestServer();
 	}

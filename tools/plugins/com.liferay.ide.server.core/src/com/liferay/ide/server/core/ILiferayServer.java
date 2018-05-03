@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 /**
  * @author Gregory Amerson
  * @author Terry Jia
+ * @author Simon Jiang
  */
 public interface ILiferayServer {
 
@@ -43,15 +44,29 @@ public interface ILiferayServer {
 
 	public URL getWebServicesListURL();
 
+	public String ATTR_AGENT_PORT = "agent-port";
+
 	public String ATTR_HTTP_PORT = "http-port";
 
+	public String ATTR_JMX_PORT = "jmx-port";
+
 	public String ATTR_PASSWORD = "password";
+
+	public String ATTR_TELNET_PORT = "telnet-port";
 
 	public String ATTR_USERNAME = "username";
 
 	public IEclipsePreferences defaultPrefs = DefaultScope.INSTANCE.getNode(LiferayServerCore.PLUGIN_ID);
 
+	public int DEFAULT_AGENT_PORT = defaultPrefs.getInt("default.agent.port", 29998);
+
+	public String DEFAULT_HTTP_PORT = defaultPrefs.get("default.http.port", "8080");
+
+	public int DEFAULT_JMX_PORT = defaultPrefs.getInt("default.jmx.port", 8099);
+
 	public String DEFAULT_PASSWORD = defaultPrefs.get("default.password", StringPool.EMPTY);
+
+	public int DEFAULT_TELNET_PORT = defaultPrefs.getInt("default.telnet.port", 11311);
 
 	public String DEFAULT_USERNAME = defaultPrefs.get("default.username", StringPool.EMPTY);
 

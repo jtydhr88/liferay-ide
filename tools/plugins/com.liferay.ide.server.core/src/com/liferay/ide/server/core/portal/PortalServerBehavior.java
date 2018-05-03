@@ -14,6 +14,8 @@
 
 package com.liferay.ide.server.core.portal;
 
+import aQute.remote.api.Agent;
+
 import com.liferay.ide.core.IBundleProject;
 import com.liferay.ide.core.LiferayCore;
 import com.liferay.ide.core.LiferayRuntimeClasspathEntry;
@@ -182,9 +184,8 @@ public class PortalServerBehavior
 
 		try {
 			String url = "http://" + getServer().getHost();
-			PortalBundle portalBundle = _getPortalRuntime().getPortalBundle();
 
-			int port = Integer.parseInt(portalBundle.getHttpPort());
+			final int port = Integer.parseInt(_getPortalServer().getHttpPort());
 
 			if (port != 80) {
 				url += ":" + port;
@@ -257,13 +258,13 @@ public class PortalServerBehavior
 		String existingProgArgs = launch.getAttribute(ATTR_PROGRAM_ARGUMENTS, (String)null);
 
 		launch.setAttribute(
-			ATTR_PROGRAM_ARGUMENTS, _mergeArguments(existingProgArgs, _getRuntimeStartProgArgs(), null));
+			ATTR_PROGRAM_ARGUMENTS, _mergeArguments(existingProgArgs, _getRuntimeStartProgArgs(), null, true));
 
 		String existingVMArgs = launch.getAttribute(ATTR_VM_ARGUMENTS, (String)null);
 
 		String[] configVMArgs = _getRuntimeStartVMArguments();
 
-		launch.setAttribute(ATTR_VM_ARGUMENTS, _mergeArguments(existingVMArgs, configVMArgs, null));
+		launch.setAttribute(ATTR_VM_ARGUMENTS, _mergeArguments(existingVMArgs, configVMArgs, null, false));
 
 		PortalRuntime portalRuntime = _getPortalRuntime();
 
@@ -411,12 +412,12 @@ public class PortalServerBehavior
 			if (existingVMArgs.indexOf(_JMX_EXCLUDE_ARGS[0]) >= 0) {
 				wc.setAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
-					_mergeArguments(existingVMArgs, _getRuntimeStopVMArguments(), _JMX_EXCLUDE_ARGS));
+					_mergeArguments(existingVMArgs, _getRuntimeStopVMArguments(), _JMX_EXCLUDE_ARGS, false));
 			}
 			else {
 				wc.setAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
-					_mergeArguments(existingVMArgs, _getRuntimeStopVMArguments(), null));
+					_mergeArguments(existingVMArgs, _getRuntimeStopVMArguments(), null, true));
 			}
 
 			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, args);
@@ -524,13 +525,14 @@ public class PortalServerBehavior
 		return retval;
 	}
 
-	private PortalServer _getPortalServer() {
+	private PortalServer _getPortalServer()
+	{
+
 		PortalServer retval = null;
 
-		IServer s = getServer();
-
-		if (s != null) {
-			retval = (PortalServer)s.loadAdapter(PortalServer.class, null);
+		if (getServer() != null)
+		{
+			retval = (PortalServer)getServer().loadAdapter(PortalServer.class, null);
 		}
 
 		return retval;
@@ -607,6 +609,10 @@ public class PortalServerBehavior
 
 		Collections.addAll(retval, portalBundle.getRuntimeStartVMArgs());
 
+		retval.add("-D" + Agent.AGENT_SERVER_PORT_KEY + "=" + _getPortalServer().getAgentPort());
+
+		//retval.add("-Dcom.sun.management.jmxremote.port=" + _getPortalServer().getJmxPort());
+
 		return retval.toArray(new String[0]);
 	}
 
@@ -632,7 +638,9 @@ public class PortalServerBehavior
 		return retval.toArray(new String[0]);
 	}
 
-	private String _mergeArguments(String orgArgsString, String[] newArgs, String[] excludeArgs) {
+	private String _mergeArguments(
+		final String orgArgsString, final String[] newArgs, final String[] excludeArgs, boolean keepActionLast) {
+
 		String retval = null;
 
 		if (ListUtil.isEmpty(newArgs) && ListUtil.isEmpty(excludeArgs)) {
@@ -645,7 +653,7 @@ public class PortalServerBehavior
 
 			// replace and null out all newArgs that already exist
 
-			int size = newArgs.length;
+			final int size = newArgs.length;
 
 			for (int i = 0; i < size; i++) {
 				if (newArgs[i].startsWith("-Xbootclasspath")) {
@@ -656,8 +664,8 @@ public class PortalServerBehavior
 					continue;
 				}
 
-				int ind = newArgs[i].indexOf(" ");
-				int ind2 = newArgs[i].indexOf("=");
+				final int ind = newArgs[i].indexOf(" ");
+				final int ind2 = newArgs[i].indexOf("=");
 
 				if ((ind >= 0) && ((ind2 == -1) || (ind < ind2))) {
 
@@ -666,16 +674,42 @@ public class PortalServerBehavior
 					int index = retval.indexOf(newArgs[i].substring(0, ind + 1));
 
 					if ((index == 0) || ((index > 0) && Character.isWhitespace(retval.charAt(index - 1)))) {
+
+						// replace
+
+						String s = retval.substring(0, index);
+						int index2 = _getNextToken(retval, index + ind + 1);
+
+						if (index2 >= 0) {
+							retval = s + newArgs[i] + retval.substring(index2);
+						}
+						else {
+							retval = s + newArgs[i];
+						}
+
 						newArgs[i] = null;
 					}
 				}
 				else if (ind2 >= 0) {
 
-					// a =b style
+					// a = b style
 
 					int index = retval.indexOf(newArgs[i].substring(0, ind2 + 1));
 
 					if ((index == 0) || ((index > 0) && Character.isWhitespace(retval.charAt(index - 1)))) {
+
+						// replace
+
+						String s = retval.substring(0, index);
+						int index2 = _getNextToken(retval, index);
+
+						if (index2 >= 0) {
+							retval = s + newArgs[i] + retval.substring(index2);
+						}
+						else {
+							retval = s + newArgs[i];
+						}
+
 						newArgs[i] = null;
 					}
 				}
@@ -686,14 +720,41 @@ public class PortalServerBehavior
 					int index = retval.indexOf(newArgs[i]);
 
 					if ((index == 0) || ((index > 0) && Character.isWhitespace(retval.charAt(index - 1)))) {
-						newArgs[i] = null;
+
+						// replace
+
+						String s = retval.substring(0, index);
+						int index2 = _getNextToken(retval, index);
+
+						if (!keepActionLast || (i < (size - 1))) {
+							if (index2 >= 0) {
+								retval = s + newArgs[i] + retval.substring(index2);
+							}
+							else {
+								retval = s + newArgs[i];
+							}
+
+							newArgs[i] = null;
+						}
+						else {
+
+							// The last VM argument needs to remain last,
+							// remove original arg and append the vmArg later
+
+							if (index2 >= 0) {
+								retval = s + retval.substring(index2);
+							}
+							else {
+								retval = s;
+							}
+						}
 					}
 				}
 			}
 
 			// remove excluded arguments
 
-			if (ListUtil.isNotEmpty(excludeArgs)) {
+			if ((excludeArgs != null) && (excludeArgs.length > 0)) {
 				for (int i = 0; i < excludeArgs.length; i++) {
 					int ind = excludeArgs[i].indexOf(" ");
 					int ind2 = excludeArgs[i].indexOf("=");
@@ -715,8 +776,8 @@ public class PortalServerBehavior
 
 								// If remainder will become the first argument, remove leading blanks
 
-								while ((index2 < retval.length()) &&
-									   Character.isWhitespace(retval.charAt(index2)))index2 += 1;
+								while ((index2 < retval.length()) && Character.isWhitespace(retval.charAt(index2)))
+											index2 += 1;
 								retval = s + retval.substring(index2);
 							}
 							else retval = s;
@@ -724,7 +785,7 @@ public class PortalServerBehavior
 					}
 					else if (ind2 >= 0) {
 
-						// a =b style
+						// a = b style
 
 						int index = retval.indexOf(excludeArgs[i].substring(0, ind2 + 1));
 
@@ -739,8 +800,8 @@ public class PortalServerBehavior
 
 								// If remainder will become the first argument, remove leading blanks
 
-								while ((index2 < retval.length()) &&
-									   Character.isWhitespace(retval.charAt(index2)))index2 += 1;
+								while ((index2 < retval.length()) && Character.isWhitespace(retval.charAt(index2)))
+											index2 += 1;
 								retval = s + retval.substring(index2);
 							}
 							else retval = s;
@@ -763,13 +824,11 @@ public class PortalServerBehavior
 
 								// Remove leading blanks
 
-								while ((index2 < retval.length()) &&
-									   Character.isWhitespace(retval.charAt(index2)))index2 += 1;
+								while ((index2 < retval.length()) && Character.isWhitespace(retval.charAt(index2)))
+											index2 += 1;
 								retval = s + retval.substring(index2);
 							}
-							else {
-								retval = s;
-							}
+							else retval = s;
 						}
 					}
 				}
@@ -805,7 +864,12 @@ public class PortalServerBehavior
 					xbootIndex = retval.lastIndexOf("-Xbootclasspath");
 				}
 
-				retval = retval + " " + xbootClasspath;
+				if (!Character.isWhitespace(retval.charAt(retval.length() - 1))) {
+					retval = retval + " " + xbootClasspath;
+				}
+				else {
+					retval = retval + xbootClasspath;
+				}
 			}
 		}
 

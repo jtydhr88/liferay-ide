@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IStatus;
  */
 public interface IRemoteServerWorkingCopy extends ILiferayServerWorkingCopy, IRemoteServer {
 
-	public void setHTTPPort(String httpPort);
+	public void setHttpPort(String httpPort);
 
 	public void setLiferayPortalContextPath(String path);
 

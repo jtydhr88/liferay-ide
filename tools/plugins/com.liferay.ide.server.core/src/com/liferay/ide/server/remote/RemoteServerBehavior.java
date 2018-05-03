@@ -76,13 +76,13 @@ public class RemoteServerBehavior
 	}
 
 	public boolean canConnect() {
-		IStatus status = SocketUtil.canConnect(getServer().getHost(), getRemoteServer().getHTTPPort());
+		IStatus status = SocketUtil.canConnect(getServer().getHost(), getRemoteServer().getHttpPort());
 
 		if ((status != null) && status.isOK()) {
 			return true;
 		}
 		else {
-			status = SocketUtil.canConnectProxy(getServer().getHost(), getRemoteServer().getHTTPPort());
+			status = SocketUtil.canConnectProxy(getServer().getHost(), getRemoteServer().getHttpPort());
 
 			if ((status != null) && status.isOK()) {
 				return true;

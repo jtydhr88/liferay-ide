@@ -48,3 +48,6 @@ Export-Package: com.liferay.ide.server.ui,
  com.liferay.ide.server.ui.navigator,
  com.liferay.ide.server.ui.portal,
  com.liferay.ide.server.ui.wizard
+Bundle-ClassPath: lib/jackson-core-asl-1.9.13.jar,
+ lib/jackson-mapper-asl-1.9.13.jar,
+ .

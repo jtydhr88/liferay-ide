@@ -17,13 +17,17 @@ package com.liferay.ide.server.core.portal;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.ListUtil;
 import com.liferay.ide.core.util.StringPool;
+import com.liferay.ide.server.core.ILiferayServer;
 import com.liferay.ide.server.core.LiferayServerCore;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.collections.list.SetUniqueList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -48,6 +52,27 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
 	public PortalServerDelegate() {
 	}
 
+	public void applyChange(LiferayServerPort port, IProgressMonitor monitor) throws CoreException
+	{
+
+		String storeLocation = port.getStoreLocation();
+
+		if (storeLocation.equals(LiferayServerPort.defaultStoreInServer))
+		{
+			setAttribute(port.getId(), port.getPort());
+		}
+
+		else
+		{
+			PortalBundleConfiguration bundleConfiguration = initBundleConfiguration();
+
+			if (bundleConfiguration != null)
+			{
+				bundleConfiguration.applyChange(port);
+			}
+		}
+	}
+
 	@Override
 	public IStatus canModifyModules(IModule[] add, IModule[] remove) {
 		IStatus retval = Status.OK_STATUS;
@@ -65,6 +90,13 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
 		}
 
 		return retval;
+	}
+
+	@Override
+	public int getAgentPort()
+	{
+
+		return getAttribute(ATTR_AGENT_PORT, ILiferayServer.DEFAULT_AGENT_PORT);
 	}
 
 	public int getAutoPublishTime() {
@@ -101,7 +133,14 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
 
 	@Override
 	public String getHttpPort() {
-		return getAttribute(ATTR_HTTP_PORT, DEFAULT_HTTP_PORT);
+		String httpPort = ILiferayServer.DEFAULT_HTTP_PORT;
+		PortalBundleConfiguration bundleConfiguration = initBundleConfiguration();
+
+		if (bundleConfiguration != null) {
+			httpPort = String.valueOf(bundleConfiguration.getHttpPort());
+		}
+
+		return httpPort;
 	}
 
 	public String getId() {
@@ -109,8 +148,36 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
 	}
 
 	@Override
+	public int getJmxPort()
+	{
+
+		return getAttribute(ATTR_JMX_PORT, ILiferayServer.DEFAULT_JMX_PORT);
+	}
+
+	@Override
 	public boolean getLaunchSettings() {
 		return getAttribute(PROPERTY_LAUNCH_SETTINGS, PortalServerConstants.DEFAULT_LAUNCH_SETTING);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<LiferayServerPort> getLiferayServerPorts()
+	{
+
+		List<LiferayServerPort> liferayServerPorts = SetUniqueList.decorate(new ArrayList<LiferayServerPort>());
+
+		PortalBundleConfiguration bundleConfiguration = initBundleConfiguration();
+
+		if (bundleConfiguration != null)
+		{
+			liferayServerPorts.addAll(_getVMServerPort());
+			liferayServerPorts.add(
+				new LiferayServerPort(
+					ATTR_TELNET_PORT, "Telnet", bundleConfiguration.getTelnetPort(), "TCPIP",
+					LiferayServerPort.defaultStoreInProperties));
+			liferayServerPorts.addAll(bundleConfiguration.getConfiguredServerPorts());
+		}
+
+		return liferayServerPorts;
 	}
 
 	public String[] getMemoryArgs() {
@@ -160,6 +227,22 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
 		return new IModule[] {module};
 	}
 
+	@Override
+	public int getTelnetPort()
+	{
+
+		IRuntime runtime = getServer().getRuntime();
+
+		PortalRuntime portalRuntime = (PortalRuntime)runtime.loadAdapter(
+			PortalRuntime.class, new NullProgressMonitor());
+
+		PortalBundle portalBundle = portalRuntime.getPortalBundle();
+
+		PortalBundleConfiguration initBundleConfiguration = portalBundle.initBundleConfiguration();
+
+		return initBundleConfiguration.getTelnetPort();
+	}
+
 	public String getUsername() {
 		return getAttribute(ATTR_USERNAME, DEFAULT_USERNAME);
 	}
@@ -177,7 +260,40 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
 	}
 
 	@Override
+	public synchronized void importRuntimeConfiguration(IRuntime runtime, IProgressMonitor monitor)
+		throws CoreException
+			   {
+
+		initBundleConfiguration();
+	}
+
+	public synchronized PortalBundleConfiguration initBundleConfiguration()
+	{
+
+		IRuntime runtime = getServer().getRuntime();
+
+		PortalRuntime portalRuntime = (PortalRuntime)runtime.loadAdapter(
+			PortalRuntime.class, new NullProgressMonitor());
+
+		PortalBundle portalBundle = portalRuntime.getPortalBundle();
+
+		return portalBundle.initBundleConfiguration();
+	}
+
+	@Override
 	public void modifyModules(IModule[] add, IModule[] remove, IProgressMonitor monitor) throws CoreException {
+	}
+
+	@Override
+	public void saveConfiguration(IProgressMonitor monitor) throws CoreException
+	{
+
+		PortalBundleConfiguration bundleConfiguration = initBundleConfiguration();
+
+		if (bundleConfiguration != null)
+		{
+			bundleConfiguration.save(monitor);
+		}
 	}
 
 	@Override
@@ -195,18 +311,6 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
 		setAttribute(PROPERTY_EXTERNAL_PROPERTIES, externalProperties);
 	}
 
-	public void setHttpPort(String httpPort) {
-		setAttribute(ATTR_HTTP_PORT, httpPort);
-
-		IRuntime rt = getServer().getRuntime();
-
-		PortalRuntime runtime = (PortalRuntime)rt.loadAdapter(PortalRuntime.class, new NullProgressMonitor());
-
-		PortalBundle portalRuntime = runtime.getPortalBundle();
-
-		portalRuntime.setHttpPort(httpPort);
-	}
-
 	@Override
 	public void setLaunchSettings(boolean launchSettings) {
 		setAttribute(PROPERTY_LAUNCH_SETTINGS, launchSettings);
@@ -222,6 +326,24 @@ public class PortalServerDelegate extends ServerDelegate implements PortalServer
 
 	public void setUsername(String username) {
 		setAttribute(ATTR_USERNAME, username);
+	}
+
+	private List<LiferayServerPort> _getVMServerPort()
+	{
+
+		List<LiferayServerPort> serverPorts = new ArrayList<>();
+
+		if (getServer() != null)
+		{
+			serverPorts.add(
+				new LiferayServerPort(
+					ATTR_AGENT_PORT, "Bnd Agent", getAgentPort(), "TCPIP", LiferayServerPort.defaultStoreInServer));
+			serverPorts.add(
+				new LiferayServerPort(
+					ATTR_JMX_PORT, "Jmx Client", getJmxPort(), "TCPIP", LiferayServerPort.defaultStoreInServer));
+		}
+
+		return serverPorts;
 	}
 
 	private static final List<String> _supportTypeList = Arrays.asList("liferay.bundle", "jst.web", "jst.utility");

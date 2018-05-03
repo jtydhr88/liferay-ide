@@ -27,8 +27,6 @@ public interface PortalServerConstants {
 
 	public boolean DEFAULT_DEVELOPER_MODE = false;
 
-	public String DEFAULT_HTTP_PORT = "8080";
-
 	public boolean DEFAULT_LAUNCH_SETTING = true;
 
 	public IEclipsePreferences defaultPrefs = DefaultScope.INSTANCE.getNode(LiferayServerCore.PLUGIN_ID);

@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import org.osgi.framework.Bundle;
@@ -35,6 +36,10 @@ import org.osgi.framework.BundleContext;
 public class LiferayServerUI extends AbstractUIPlugin {
 
 	public static final String IMG_NOTIFICATION = "imgNotification";
+
+	public static final String IMG_PORT = "imgPort";
+
+	public static final String IMG_PORT_WARNING = "imgPortWarning";
 
 	public static final String IMG_WIZ_RUNTIME = "imgWizRuntime";
 
@@ -54,6 +59,12 @@ public class LiferayServerUI extends AbstractUIPlugin {
 
 	public static LiferayServerUI getDefault() {
 		return _plugin;
+	}
+
+	public static Image getImage(String key) {
+		ImageRegistry imageRegistry = getDefault().getImageRegistry();
+
+		return imageRegistry.get(key);
 	}
 
 	public static ImageDescriptor getImageDescriptor(String key) {
@@ -83,6 +94,14 @@ public class LiferayServerUI extends AbstractUIPlugin {
 		return new Status(IStatus.INFO, PLUGIN_ID, msg, status.getException());
 	}
 
+	public static void logWarning(String msg)
+	{
+
+		ILog log = getDefault().getLog();
+
+		log.log(new Status(IStatus.WARNING, PLUGIN_ID, msg, null));
+	}
+
 	public LiferayServerUI() {
 	}
 
@@ -109,6 +128,8 @@ public class LiferayServerUI extends AbstractUIPlugin {
 
 		_registerImage(registry, IMG_WIZ_RUNTIME, "wizban/liferay_wiz.png");
 		_registerImage(registry, IMG_NOTIFICATION, "e16/liferay_logo_16.png");
+		_registerImage(registry, IMG_PORT, "e16/port.gif");
+		_registerImage(registry, IMG_PORT_WARNING, "e16/warn_16.png");
 
 		return registry;
 	}

@@ -87,8 +87,9 @@ public class LiferayGradleWorkspaceProjectProvider
 		String workspaceLocation = location.append(wsName).toPortableString();
 		boolean initBundle = op.getProvisionLiferayBundle().content();
 		String bundleUrl = op.getBundleUrl().content(false);
+		String serverName = op.getServerName().content();
 
-		return importProject(workspaceLocation, monitor, initBundle, bundleUrl);
+		return importProject(workspaceLocation, monitor, initBundle, bundleUrl, serverName);
 	}
 
 	@Override
@@ -99,7 +100,7 @@ public class LiferayGradleWorkspaceProjectProvider
 	}
 
 	@Override
-	public IStatus importProject(String location, IProgressMonitor monitor, boolean initBundle, String bundleUrl) {
+	public IStatus importProject(String location, IProgressMonitor monitor, boolean initBundle, String bundleUrl, String serverName) {
 		try {
 			final IStatus importJob = GradleUtil.importGradleProject(new File(location), monitor);
 

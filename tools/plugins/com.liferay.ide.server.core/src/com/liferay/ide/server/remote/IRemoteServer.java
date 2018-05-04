@@ -21,6 +21,7 @@ import org.eclipse.wst.server.core.model.IURLProvider;
 
 /**
  * @author Gregory Amerson
+ * @author Simon Jiang
  */
 public interface IRemoteServer extends ILiferayServer, IURLProvider {
 
@@ -28,7 +29,7 @@ public interface IRemoteServer extends ILiferayServer, IURLProvider {
 
 	public String getHost();
 
-	public String getHTTPPort();
+	public String getHttpPort();
 
 	public String getId();
 
@@ -47,8 +48,6 @@ public interface IRemoteServer extends ILiferayServer, IURLProvider {
 	public String ATTR_SERVER_MANAGER_CONTEXT_PATH = "server-manager-context-path";
 
 	public boolean DEFAULT_ADJUST_DEPLOYMENT_TIMESTAMP = defaultPrefs.getBoolean("adjust.deployment.timestamp", true);
-
-	public String DEFAULT_HTTP_PORT = defaultPrefs.get("default.http.port", StringPool.EMPTY);
 
 	public String DEFAULT_LIFERAY_PORTAL_CONTEXT_PATH = defaultPrefs.get(
 		"default.liferay.portal.context.path", StringPool.EMPTY);

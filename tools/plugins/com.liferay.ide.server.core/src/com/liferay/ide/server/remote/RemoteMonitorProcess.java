@@ -31,7 +31,7 @@ import org.eclipse.wst.server.core.IServer;
 /**
  * @author Gregory Amerson
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings({"rawtypes", "unchecked", "restriction"})
 public class RemoteMonitorProcess extends Process implements IProcess {
 
 	public RemoteMonitorProcess(IServer server, IServerManagerConnection connection, ILaunch launch) {
@@ -55,7 +55,6 @@ public class RemoteMonitorProcess extends Process implements IProcess {
 		return 0;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		return null;
 	}
@@ -90,7 +89,7 @@ public class RemoteMonitorProcess extends Process implements IProcess {
 			IRemoteServer wasServer = RemoteUtil.getRemoteServer(server);
 
 			if (wasServer != null) {
-				port = wasServer.getHTTPPort();
+				port = wasServer.getHttpPort();
 			}
 
 			label = (host != null ? host : StringPool.EMPTY) + ":" + (port != null ? port : StringPool.EMPTY);

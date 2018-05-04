@@ -29,10 +29,12 @@ import com.liferay.ide.server.core.ILiferayRuntime;
 import com.liferay.ide.server.core.ILiferayServer;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.core.gogo.GogoBundleDeployer;
+import com.liferay.ide.server.core.portal.LiferayServerPort;
 import com.liferay.ide.server.core.portal.PortalBundle;
 import com.liferay.ide.server.core.portal.PortalBundleFactory;
 import com.liferay.ide.server.core.portal.PortalRuntime;
 import com.liferay.ide.server.core.portal.PortalServer;
+import com.liferay.ide.server.core.portal.PortalServerDelegate;
 import com.liferay.ide.server.remote.IRemoteServer;
 import com.liferay.ide.server.remote.IServerManagerConnection;
 
@@ -137,6 +139,31 @@ public class ServerUtil {
 		serverWC.save(true, monitor);
 	}
 
+	public static List<String> checkUsingPorts(String serverName, LiferayServerPort port)
+	{
+
+		final List<String> servers = new ArrayList<>();
+
+		for (final IServer server : ServerCore.getServers()) {
+			final PortalServerDelegate portalServer = (PortalServerDelegate)server.loadAdapter(
+				PortalServer.class, null);
+
+			String name = server.getName();
+
+			if ((portalServer != null) && !name.equals(serverName)) {
+				for (final LiferayServerPort usedPort : portalServer.getLiferayServerPorts()) {
+					if (usedPort.getPort() == port.getPort()) {
+						if (!servers.contains(server.getName())) {
+							servers.add(server.getName());
+						}
+					}
+				}
+			}
+		}
+
+		return servers;
+	}
+
 	public static Map<String, String> configureAppServerProperties(ILiferayRuntime liferayRuntime) {
 		return getSDKRequiredProperties(liferayRuntime);
 	}
@@ -232,13 +259,11 @@ public class ServerUtil {
 		File implJar = implJarPath.toFile();
 
 		if (FileUtil.exists(implJar)) {
-			try(JarFile jar = new JarFile(implJar);) {
-
+			try (JarFile jar = new JarFile(implJar);) {
 				Properties categories = new Properties();
 				Properties props = new Properties();
 
-				try(InputStream input = jar.getInputStream(jar.getEntry("content/Language.properties"))){
-
+				try (InputStream input = jar.getInputStream(jar.getEntry("content/Language.properties"))) {
 					props.load(input);
 					Enumeration<?> names = props.propertyNames();
 
@@ -398,8 +423,8 @@ public class ServerUtil {
 	public static String getFragemtHostName(File bundleFile) {
 		String fragmentHostName = null;
 
-		try (InputStream input = Files.newInputStream( bundleFile.toPath() );
-				JarInputStream jarStream = new JarInputStream( input )) {
+		try (InputStream input = Files.newInputStream(bundleFile.toPath());
+			JarInputStream jarStream = new JarInputStream(input)) {
 
 			Manifest manifest = jarStream.getManifest();
 
@@ -566,13 +591,10 @@ public class ServerUtil {
 			boolean found = false;
 
 			for (File file : files) {
-
 				try (JarFile jar = new JarFile(file)) {
-
 					Enumeration<JarEntry> enu = jar.entries();
 
 					while (enu.hasMoreElements()) {
-
 						JarEntry entry = enu.nextElement();
 
 						String name = entry.getName();

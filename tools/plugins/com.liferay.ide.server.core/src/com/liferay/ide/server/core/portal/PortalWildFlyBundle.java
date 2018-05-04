@@ -71,19 +71,6 @@ public class PortalWildFlyBundle extends PortalJBossBundle {
 	}
 
 	@Override
-	public String[] getRuntimeStopProgArgs() {
-		List<String> args = new ArrayList<>();
-
-		args.add("-mp \"" + this.bundlePath.toPortableString() + "/modules\"");
-		args.add("org.jboss.as.cli");
-		args.add("--connect");
-		args.add("--controller=localhost:" + 9990);
-		args.add("--command=:shutdown");
-
-		return args.toArray(new String[0]);
-	}
-
-	@Override
 	public String getType() {
 		return "wildfly";
 	}

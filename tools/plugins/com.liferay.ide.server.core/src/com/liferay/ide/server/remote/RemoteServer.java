@@ -310,7 +310,7 @@ public class RemoteServer extends ServerDelegate implements IRemoteServerWorking
 		getServerWorkingCopy().setName(defaultName);
 	}
 
-	public void setHTTPPort(String httpPort) {
+	public void setHttpPort(String httpPort) {
 		setAttribute(ATTR_HTTP_PORT, httpPort);
 	}
 

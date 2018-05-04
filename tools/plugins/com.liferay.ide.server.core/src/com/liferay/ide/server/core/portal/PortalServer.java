@@ -14,14 +14,16 @@
 
 package com.liferay.ide.server.core.portal;
 
-import com.liferay.ide.core.util.StringPool;
 import com.liferay.ide.server.core.ILiferayServer;
 
 /**
  * @author Gregory Amerson
  * @author Terry Jia
+ * @author Simon Jiang
  */
 public interface PortalServer extends ILiferayServer {
+
+	public int getAgentPort();
 
 	public int getAutoPublishTime();
 
@@ -29,11 +31,13 @@ public interface PortalServer extends ILiferayServer {
 
 	public String getExternalProperties();
 
+	public int getJmxPort();
+
 	public boolean getLaunchSettings();
 
 	public String[] getMemoryArgs();
 
-	public String DEFAULT_HTTP_PORT = defaultPrefs.get("default.http.port", StringPool.EMPTY);
+	public int getTelnetPort();
 
 	public String ID = "com.liferay.ide.server.portal";
 

@@ -100,6 +100,8 @@ public class LiferayTomcatServer
 
 	@Override
 	public String getHttpPort() {
+		String retVal = DEFAULT_HTTP_PORT;
+
 		try {
 			TomcatConfiguration tomcatConfig = getTomcatConfiguration();
 
@@ -107,11 +109,13 @@ public class LiferayTomcatServer
 
 			Object port = mainPort.getPort();
 
-			return String.valueOf(port);
+			retVal = String.valueOf(port);
 		}
 		catch (CoreException ce) {
 			return null;
 		}
+
+		return retVal;
 	}
 
 	@Override

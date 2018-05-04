@@ -36,18 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 import org.osgi.framework.Version;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Simon Jiang
@@ -119,11 +112,6 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 	}
 
 	@Override
-	public int getJmxRemotePort() {
-		return getDefaultJMXRemotePort();
-	}
-
-	@Override
 	public IPath getLiferayHome() {
 		return liferayHome;
 	}
@@ -164,52 +152,26 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 		return _getPortalVersion(getAppServerPortalDir(), getBundleDependencyJars());
 	}
 
-	protected abstract IPath getAppServerLibDir();
+	@Override
+	public synchronized PortalBundleConfiguration initBundleConfiguration()
+	{
 
-	protected abstract int getDefaultJMXRemotePort();
+		if (bundleConfiguration == null)
+		{
+			bundleConfiguration = getBundleConfiguration();
 
-	protected String getHttpPortValue(
-		File xmlFile, String tagName, String attriName, String attriValue, String targetName) {
-
-		DocumentBuilder db = null;
-
-		DocumentBuilderFactory dbf = null;
-
-		try {
-			dbf = DocumentBuilderFactory.newInstance();
-
-			db = dbf.newDocumentBuilder();
-
-			Document document = db.parse(xmlFile);
-
-			NodeList connectorNodes = document.getElementsByTagName(tagName);
-
-			for (int i = 0; i < connectorNodes.getLength(); i++) {
-				Node node = connectorNodes.item(i);
-
-				NamedNodeMap attributes = node.getAttributes();
-
-				Node protocolNode = attributes.getNamedItem(attriName);
-
-				if (protocolNode != null) {
-					String nodeValue = protocolNode.getNodeValue();
-
-					if (nodeValue.equals(attriValue)) {
-						Node portNode = attributes.getNamedItem(targetName);
-
-						return portNode.getNodeValue();
-					}
-				}
-			}
-		}
-		catch (Exception e) {
-			LiferayServerCore.logError(e);
+			bundleConfiguration.load(new NullProgressMonitor());
 		}
 
-		return null;
+		return bundleConfiguration;
 	}
 
+	protected abstract IPath getAppServerLibDir();
+
+	protected abstract PortalBundleConfiguration getBundleConfiguration();
+
 	protected IPath autoDeployPath;
+	protected PortalBundleConfiguration bundleConfiguration;
 	protected IPath bundlePath;
 	protected IPath liferayHome;
 	protected IPath modulesPath;

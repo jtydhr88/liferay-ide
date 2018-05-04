@@ -91,8 +91,8 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
 				serverWC.setName(_initialServerName.replaceAll(_initialHostName, textHostname.getText()));
 			}
 		}
-		else if (src.equals(textHTTP)) {
-			remoteServerWC.setHTTPPort(textHTTP.getText());
+		else if (src.equals(textHttp)) {
+			remoteServerWC.setHttpPort(textHttp.getText());
 		}
 		else if (src.equals(textServerManagerContextPath)) {
 			remoteServerWC.setServerManagerContextPath(textServerManagerContextPath.getText());
@@ -165,10 +165,10 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
 
 		labelHttpPort.setText(Msgs.httpPortLabel);
 
-		textHTTP = new Text(connectionGroup, SWT.BORDER);
+		textHttp = new Text(connectionGroup, SWT.BORDER);
 
-		textHTTP.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-		textHTTP.addModifyListener(this);
+		textHttp.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+		textHttp.addModifyListener(this);
 
 		labelUsername = new Label(connectionGroup, SWT.NONE);
 
@@ -227,7 +227,7 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
 				public void widgetSelected(SelectionEvent e) {
 					try {
 						String url = MessageFormat.format(
-							installUrl, "http://" + textHostname.getText() + ":" + textHTTP.getText());
+							installUrl, "http://" + textHostname.getText() + ":" + textHttp.getText());
 						IWorkbench workbench = PlatformUI.getWorkbench();
 
 						IWorkbenchBrowserSupport browserSupport = workbench.getBrowserSupport();
@@ -281,7 +281,7 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
 		if ((serverWC != null) && (remoteServerWC != null)) {
 			ignoreModifyEvents = true;
 			textHostname.setText(serverWC.getHost());
-			textHTTP.setText(this.remoteServerWC.getHTTPPort());
+			textHttp.setText(this.remoteServerWC.getHttpPort());
 			textLiferayPortalContextPath.setText(remoteServerWC.getLiferayPortalContextPath());
 			textServerManagerContextPath.setText(remoteServerWC.getServerManagerContextPath());
 			textUsername.setText(this.remoteServerWC.getUsername());
@@ -391,10 +391,10 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
 			return LiferayServerUI.createErrorStatus(Msgs.specifyUsernamePassword);
 		}
 
-		String port = remoteServerWC.getHTTPPort();
+		String port = remoteServerWC.getHttpPort();
 
 		if (CoreUtil.isNullOrEmpty(port)) {
-			return LiferayServerUI.createErrorStatus(Msgs.specifyHTTPPort);
+			return LiferayServerUI.createErrorStatus(Msgs.specifyHttpPort);
 		}
 
 		IStatus status = remoteServerWC.validate(monitor);
@@ -421,7 +421,7 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
 	protected IRemoteServerWorkingCopy remoteServerWC;
 	protected IServerWorkingCopy serverWC;
 	protected Text textHostname;
-	protected Text textHTTP;
+	protected Text textHttp;
 	protected Text textLiferayPortalContextPath;
 	protected Text textPassword;
 	protected Text textServerManagerContextPath;
@@ -442,7 +442,7 @@ public class RemoteServerComposite extends Composite implements ModifyListener, 
 		public static String password;
 		public static String serverManagerContextPath;
 		public static String specifyHostname;
-		public static String specifyHTTPPort;
+		public static String specifyHttpPort;
 		public static String specifyUsernamePassword;
 		public static String username;
 		public static String validateConnection;

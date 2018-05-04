@@ -14,10 +14,8 @@
 
 package com.liferay.ide.server.core.portal;
 
-import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileListing;
 import com.liferay.ide.core.util.FileUtil;
-import com.liferay.ide.server.core.LiferayServerCore;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -27,27 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Simon Jiang
  */
 public class PortalJBossBundle extends AbstractPortalBundle {
-
-	public static final int DEFAULT_JMX_PORT = 2099;
 
 	public PortalJBossBundle(IPath path) {
 		super(path);
@@ -79,29 +63,13 @@ public class PortalJBossBundle extends AbstractPortalBundle {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return "JBoss AS";
+	public PortalBundleConfiguration getBundleConfiguration() {
+		return new JBossBundleConfiguration(this);
 	}
 
 	@Override
-	public String getHttpPort() {
-		String retVal = "8080";
-
-		File standaloneXmlFile = new File(
-			getAppServerDir().toPortableString(), "standalone/configuration/standalone.xml");
-
-		String portValue = getHttpPortValue(standaloneXmlFile, "socket-binding", "name", "http", "port");
-
-		if (!CoreUtil.empty(portValue)) {
-			if (portValue.lastIndexOf(":") == -1) {
-				retVal = portValue;
-			}
-			else {
-				retVal = portValue.substring(portValue.lastIndexOf(":") + 1, portValue.length() - 1);
-			}
-		}
-
-		return retVal;
+	public String getDisplayName() {
+		return "JBoss AS";
 	}
 
 	@Override
@@ -170,7 +138,6 @@ public class PortalJBossBundle extends AbstractPortalBundle {
 
 		args.add("-Dcom.sun.management.jmxremote");
 		args.add("-Dcom.sun.management.jmxremote.authenticate=false");
-		args.add("-Dcom.sun.management.jmxremote.port=" + getJmxRemotePort());
 		args.add("-Dcom.sun.management.jmxremote.ssl=false");
 		args.add("-Dorg.jboss.resolver.warning=true");
 		args.add("-Djava.net.preferIPv4Stack=true");
@@ -203,7 +170,25 @@ public class PortalJBossBundle extends AbstractPortalBundle {
 
 		args.add("-mp \"" + bundlePath.toPortableString() + "/modules\"");
 		args.add("org.jboss.as.cli");
-		args.add("--controller=localhost");
+
+		PortalBundleConfiguration bundleConfiguration = initBundleConfiguration();
+		int managetPort = 9990;
+
+		if (bundleConfiguration != null) {
+			List<LiferayServerPort> configuredServerPorts = bundleConfiguration.getConfiguredServerPorts();
+
+			for (LiferayServerPort serverPort : configuredServerPorts) {
+				String protocolName = serverPort.getProtocol();
+
+				if (protocolName.equalsIgnoreCase("management-http")) {
+					managetPort = serverPort.getPort();
+
+					break;
+				}
+			}
+		}
+
+		args.add("--controller=localhost:" + managetPort);
 		args.add("--connect");
 		args.add("--command=:shutdown");
 
@@ -266,72 +251,8 @@ public class PortalJBossBundle extends AbstractPortalBundle {
 	}
 
 	@Override
-	public void setHttpPort(String port) {
-		File standaloneXmlFile = new File(
-			getAppServerDir().toPortableString(), "standalone/configuration/standalone.xml");
-
-		_setHttpPortValue(standaloneXmlFile, "socket-binding", "name", "http", "port", port);
-	}
-
-	@Override
 	protected IPath getAppServerLibDir() {
 		return getAppServerDir().append("modules");
-	}
-
-	@Override
-	protected int getDefaultJMXRemotePort() {
-		return DEFAULT_JMX_PORT;
-	}
-
-	private void _setHttpPortValue(
-		File xmlFile, String tagName, String attriName, String attriValue, String targetName, String value) {
-
-		DocumentBuilder db = null;
-
-		DocumentBuilderFactory dbf = null;
-
-		try {
-			dbf = DocumentBuilderFactory.newInstance();
-
-			db = dbf.newDocumentBuilder();
-
-			Document document = db.parse(xmlFile);
-
-			NodeList connectorNodes = document.getElementsByTagName(tagName);
-
-			for (int i = 0; i < connectorNodes.getLength(); i++) {
-				Node node = connectorNodes.item(i);
-
-				NamedNodeMap attributes = node.getAttributes();
-
-				Node protocolNode = attributes.getNamedItem(attriName);
-
-				if (protocolNode != null) {
-					String nodeValue = protocolNode.getNodeValue();
-
-					if (nodeValue.equals(attriValue)) {
-						Node portNode = attributes.getNamedItem(targetName);
-
-						portNode.setNodeValue(value);
-
-						break;
-					}
-				}
-			}
-
-			TransformerFactory factory = TransformerFactory.newInstance();
-
-			Transformer transformer = factory.newTransformer();
-
-			DOMSource domSource = new DOMSource(document);
-
-			StreamResult result = new StreamResult(xmlFile);
-
-			transformer.transform(domSource, result);
-		}
-		catch (Exception e) {
-			LiferayServerCore.logError(e);
-		}
 	}
 
 }

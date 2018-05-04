@@ -14,16 +14,25 @@
 
 package com.liferay.ide.ui.liferay.page.editor;
 
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.allOf;
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.withMnemonic;
+
 import com.liferay.ide.ui.swtbot.page.CheckBox;
 import com.liferay.ide.ui.swtbot.page.Editor;
 import com.liferay.ide.ui.swtbot.page.Radio;
+import com.liferay.ide.ui.swtbot.page.SWTBotHyperlink;
 import com.liferay.ide.ui.swtbot.page.Text;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.hamcrest.Matcher;
 
 /**
  * @author Terry Jia
+ * @author Simon Jiang
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class ServerEditor extends Editor {
 
 	public ServerEditor(SWTWorkbenchBot bot) {
@@ -46,4 +55,12 @@ public class ServerEditor extends Editor {
 		return new CheckBox(getPart().bot(), "Use developer mode");
 	}
 
+	public ServerTable getServerPortTable() {
+		return new ServerTable(getPart().bot(), 0);
+	}
+
+	public SWTBotHyperlink getHyperlink() {
+		Matcher matcher = allOf(widgetOfType(Hyperlink.class), withMnemonic("Restore Default Setting"));
+		return new SWTBotHyperlink((Hyperlink) bot.widget(matcher, 0), matcher);
+	}
 }

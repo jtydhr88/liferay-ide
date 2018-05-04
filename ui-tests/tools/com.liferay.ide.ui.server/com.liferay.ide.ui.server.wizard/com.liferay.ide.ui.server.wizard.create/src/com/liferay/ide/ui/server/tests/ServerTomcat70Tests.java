@@ -17,7 +17,7 @@ package com.liferay.ide.ui.server.tests;
 import com.liferay.ide.ui.liferay.support.server.PureTomcat70Support;
 import com.liferay.ide.ui.liferay.support.server.ServerSupport;
 import com.liferay.ide.ui.server.wizard.base.ServerTomcat7xBase;
-import org.junit.Ignore;
+
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -26,6 +26,7 @@ import org.junit.Test;
  * @author Vicky Wang
  * @author Ashley Yuan
  * @author Ying Xu
+ * @author Simon Jiang
  */
 public class ServerTomcat70Tests extends ServerTomcat7xBase {
 
@@ -37,6 +38,7 @@ public class ServerTomcat70Tests extends ServerTomcat7xBase {
 	@Test
 	public void addLiferay7ServerFromMenu() {
 		super.addLiferay7ServerFromMenu();
+		serverEditorPortsChangeAndStart();
 	}
 
 	@Override
@@ -58,13 +60,6 @@ public class ServerTomcat70Tests extends ServerTomcat7xBase {
 		super.serverEditorCustomLaunchSettingsChangeAndStart();
 	}
 
-	@Ignore("To wait for IDE-3343")
-	@Test
-	public void serverEditorPortsChange() {
-		super.serverEditorPortsChange();
-	}
-
-	@Ignore("To wait for IDE-3343")
 	@Test
 	public void serverEditorPortsChangeAndStart() {
 		super.serverEditorPortsChangeAndStart();

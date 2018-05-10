@@ -16,8 +16,6 @@ package com.liferay.ide.gradle.core;
 
 import com.google.common.base.Optional;
 
-import com.gradleware.tooling.toolingutils.binding.Validator;
-
 import com.liferay.ide.core.util.FileUtil;
 
 import java.io.File;
@@ -32,14 +30,13 @@ import org.eclipse.buildship.core.configuration.GradleProjectNature;
 import org.eclipse.buildship.core.configuration.WorkspaceConfiguration;
 import org.eclipse.buildship.core.launch.GradleRunConfigurationAttributes;
 import org.eclipse.buildship.core.projectimport.ProjectImportConfiguration;
+import org.eclipse.buildship.core.util.binding.Validator;
 import org.eclipse.buildship.core.util.binding.Validators;
-import org.eclipse.buildship.core.util.gradle.GradleDistributionSerializer;
-import org.eclipse.buildship.core.util.gradle.GradleDistributionValidator;
-import org.eclipse.buildship.core.util.gradle.GradleDistributionWrapper;
-import org.eclipse.buildship.core.util.progress.AsyncHandler;
+import org.eclipse.buildship.core.util.gradle.GradleDistributionInfo;
 import org.eclipse.buildship.core.util.variable.ExpressionUtils;
 import org.eclipse.buildship.core.workspace.GradleBuild;
 import org.eclipse.buildship.core.workspace.NewProjectHandler;
+import org.eclipse.buildship.core.workspace.SynchronizationJob;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -55,9 +52,12 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 
+import org.gradle.tooling.GradleConnector;
+
 /**
  * @author Andy Wu
  * @author Lovett Li
+ * @author Charles Wu
  */
 @SuppressWarnings("restriction")
 public class GradleUtil {
@@ -75,8 +75,7 @@ public class GradleUtil {
 			Validators.requiredDirectoryValidator("Project root directory"),
 			Validators.nonWorkspaceFolderValidator("Project root directory"));
 
-		Validator<GradleDistributionWrapper> gradleDistributionValidator =
-			GradleDistributionValidator.gradleDistributionValidator();
+		Validator<GradleDistributionInfo> gradleDistributionValidator = GradleDistributionInfo.validator();
 
 		Validator<Boolean> applyWorkingSetsValidator = Validators.nullValidator();
 		Validator<List<String>> workingSetsValidator = Validators.nullValidator();
@@ -92,7 +91,7 @@ public class GradleUtil {
 
 		configuration.setProjectDir(dir);
 		configuration.setOverwriteWorkspaceSettings(false);
-		configuration.setGradleDistribution(GradleDistributionWrapper.from(gradleConfig.getGradleDistribution()));
+		configuration.setDistributionInfo(gradleConfig.getGradleDistribution().getDistributionInfo());
 		configuration.setGradleUserHome(gradleConfig.getGradleUserHome());
 		configuration.setApplyWorkingSets(false);
 		configuration.setBuildScansEnabled(gradleConfig.isBuildScansEnabled());
@@ -103,7 +102,9 @@ public class GradleUtil {
 
 		GradleBuild build = CorePlugin.gradleWorkspaceManager().getGradleBuild(buildConfig);
 
-		build.synchronize(NewProjectHandler.IMPORT_AND_MERGE, AsyncHandler.NO_OP);
+		SynchronizationJob synchronizeJob = new SynchronizationJob(NewProjectHandler.IMPORT_AND_MERGE, build);
+
+		synchronizeJob.schedule();
 
 		waitImport();
 
@@ -138,7 +139,14 @@ public class GradleUtil {
 
 		GradleBuild build = optional.get();
 
-		build.synchronize(NewProjectHandler.IMPORT_AND_MERGE);
+		try {
+			build.synchronize(
+				NewProjectHandler.IMPORT_AND_MERGE, GradleConnector.newCancellationTokenSource(),
+				new NullProgressMonitor());
+		}
+		catch (CoreException ce) {
+			GradleCore.logError(ce);
+		}
 	}
 
 	public static void runGradleTask(IProject project, String task, IProgressMonitor monitor) throws CoreException {
@@ -209,8 +217,7 @@ public class GradleUtil {
 			taskList.add(task);
 		}
 
-		String serializeString = GradleDistributionSerializer.INSTANCE.serializeToString(
-			buildConfig.getGradleDistribution());
+		String serializeString = buildConfig.getGradleDistribution().serializeToString();
 
 		return new GradleRunConfigurationAttributes(
 			taskList, projectDirectoryExpression, serializeString, gradleUserHome, null,

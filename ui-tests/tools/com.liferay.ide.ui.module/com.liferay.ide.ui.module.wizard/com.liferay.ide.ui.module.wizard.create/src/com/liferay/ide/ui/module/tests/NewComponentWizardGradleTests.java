@@ -30,6 +30,34 @@ import org.junit.Test;
 public class NewComponentWizardGradleTests extends SwtbotBase {
 
 	@Test
+	public void createComponentBrowsePackage() {
+		wizardAction.openNewLiferayModuleWizard();
+
+		wizardAction.newModule.prepareGradle(project.getName());
+
+		wizardAction.finish();
+
+		wizardAction.openNewLiferayComponentClassWizard();
+
+		String className = project.getName().substring(0, 1).toUpperCase() + project.getName().substring(1);
+		String packageName = project.getName();
+
+		wizardAction.newLiferayComponent.openSelectPackageNameDialog();
+
+		dialogAction.prepareText(packageName);
+
+		dialogAction.confirm();
+
+		wizardAction.finish();
+
+		Assert.assertTrue(
+			viewAction.project.visibleFileTry(
+				project.getName(), "src/main/java", packageName, className + "Portlet.java"));
+
+		viewAction.project.closeAndDelete(project.getName());
+	}
+
+	@Test
 	public void createComponentModelListener() {
 		wizardAction.openNewLiferayModuleWizard();
 
@@ -61,8 +89,8 @@ public class NewComponentWizardGradleTests extends SwtbotBase {
 
 	@Test
 	public void createComponentOnMultipleProject() {
-		String firstProjectName = "first-component-gradle";
-		String secondProjectName = "second-component-gradle";
+		String firstProjectName = project.getName() + "gradle1";
+		String secondProjectName = project.getName() + "gradle2";
 
 		wizardAction.openNewLiferayModuleWizard();
 
@@ -76,13 +104,15 @@ public class NewComponentWizardGradleTests extends SwtbotBase {
 
 		wizardAction.finish();
 
+		String className = firstProjectName.substring(0, 1).toUpperCase() + firstProjectName.substring(1);
+
 		wizardAction.openNewLiferayComponentClassWizard();
 
 		wizardAction.finish();
 
 		Assert.assertTrue(
 			viewAction.project.visibleFileTry(
-				firstProjectName, "src/main/java", "content", "FirstComponentGradlePortlet.java"));
+				firstProjectName, "src/main/java", "content", className + "Portlet.java"));
 
 		editorAction.close();
 
@@ -94,9 +124,11 @@ public class NewComponentWizardGradleTests extends SwtbotBase {
 
 		wizardAction.finish();
 
+		className = secondProjectName.substring(0, 1).toUpperCase() + secondProjectName.substring(1);
+
 		Assert.assertTrue(
 			viewAction.project.visibleFileTry(
-				secondProjectName, "src/main/java", "content", "SecondComponentGradlePortlet.java"));
+				secondProjectName, "src/main/java", "content", className + "Portlet.java"));
 
 		viewAction.project.closeAndDelete(firstProjectName);
 
@@ -158,7 +190,6 @@ public class NewComponentWizardGradleTests extends SwtbotBase {
 		viewAction.project.closeAndDelete(project.getName());
 	}
 
-	@Ignore
 	@Test
 	public void createComponentShortcuts() {
 		wizardAction.openNewLiferayModuleWizard();
@@ -166,6 +197,8 @@ public class NewComponentWizardGradleTests extends SwtbotBase {
 		wizardAction.newModule.prepareGradle(project.getName());
 
 		wizardAction.finish();
+
+		String className = project.getName().substring(0, 1).toUpperCase() + project.getName().substring(1);
 
 		wizardAction.openFileMenuLiferayComponentClassWizard();
 
@@ -175,7 +208,7 @@ public class NewComponentWizardGradleTests extends SwtbotBase {
 
 		Assert.assertTrue(
 			viewAction.project.visibleFileTry(
-				project.getName(), "src/main/java", "content", "ShortcutComponentGradleMVCPortlet.java"));
+				project.getName(), "src/main/java", "content", className + "MVCPortlet.java"));
 
 		editorAction.close();
 
@@ -187,7 +220,7 @@ public class NewComponentWizardGradleTests extends SwtbotBase {
 
 		Assert.assertTrue(
 			viewAction.project.visibleFileTry(
-				project.getName(), "src/main/java", "content", "ShortcutComponentGradleRestService.java"));
+				project.getName(), "src/main/java", "content", className + "RestService.java"));
 
 		editorAction.close();
 
@@ -197,40 +230,11 @@ public class NewComponentWizardGradleTests extends SwtbotBase {
 
 		Assert.assertTrue(
 			viewAction.project.visibleFileTry(
-				project.getName(), "src/main/java", "content", "ShortcutComponentGradlePortlet.java"));
+				project.getName(), "src/main/java", "content", className + "Portlet.java"));
 
 		viewAction.project.closeAndDelete(project.getName());
 	}
 
-	@Ignore
-	@Test
-	public void createComponentWithPackage() {
-		wizardAction.openNewLiferayModuleWizard();
-
-		wizardAction.newModule.prepareGradle(project.getName());
-
-		wizardAction.finish();
-
-		wizardAction.openNewLiferayComponentClassWizard();
-
-		String className = "TestComponentWithPackagesGradlePortlet";
-		String packageName = "test.component.with.packages.gradle.constants";
-
-		wizardAction.newLiferayComponent.openSelectPackageNameDialog();
-
-		dialogAction.prepareText(packageName);
-
-		dialogAction.confirm();
-
-		wizardAction.finish();
-
-		Assert.assertTrue(
-			viewAction.project.visibleFileTry(project.getName(), "src/main/java", packageName, className + ".java"));
-
-		viewAction.project.closeAndDelete(project.getName());
-	}
-
-	@Ignore
 	@Test
 	public void createDefaultComponent() {
 		wizardAction.openNewLiferayModuleWizard();
@@ -243,11 +247,12 @@ public class NewComponentWizardGradleTests extends SwtbotBase {
 
 		wizardAction.finish();
 
-		String className = "TestComponentdefaultGradlePortlet";
+		String className = project.getName().substring(0, 1).toUpperCase() + project.getName().substring(1);
 		String packageName = "content";
 
 		Assert.assertTrue(
-			viewAction.project.visibleFileTry(project.getName(), "src/main/java", packageName, className + ".java"));
+			viewAction.project.visibleFileTry(
+				project.getName(), "src/main/java", packageName, className + "Portlet.java"));
 
 		viewAction.project.closeAndDelete(project.getName());
 	}

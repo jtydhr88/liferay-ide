@@ -124,6 +124,34 @@ public class ValidationComponentTests extends SwtbotBase {
 	}
 
 	@Test
+	public void checkExistingComponentClass() {
+		String projectName = "test-component-myclass";
+		String packageName = "test.component.myclass.portlet";
+		String className = "TestComponentMyclassPortlet";
+
+		wizardAction.openNewLiferayModuleWizard();
+
+		wizardAction.newModule.prepareGradle(projectName);
+
+		wizardAction.finish();
+
+		wizardAction.openNewLiferayComponentClassWizard();
+
+		wizardAction.newLiferayComponent.packageName().setText(packageName);
+
+		Assert.assertEquals(packageName + "." + className + ALREADY_EXISTS, wizardAction.getValidationMsg(2));
+
+		wizardAction.newLiferayComponent.componentClassName().setText("testcomponentmyclassportlet");
+
+		//wait for IDE-4059 fixed
+		//Assert.assertEquals(packageName + "." + className + ALREADY_EXISTS, wizardAction.getValidationMsg(2));
+
+		wizardAction.cancel();
+
+		viewAction.project.closeAndDelete(projectName);
+	}
+
+	@Test
 	public void checkInfoInitialState() {
 		String projectName = "test-component-info-initial-state";
 

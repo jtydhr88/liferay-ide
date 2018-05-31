@@ -47,6 +47,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -174,7 +175,7 @@ public class ProjectCore extends Plugin {
 
 	public static IPortletFramework getPortletFramework(String name) {
 		for (IPortletFramework framework : getPortletFrameworks()) {
-			if (framework.getShortName().equals(name)) {
+			if (name.equals(framework.getShortName())) {
 				return framework;
 			}
 		}
@@ -187,8 +188,10 @@ public class ProjectCore extends Plugin {
 			return _portletFrameworks;
 		}
 
+		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+
 		IConfigurationElement[] elements =
-			Platform.getExtensionRegistry().getConfigurationElementsFor(IPortletFramework.EXTENSION_ID);
+			extensionRegistry.getConfigurationElementsFor(IPortletFramework.EXTENSION_ID);
 
 		if (ListUtil.isEmpty(elements)) {
 			return _portletFrameworks;
@@ -300,7 +303,7 @@ public class ProjectCore extends Plugin {
 		try {
 			IWorkspace workspace = CoreUtil.getWorkspace();
 
-			IProject project = workspace.getRoot().getProject(projectName);
+			IProject project = CoreUtil.getProject(projectName);
 
 			IProjectDescription desc = workspace.newProjectDescription(project.getName());
 
@@ -325,7 +328,9 @@ public class ProjectCore extends Plugin {
 		LiferayDescriptorHelper[] helpers = _getDescriptorHelpers(project, type);
 
 		for (LiferayDescriptorHelper helper : helpers) {
-			status = helper.getDescriptorOperation(type).execute(params);
+			IDescriptorOperation descriptorOperation = helper.getDescriptorOperation(type);
+
+			status = descriptorOperation.execute(params);
 
 			if (!status.isOK()) {
 				return status;
@@ -355,15 +360,15 @@ public class ProjectCore extends Plugin {
 
 		_liferayLegacyProjectUpdaterTracker.open();
 
-		CoreUtil.getWorkspace().addResourceChangeListener(
-			_pluginPackageResourceListener, IResourceChangeEvent.POST_CHANGE);
+		IWorkspace workspace = CoreUtil.getWorkspace();
 
-		CoreUtil.getWorkspace().addResourceChangeListener(
-			_sdkBuildPropertiesResourceListener, IResourceChangeEvent.POST_CHANGE);
+		workspace.addResourceChangeListener(_pluginPackageResourceListener, IResourceChangeEvent.POST_CHANGE);
 
-		CoreUtil.getWorkspace().addResourceChangeListener(_sdkProjectDeleteListener, IResourceChangeEvent.PRE_DELETE);
+		workspace.addResourceChangeListener(_sdkBuildPropertiesResourceListener, IResourceChangeEvent.POST_CHANGE);
 
-		CoreUtil.getWorkspace().addResourceChangeListener(
+		workspace.addResourceChangeListener(_sdkProjectDeleteListener, IResourceChangeEvent.PRE_DELETE);
+
+		workspace.addResourceChangeListener(
 			new IResourceChangeListener() {
 
 				public void resourceChanged(IResourceChangeEvent event) {
@@ -378,12 +383,16 @@ public class ProjectCore extends Plugin {
 								return;
 							}
 
-							String projectLocation = project.getLocation().toOSString();
+							IPath location = project.getLocation();
+	
+							String projectLocation = location.toOSString();
 
 							IFolder bundlesFolder = project.getFolder(LiferayWorkspaceUtil.getHomeDir(projectLocation));
 
 							if (FileUtil.exists(bundlesFolder)) {
-								File file = bundlesFolder.getLocation().toFile();
+								IPath bundlesFolderLocation = bundlesFolder.getLocation();
+
+								File file = bundlesFolderLocation.toFile();
 
 								File portalBundle = file.getCanonicalFile();
 
@@ -417,7 +426,7 @@ public class ProjectCore extends Plugin {
 												return true;
 											}
 
-											File file = deletedRes.getLocation().toFile();
+											File file = FileUtil.getFile(deletedRes);
 
 											File portalBundle = file.getCanonicalFile();
 
@@ -450,16 +459,18 @@ public class ProjectCore extends Plugin {
 
 		super.stop(context);
 
+		IWorkspace workspace = CoreUtil.getWorkspace();
+
 		if (_pluginPackageResourceListener != null) {
-			CoreUtil.getWorkspace().removeResourceChangeListener(_pluginPackageResourceListener);
+			workspace.removeResourceChangeListener(_pluginPackageResourceListener);
 		}
 
 		if (_sdkBuildPropertiesResourceListener != null) {
-			CoreUtil.getWorkspace().removeResourceChangeListener(_sdkBuildPropertiesResourceListener);
+			workspace.removeResourceChangeListener(_sdkBuildPropertiesResourceListener);
 		}
 
 		if (_sdkProjectDeleteListener != null) {
-			CoreUtil.getWorkspace().removeResourceChangeListener(_sdkProjectDeleteListener);
+			workspace.removeResourceChangeListener(_sdkProjectDeleteListener);
 		}
 	}
 
@@ -474,7 +485,9 @@ public class ProjectCore extends Plugin {
 			return null;
 		}
 
-		LiferayDescriptorHelper[] allHelpers = LiferayDescriptorHelperReader.getInstance().getAllHelpers();
+		LiferayDescriptorHelperReader instance = LiferayDescriptorHelperReader.getInstance();
+
+		LiferayDescriptorHelper[] allHelpers = instance.getAllHelpers();
 
 		for (LiferayDescriptorHelper helper : allHelpers) {
 			helper.setProject(project);

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.modeling.ProgressMonitor;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.platform.ProgressMonitorBridge;
@@ -39,7 +40,9 @@ public class NewLiferayWorkspaceOpMethods {
 		Status retval = Status.createOkStatus();
 
 		try {
-			NewLiferayProjectProvider<NewLiferayWorkspaceOp> provider = op.getProjectProvider().content(true);
+			Value<NewLiferayWorkspaceProjectProvider<NewLiferayWorkspaceOp>> projectProvider = op.getProjectProvider();
+
+			NewLiferayProjectProvider<NewLiferayWorkspaceOp> provider = projectProvider.content(true);
 
 			IStatus status = provider.createNewProject(op, monitor);
 
@@ -68,8 +71,11 @@ public class NewLiferayWorkspaceOpMethods {
 		try {
 			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ProjectCore.PLUGIN_ID);
 
-			prefs.put(ProjectCore.PREF_DEFAULT_LIFERAY_VERSION_OPTION, op.getLiferayVersion().text());
-			prefs.put(ProjectCore.PREF_DEFAULT_WORKSPACE_PROJECT_BUILD_TYPE_OPTION, op.getProjectProvider().text());
+			Value<String> liferayVersion = op.getLiferayVersion();
+			Value<NewLiferayWorkspaceProjectProvider<NewLiferayWorkspaceOp>> projectProvider = op.getProjectProvider();
+
+			prefs.put(ProjectCore.PREF_DEFAULT_LIFERAY_VERSION_OPTION, liferayVersion.text());
+			prefs.put(ProjectCore.PREF_DEFAULT_WORKSPACE_PROJECT_BUILD_TYPE_OPTION, projectProvider.text());
 
 			prefs.flush();
 		}

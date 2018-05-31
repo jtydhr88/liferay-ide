@@ -254,6 +254,15 @@ public class FileUtil {
 		return file.getLocation().toFile();
 	}
 
+	public static File getFile(IResource resource) {
+		if (notExists(resource)) {
+			return null;
+		}
+		IPath location = resource.getLocation();
+
+		return location.toFile();
+	}
+
 	public static File getFile(IPath path) {
 		if (notExists(path)) {
 			return null;

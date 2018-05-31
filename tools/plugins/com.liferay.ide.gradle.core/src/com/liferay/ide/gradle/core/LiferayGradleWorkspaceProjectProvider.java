@@ -102,11 +102,19 @@ public class LiferayGradleWorkspaceProjectProvider
 			return importProjectStatus;
 		}
 
-		String bundleUrl = op.getBundleUrl().content(false);
-		String serverName = op.getServerName().content(true);
-		boolean initBundle = op.getProvisionLiferayBundle().content();
+		Value<Boolean> provisionLiferayBundleValue = op.getProvisionLiferayBundle();
+
+		boolean initBundle = provisionLiferayBundleValue.content();
 
 		if (initBundle) {
+			Value<String> bundleUrlValue = op.getBundleUrl();
+
+			String bundleUrl = bundleUrlValue.content(false);
+
+			Value<String> serverNameValue = op.getServerName();
+
+			String serverName = serverNameValue.content(true);
+
 			initBundle(bundleUrl, serverName, wsName);
 		}
 
@@ -181,14 +189,15 @@ public class LiferayGradleWorkspaceProjectProvider
 
 		};
 
-		job.addJobChangeListener(new JobChangeAdapter() {
+		job.addJobChangeListener(
+			new JobChangeAdapter() {
 
-			@Override
-			public void done(IJobChangeEvent event) {
-				LiferayWorkspaceUtil.addPortalRuntime(serverName);
-			}
+				@Override
+				public void done(IJobChangeEvent event) {
+					LiferayWorkspaceUtil.addPortalRuntime(serverName);
+				}
 
-		});
+			});
 
 		job.setSystem(true);
 
@@ -205,9 +214,9 @@ public class LiferayGradleWorkspaceProjectProvider
 			}
 		}
 
-		Optional<Object> nullableAdaptable = Optional.ofNullable(adaptable);
-
-		return nullableAdaptable.filter(
+		return Optional.ofNullable(
+			adaptable
+		).filter(
 			i -> i instanceof IServer
 		).map(
 			IServer.class::cast
@@ -232,9 +241,9 @@ public class LiferayGradleWorkspaceProjectProvider
 	}
 
 	private static IWorkspaceProject _getWorkspaceProjectFromLiferayHome(final IPath liferayHome) {
-		Optional<IProject> workspace = Optional.ofNullable(LiferayWorkspaceUtil.getWorkspaceProject());
-
-		return workspace.filter(
+		return Optional.ofNullable(
+			LiferayWorkspaceUtil.getWorkspaceProject()
+		).filter(
 			workspaceProject -> {
 				IPath workspaceProjectLocation = workspaceProject.getRawLocation();
 

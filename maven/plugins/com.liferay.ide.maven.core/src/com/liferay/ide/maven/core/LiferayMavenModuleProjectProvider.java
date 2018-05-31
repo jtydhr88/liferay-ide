@@ -32,6 +32,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.sapphire.ElementList;
+import org.eclipse.sapphire.Value;
+import org.eclipse.sapphire.modeling.Path;
 import org.eclipse.sapphire.platform.PathBridge;
 
 /**
@@ -45,31 +47,47 @@ public class LiferayMavenModuleProjectProvider
 	public IStatus createNewProject(NewLiferayModuleProjectOp op, IProgressMonitor monitor) throws CoreException {
 		IStatus retval = Status.OK_STATUS;
 
-		String projectName = op.getProjectName().content();
+		Value<String> projectNameValue = op.getProjectName();
 
-		IPath location = PathBridge.create(op.getLocation().content());
+		String projectName = projectNameValue.content();
 
-		String className = op.getComponentName().content();
+		Value<Path> locationValue = op.getLocation();
 
-		String liferayVersion = op.getLiferayVersion().content();
+		IPath location = PathBridge.create(locationValue.content());
 
-		String serviceName = op.getServiceName().content();
+		Value<String> componentNameValue = op.getComponentName();
 
-		String packageName = op.getPackageName().content();
+		String className = componentNameValue.content();
+
+		Value<String> liferayVersionValue = op.getLiferayVersion();
+
+		String liferayVersion = liferayVersionValue.content();
+
+		Value<String> serviceNameValue = op.getServiceName();
+
+		String serviceName = serviceNameValue.content();
+
+		Value<String> packageNameValue = op.getPackageName();
+
+		String packageName = packageNameValue.content();
 
 		ElementList<PropertyKey> propertyKeys = op.getPropertyKeys();
 
 		List<String> properties = new ArrayList<>();
 
 		for (PropertyKey propertyKey : propertyKeys) {
-			properties.add(propertyKey.getName().content(true) + "=" + propertyKey.getValue().content(true));
+			Value<String> name = propertyKey.getName();
+			Value<String> value = propertyKey.getValue();
+
+			properties.add(name.content(true) + "=" + value.content(true));
 		}
 
 		File targetDir = location.toFile();
 
 		targetDir.mkdirs();
+		Value<String> projectTemplateNameValue = op.getProjectTemplateName();
 
-		String projectTemplateName = op.getProjectTemplateName().content();
+		String projectTemplateName = projectTemplateNameValue.content();
 
 		StringBuilder sb = new StringBuilder();
 

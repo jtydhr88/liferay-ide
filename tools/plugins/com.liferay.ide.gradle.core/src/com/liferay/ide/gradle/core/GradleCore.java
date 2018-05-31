@@ -19,6 +19,7 @@ import com.liferay.ide.core.LiferayCore;
 import java.io.File;
 
 import org.eclipse.buildship.core.CorePlugin;
+import org.eclipse.buildship.core.event.ListenerRegistry;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
@@ -87,7 +88,9 @@ public class GradleCore extends Plugin {
 	}
 
 	public static <T> T getToolingModel(Class<T> modelClass, IProject gradleProject) {
-		return getToolingModel(modelClass, gradleProject.getLocation().toFile());
+		IPath location = gradleProject.getLocation();
+
+		return getToolingModel(modelClass, location.toFile());
 	}
 
 	public static void logError(Exception ex) {
@@ -120,11 +123,15 @@ public class GradleCore extends Plugin {
 
 		_plugin = this;
 
-		CorePlugin.listenerRegistry().addEventListener(_gradleProjectCreatedListener);
+		ListenerRegistry listenerRegistry = CorePlugin.listenerRegistry();
+
+		listenerRegistry.addEventListener(_gradleProjectCreatedListener);
 	}
 
 	public void stop(BundleContext context) throws Exception {
-		CorePlugin.listenerRegistry().removeEventListener(_gradleProjectCreatedListener);
+		ListenerRegistry listenerRegistry = CorePlugin.listenerRegistry();
+
+		listenerRegistry.removeEventListener(_gradleProjectCreatedListener);
 
 		_plugin = null;
 

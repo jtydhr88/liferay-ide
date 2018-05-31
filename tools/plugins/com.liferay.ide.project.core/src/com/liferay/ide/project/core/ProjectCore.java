@@ -38,15 +38,18 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
@@ -115,6 +118,22 @@ public class ProjectCore extends Plugin {
 		return createErrorStatus(PLUGIN_ID, msg);
 	}
 
+	public static IStatus createErrorStatus(String msg, boolean erroLog) {
+		if (erroLog) {
+			logError(msg);
+		}
+
+		return createErrorStatus(PLUGIN_ID, msg);
+	}
+
+	public static IStatus createErrorStatus(String msg, Exception e, boolean erroLog) {
+		if (erroLog) {
+			logError(msg, e);
+		}
+
+		return createErrorStatus(PLUGIN_ID, msg, e);
+	}
+
 	public static IStatus createErrorStatus(String pluginId, String msg) {
 		return new Status(IStatus.ERROR, pluginId, msg);
 	}
@@ -129,14 +148,6 @@ public class ProjectCore extends Plugin {
 
 	public static IStatus createWarningStatus(String message) {
 		return new Status(IStatus.WARNING, PLUGIN_ID, message);
-	}
-
-	public static IStatus createWarningStatus(String message, String id) {
-		return new Status(IStatus.WARNING, id, message);
-	}
-
-	public static IStatus createWarningStatus(String message, String id, Exception e) {
-		return new Status(IStatus.WARNING, id, message, e);
 	}
 
 	public static IComponentTemplate getComponentTemplate(String templateName) {
@@ -283,6 +294,20 @@ public class ProjectCore extends Plugin {
 
 	public static void logWarning(String msg) {
 		logError(createWarningStatus(msg));
+	}
+
+	public static IProject openProject(String projectName, IPath dir, IProgressMonitor monitor) throws CoreException {
+		IWorkspace workspace = CoreUtil.getWorkspace();
+
+		IProject project = CoreUtil.getProject(projectName);
+
+		IProjectDescription desc = workspace.newProjectDescription(project.getName());
+
+		desc.setLocation(dir);
+		project.create(desc, monitor);
+		project.open(monitor);
+
+		return project;
 	}
 
 	public static IStatus operate(IProject project, Class<? extends IDescriptorOperation> type, Object... params) {

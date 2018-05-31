@@ -53,6 +53,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -62,6 +63,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMaven;
 import org.eclipse.m2e.core.embedder.IMavenConfiguration;
@@ -492,14 +494,62 @@ public class MavenUtil {
 		return false;
 	}
 
-	public static List<IMavenProjectImportResult> importProject(String location, IProgressMonitor monitor)
-		throws CoreException, InterruptedException {
+	public static void importOpenedProject(String projectName, String location, IProgressMonitor monitor)
+		throws InterruptedException {
 
 		MavenModelManager mavenModelManager = MavenPlugin.getMavenModelManager();
 
 		IWorkspaceRoot workspaceRoot = CoreUtil.getWorkspaceRoot();
 
 		File root = workspaceRoot.getLocation().toFile();
+
+		AbstractProjectScanner<MavenProjectInfo> scanner = new LocalProjectScanner(
+			root, location, false, mavenModelManager);
+
+		scanner.run(monitor);
+
+		List<MavenProjectInfo> projects = scanner.getProjects();
+
+		List<MavenProjectInfo> mavenProjects = new ArrayList<>();
+
+		_findChildMavenProjects(mavenProjects, projects);
+
+		mavenProjects = _filterProjects(mavenProjects);
+
+		ProjectImportConfiguration importConfiguration = new ProjectImportConfiguration();
+
+		IProjectConfigurationManager projectConfigurationManager = MavenPlugin.getProjectConfigurationManager();
+
+		IProject project = CoreUtil.getProject(projectName);
+
+		List<MavenProjectInfo> resultProjects = mavenProjects;
+
+		Job job = new Job("Updating Maven Project") {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				try {
+					projectConfigurationManager.importProjects(resultProjects, importConfiguration, monitor);
+					projectConfigurationManager.updateProjectConfiguration(project, monitor);
+				}
+				catch (Exception e) {
+					return LiferayMavenCore.createErrorStatus("Error Updating project:" + project.getName(), e);
+				}
+
+				return Status.OK_STATUS;
+			}
+
+		};
+
+		job.schedule();
+	}
+
+	public static List<IMavenProjectImportResult> importProject(String location, IProgressMonitor monitor)
+		throws CoreException, InterruptedException {
+
+		MavenModelManager mavenModelManager = MavenPlugin.getMavenModelManager();
+
+		File root = CoreUtil.getWorkspaceRootFile();
 
 		AbstractProjectScanner<MavenProjectInfo> scanner = new LocalProjectScanner(
 			root, location, false, mavenModelManager);
@@ -593,6 +643,14 @@ public class MavenUtil {
 		}
 
 		childNode.setValue((value == null) ? null : value.toString());
+	}
+
+	public static void setMavenNature(IProject project) throws CoreException {
+		IProjectDescription description = project.getDescription();
+
+		description.setNatureIds(new String[] {"org.eclipse.m2e.core.maven2Nature"});
+
+		project.setDescription(description, null);
 	}
 
 	private static List<MavenProjectInfo> _filterProjects(List<MavenProjectInfo> mavenProjects) {

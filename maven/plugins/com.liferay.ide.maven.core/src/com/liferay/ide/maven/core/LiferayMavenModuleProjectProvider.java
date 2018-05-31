@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,6 +37,7 @@ import org.eclipse.sapphire.platform.PathBridge;
 
 /**
  * @author Joye Luo
+ * @author Charles Wu
  */
 public class LiferayMavenModuleProjectProvider
 	extends LiferayMavenProjectProvider implements NewLiferayProjectProvider<NewLiferayModuleProjectOp> {
@@ -129,7 +131,11 @@ public class LiferayMavenModuleProjectProvider
 				}
 			}
 
-			MavenUtil.importProject(projectLocation.toPortableString(), monitor);
+			IProject opendProject = ProjectCore.openProject(projectName, projectLocation, monitor);
+
+			MavenUtil.setMavenNature(opendProject);
+
+			MavenUtil.importOpenedProject(projectName, projectLocation.toPortableString(), monitor);
 		}
 		catch (Exception e) {
 			retval = ProjectCore.createErrorStatus("can't create module project.", e);

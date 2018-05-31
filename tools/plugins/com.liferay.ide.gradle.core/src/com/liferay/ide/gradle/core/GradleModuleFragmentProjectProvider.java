@@ -22,12 +22,16 @@ import com.liferay.ide.project.core.modules.fragment.NewModuleFragmentOp;
 import com.liferay.ide.project.core.modules.fragment.NewModuleFragmentOpMethods;
 import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.sapphire.Value;
+import org.eclipse.sapphire.modeling.Path;
 import org.eclipse.sapphire.platform.PathBridge;
 
 /**
@@ -45,8 +49,15 @@ public class GradleModuleFragmentProjectProvider
 	public IStatus createNewProject(NewModuleFragmentOp op, IProgressMonitor monitor) throws CoreException {
 		IStatus retval = Status.OK_STATUS;
 
-		String projectName = op.getProjectName().content();
-		IPath location = PathBridge.create(op.getLocation().content());
+		Value<String> projectNameValue = op.getProjectName();
+
+		String projectName = projectNameValue.content();
+
+		Value<Path> locationValue = op.getLocation();
+
+		IPath location = PathBridge.create(locationValue.content());
+
+		File locationPath = location.toFile();
 
 		String[] bsnAndVersion = NewModuleFragmentOpMethods.getBsnAndVersion(op);
 
@@ -58,7 +69,7 @@ public class GradleModuleFragmentProjectProvider
 		sb.append("create ");
 		sb.append("");
 		sb.append("-d \"");
-		sb.append(location.toFile().getAbsolutePath());
+		sb.append(locationPath.getAbsolutePath());
 		sb.append("\" ");
 		sb.append("");
 		sb.append("-t ");
@@ -94,7 +105,10 @@ public class GradleModuleFragmentProjectProvider
 		IPath projecLocation = location.append(projectName);
 
 		boolean hasGradleWorkspace = LiferayWorkspaceUtil.hasGradleWorkspace();
-		boolean useDefaultLocation = op.getUseDefaultLocation().content(true);
+		Value<Boolean> useDefaultLocationValue = op.getUseDefaultLocation();
+
+		boolean useDefaultLocation = useDefaultLocationValue.content(true);
+
 		boolean inWorkspacePath = false;
 
 		final IProject liferayWorkspaceProject = LiferayWorkspaceUtil.getWorkspaceProject();
@@ -119,7 +133,7 @@ public class GradleModuleFragmentProjectProvider
 			GradleUtil.refreshGradleProject(liferayWorkspaceProject);
 		}
 		else {
-			GradleUtil.importGradleProject(projecLocation.toFile(), monitor);
+			GradleUtil.importGradleProject(projecLocation, monitor);
 		}
 
 		return retval;

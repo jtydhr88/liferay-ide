@@ -84,6 +84,12 @@ public class WizardAction extends UIAction {
 		ide.sleepLinux(2000);
 	}
 
+	public void finishWithNoRuningJobs() {
+		finish();
+
+		_jobAction.waitForNoRunningJobs();
+	}
+
 	public Button getBackBtn() {
 		return _getWizard().backBtn();
 	}

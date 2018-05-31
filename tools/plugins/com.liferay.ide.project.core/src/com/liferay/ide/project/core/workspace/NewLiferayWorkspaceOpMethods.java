@@ -16,16 +16,12 @@ package com.liferay.ide.project.core.workspace;
 
 import com.liferay.ide.project.core.NewLiferayProjectProvider;
 import com.liferay.ide.project.core.ProjectCore;
-import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
-import com.liferay.ide.server.core.LiferayServerCore;
-import com.liferay.ide.server.util.ServerUtil;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.modeling.ProgressMonitor;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.platform.ProgressMonitorBridge;
@@ -41,12 +37,12 @@ public class NewLiferayWorkspaceOpMethods {
 
 		monitor.beginTask("Creating Liferay Workspace project...", 100);
 
-		Status retval = null;
+		Status retval = Status.createOkStatus();
 
 		try {
-			String wsName = op.getWorkspaceName().content();
+			Value<NewLiferayWorkspaceProjectProvider<NewLiferayWorkspaceOp>> projectProvider = op.getProjectProvider();
 
-			NewLiferayProjectProvider<NewLiferayWorkspaceOp> provider = op.getProjectProvider().content(true);
+			NewLiferayProjectProvider<NewLiferayWorkspaceOp> provider = projectProvider.content(true);
 
 			IStatus status = provider.createNewProject(op, monitor);
 
@@ -54,34 +50,6 @@ public class NewLiferayWorkspaceOpMethods {
 
 			if (!retval.ok()) {
 				return retval;
-			}
-
-			org.eclipse.sapphire.modeling.Path parent = op.getLocation().content();
-
-			String location = parent.append(wsName).toPortableString();
-
-			boolean initBundle = op.getProvisionLiferayBundle().content();
-
-			if (initBundle) {
-				String serverRuntimeName = op.getServerName().content();
-				IPath bundlesLocation = null;
-
-				String projectProvider = op.getProjectProvider().text();
-
-				if (projectProvider.equals("gradle-liferay-workspace")) {
-					bundlesLocation = LiferayWorkspaceUtil.getHomeLocation(location);
-				}
-				else {
-					bundlesLocation = new Path(location).append("bundles");
-				}
-
-				if (LiferayServerCore.isPortalBundlePath(bundlesLocation)) {
-					ServerUtil.addPortalRuntimeAndServer(serverRuntimeName, bundlesLocation, monitor);
-				}
-				else {
-					ProjectCore.logWarning(
-						"Location " + bundlesLocation + " is not Liferay Portal Bundle, bundle init failed.");
-				}
 			}
 		}
 		catch (Exception e) {
@@ -103,8 +71,11 @@ public class NewLiferayWorkspaceOpMethods {
 		try {
 			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ProjectCore.PLUGIN_ID);
 
-			prefs.put(ProjectCore.PREF_DEFAULT_LIFERAY_VERSION_OPTION, op.getLiferayVersion().text());
-			prefs.put(ProjectCore.PREF_DEFAULT_WORKSPACE_PROJECT_BUILD_TYPE_OPTION, op.getProjectProvider().text());
+			Value<String> liferayVersion = op.getLiferayVersion();
+			Value<NewLiferayWorkspaceProjectProvider<NewLiferayWorkspaceOp>> projectProvider = op.getProjectProvider();
+
+			prefs.put(ProjectCore.PREF_DEFAULT_LIFERAY_VERSION_OPTION, liferayVersion.text());
+			prefs.put(ProjectCore.PREF_DEFAULT_WORKSPACE_PROJECT_BUILD_TYPE_OPTION, projectProvider.text());
 
 			prefs.flush();
 		}

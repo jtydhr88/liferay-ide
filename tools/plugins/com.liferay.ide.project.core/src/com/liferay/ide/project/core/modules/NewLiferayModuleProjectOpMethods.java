@@ -45,12 +45,15 @@ import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MemberValuePair;
+import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.jface.text.Document;
 import org.eclipse.sapphire.ElementList;
+import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.modeling.ProgressMonitor;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.platform.PathBridge;
@@ -92,7 +95,9 @@ public class NewLiferayModuleProjectOpMethods {
 
 					@Override
 					public boolean visit(NormalAnnotation node) {
-						String qualifiedName = node.getTypeName().getFullyQualifiedName();
+						Name typeName = node.getTypeName();
+
+						String qualifiedName = typeName.getFullyQualifiedName();
 
 						if (qualifiedName.equals("Component")) {
 							ASTRewrite rewrite = ASTRewrite.create(cu.getAST());
@@ -107,7 +112,9 @@ public class NewLiferayModuleProjectOpMethods {
 								if (astNode instanceof MemberValuePair) {
 									MemberValuePair pairNode = (MemberValuePair)astNode;
 
-									String fullQualifiedName = pairNode.getName().getFullyQualifiedName();
+									SimpleName name = pairNode.getName();
+
+									String fullQualifiedName = name.getFullyQualifiedName();
 
 									if (fullQualifiedName.equals("property")) {
 										Expression express = pairNode.getValue();
@@ -229,18 +236,24 @@ public class NewLiferayModuleProjectOpMethods {
 
 		monitor.beginTask("Creating Liferay module project (this process may take several minutes)", 100);
 
-		Status retval = null;
+		Status retval = Status.createOkStatus();
 
 		try {
-			NewLiferayProjectProvider<BaseModuleOp> projectProvider = op.getProjectProvider().content(true);
+			Value<NewLiferayProjectProvider<BaseModuleOp>> projectProviderValue = op.getProjectProvider();
+
+			NewLiferayProjectProvider<BaseModuleOp> projectProvider = projectProviderValue.content(true);
 
 			IStatus status = projectProvider.createNewProject(op, monitor);
 
 			retval = StatusBridge.create(status);
 
-			String projectName = op.getProjectName().content();
+			Value<String> projectNameValue = op.getProjectName();
 
-			IPath location = PathBridge.create(op.getLocation().content());
+			String projectName = projectNameValue.content();
+
+			Value<org.eclipse.sapphire.modeling.Path> locationValue = op.getLocation();
+
+			IPath location = PathBridge.create(locationValue.content());
 
 			IPath projectLocation = location;
 
@@ -261,12 +274,14 @@ public class NewLiferayModuleProjectOpMethods {
 					List<String> properties = new ArrayList<>();
 
 					for (PropertyKey propertyKey : propertyKeys) {
-						properties.add(
-							propertyKey.getName().content(true) + "=" + propertyKey.getValue().content(true));
+						Value<String> name = propertyKey.getName();
+						Value<String> value = propertyKey.getValue();
+
+						properties.add(name.content(true) + "=" + value.content(true));
 					}
 
 					if (addProperties(finalClassFile, properties)) {
-						IProject project = CoreUtil.getProject(op.getProjectName().content());
+						IProject project = CoreUtil.getProject(projectName);
 
 						project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 					}
@@ -293,7 +308,9 @@ public class NewLiferayModuleProjectOpMethods {
 
 		File parentProjectDir = path.toFile();
 
-		NewLiferayProjectProvider<BaseModuleOp> provider = op.getProjectProvider().content();
+		Value<NewLiferayProjectProvider<BaseModuleOp>> projectProviderValue = op.getProjectProvider();
+
+		NewLiferayProjectProvider<BaseModuleOp> provider = projectProviderValue.content();
 
 		IStatus locationStatus = provider.validateProjectLocation(projectName, path);
 
@@ -313,7 +330,9 @@ public class NewLiferayModuleProjectOpMethods {
 
 		File parentProjectDir = path.toFile();
 
-		NewLiferayProjectProvider<BaseModuleOp> provider = op.getProjectProvider().content();
+		Value<NewLiferayProjectProvider<BaseModuleOp>> projectProvider = op.getProjectProvider();
+
+		NewLiferayProjectProvider<BaseModuleOp> provider = projectProvider.content();
 
 		IStatus locationStatus = provider.validateProjectLocation(projectName, path);
 
@@ -368,8 +387,11 @@ public class NewLiferayModuleProjectOpMethods {
 		try {
 			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ProjectCore.PLUGIN_ID);
 
-			prefs.put(ProjectCore.PREF_DEFAULT_LIFERAY_VERSION_OPTION, op.getLiferayVersion().text());
-			prefs.put(ProjectCore.PREF_DEFAULT_MODULE_PROJECT_BUILD_TYPE_OPTION, op.getProjectProvider().text());
+			Value<String> liferayVersion = op.getLiferayVersion();
+			Value<NewLiferayProjectProvider<BaseModuleOp>> projectProvider = op.getProjectProvider();
+
+			prefs.put(ProjectCore.PREF_DEFAULT_LIFERAY_VERSION_OPTION, liferayVersion.text());
+			prefs.put(ProjectCore.PREF_DEFAULT_MODULE_PROJECT_BUILD_TYPE_OPTION, projectProvider.text());
 
 			prefs.flush();
 		}
@@ -391,7 +413,9 @@ public class NewLiferayModuleProjectOpMethods {
 
 		@Override
 		public boolean visit(NormalAnnotation node) {
-			String qualifiedName = node.getTypeName().getFullyQualifiedName();
+			Name typeName = node.getTypeName();
+
+			String qualifiedName = typeName.getFullyQualifiedName();
 
 			if (qualifiedName.equals("Component")) {
 				_hasComponentAnnotation = true;

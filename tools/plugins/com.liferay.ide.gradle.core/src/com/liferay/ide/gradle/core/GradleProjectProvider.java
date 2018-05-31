@@ -18,6 +18,7 @@ import com.liferay.ide.core.AbstractLiferayProjectProvider;
 import com.liferay.ide.core.ILiferayProject;
 import com.liferay.ide.core.LiferayNature;
 import com.liferay.ide.project.core.NewLiferayProjectProvider;
+import com.liferay.ide.project.core.ProjectCore;
 import com.liferay.ide.project.core.model.ProjectName;
 import com.liferay.ide.project.core.modules.BladeCLI;
 import com.liferay.ide.project.core.modules.NewLiferayModuleProjectOp;
@@ -38,6 +39,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.sapphire.ElementList;
+import org.eclipse.sapphire.Value;
+import org.eclipse.sapphire.modeling.Path;
 import org.eclipse.sapphire.platform.PathBridge;
 
 /**
@@ -58,31 +61,48 @@ public class GradleProjectProvider
 	public IStatus createNewProject(NewLiferayModuleProjectOp op, IProgressMonitor monitor) throws CoreException {
 		IStatus retval = Status.OK_STATUS;
 
-		String projectName = op.getProjectName().content();
+		Value<String> projectNameValue = op.getProjectName();
 
-		IPath location = PathBridge.create(op.getLocation().content());
+		String projectName = projectNameValue.content();
 
-		String className = op.getComponentName().content();
+		Value<Path> locationValue = op.getLocation();
 
-		String liferayVersion = op.getLiferayVersion().content();
+		IPath location = PathBridge.create(locationValue.content());
 
-		String serviceName = op.getServiceName().content();
+		Value<String> componentNameValue = op.getComponentName();
 
-		String packageName = op.getPackageName().content();
+		String className = componentNameValue.content();
+
+		Value<String> liferayVersionValue = op.getLiferayVersion();
+
+		String liferayVersion = liferayVersionValue.content();
+
+		Value<String> serviceNameValue = op.getServiceName();
+
+		String serviceName = serviceNameValue.content();
+
+		Value<String> packageNameValue = op.getPackageName();
+
+		String packageName = packageNameValue.content();
 
 		ElementList<PropertyKey> propertyKeys = op.getPropertyKeys();
 
 		List<String> properties = new ArrayList<>();
 
 		for (PropertyKey propertyKey : propertyKeys) {
-			properties.add(propertyKey.getName().content(true) + "=" + propertyKey.getValue().content(true));
+			Value<String> name = propertyKey.getName();
+			Value<String> value = propertyKey.getValue();
+
+			properties.add(name.content(true) + "=" + value.content(true));
 		}
 
 		File targetDir = location.toFile();
 
 		targetDir.mkdirs();
 
-		String projectTemplateName = op.getProjectTemplateName().content();
+		Value<String> projectTemplateNameValue = op.getProjectTemplateName();
+
+		String projectTemplateName = projectTemplateNameValue.content();
 
 		StringBuilder sb = new StringBuilder();
 
@@ -124,11 +144,13 @@ public class GradleProjectProvider
 
 			ElementList<ProjectName> projectNames = op.getProjectNames();
 
-			projectNames.insert().setName(projectName);
+			ProjectName insert = projectNames.insert();
+
+			insert.setName(projectName);
 
 			if (projectTemplateName.equals("service-builder")) {
-				projectNames.insert().setName(projectName + "-api");
-				projectNames.insert().setName(projectName + "-service");
+				insert.setName(projectName + "-api");
+				insert.setName(projectName + "-service");
 			}
 
 			IPath projectLocation = location;
@@ -142,7 +164,11 @@ public class GradleProjectProvider
 			}
 
 			boolean hasGradleWorkspace = LiferayWorkspaceUtil.hasGradleWorkspace();
-			boolean useDefaultLocation = op.getUseDefaultLocation().content(true);
+
+			Value<Boolean> useDefaultLocationValue = op.getUseDefaultLocation();
+
+			boolean useDefaultLocation = useDefaultLocationValue.content(true);
+
 			boolean inWorkspacePath = false;
 
 			IProject liferayWorkspaceProject = LiferayWorkspaceUtil.getWorkspaceProject();
@@ -159,11 +185,17 @@ public class GradleProjectProvider
 				GradleUtil.refreshGradleProject(liferayWorkspaceProject);
 			}
 			else {
-				GradleUtil.importGradleProject(projectLocation.toFile(), monitor);
+				IStatus openProjectStatus = ProjectCore.openProject(projectName, projectLocation, false, monitor);
+
+				if (openProjectStatus != Status.OK_STATUS) {
+					return openProjectStatus;
+				}
+
+				GradleUtil.importGradleProject(projectLocation, monitor);
 			}
 		}
 		catch (Exception e) {
-			retval = GradleCore.createErrorStatus("can't create module project.", e);
+			retval = GradleCore.createErrorStatus("Can't create module project: " + e.getMessage(), e);
 		}
 
 		return retval;

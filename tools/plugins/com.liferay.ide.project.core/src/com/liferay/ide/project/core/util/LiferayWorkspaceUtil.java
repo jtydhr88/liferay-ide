@@ -20,6 +20,7 @@ import com.liferay.ide.core.util.PropertiesUtil;
 import com.liferay.ide.project.core.ProjectCore;
 import com.liferay.ide.sdk.core.SDK;
 import com.liferay.ide.sdk.core.SDKUtil;
+import com.liferay.ide.server.core.ILiferayRuntime;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.core.portal.PortalBundle;
 import com.liferay.ide.server.util.ServerUtil;
@@ -36,8 +37,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 
 /**
  * @author Andy Wu
@@ -78,12 +81,16 @@ public class LiferayWorkspaceUtil {
 		"A Liferay Workspace project already exists in this Eclipse instance.";
 	public static String multiWorkspaceErrorMsg = "More than one Liferay workspace build in current Eclipse workspace.";
 
-	public static void addPortalRuntime() {
+	public static IStatus addPortalRuntime() {
+		return addPortalRuntime(null);
+	}
+
+	public static IStatus addPortalRuntime(String serverName) {
 		IProject project = getWorkspaceProject();
 
 		try {
 			if (project == null) {
-				throw new CoreException(ProjectCore.createErrorStatus("Cann't get a valid Liferay Workspace project."));
+				return ProjectCore.createErrorStatus("Cann't get a valid Liferay Workspace project.", true);
 			}
 
 			IPath bundlesLocation = getHomeLocation(project);
@@ -92,30 +99,35 @@ public class LiferayWorkspaceUtil {
 				PortalBundle bundle = LiferayServerCore.newPortalBundle(bundlesLocation);
 
 				if (bundle == null) {
-					ProjectCore.logError("Can not create bundle from location :" + bundlesLocation);
-
-					return;
+					return ProjectCore.createErrorStatus("Bundle can't be found in:" + bundlesLocation, true);
 				}
 
-				String serverName = bundle.getServerReleaseInfo();
+				if (serverName == null) {
+					serverName = bundle.getServerReleaseInfo();
+				}
 
 				ServerUtil.addPortalRuntimeAndServer(serverName, bundlesLocation, new NullProgressMonitor());
 
-				IProject pluginsSDK = CoreUtil.getProject(getPluginsSDKDir(project.getLocation().toPortableString()));
+				IPath location = project.getLocation();
+
+				IProject pluginsSDK = CoreUtil.getProject(getPluginsSDKDir(location.toPortableString()));
 
 				if (FileUtil.exists(pluginsSDK)) {
 					SDK sdk = SDKUtil.createSDKFromLocation(pluginsSDK.getLocation());
 
-					sdk.addOrUpdateServerProperties(
-						ServerUtil.getLiferayRuntime(ServerUtil.getServer(serverName)).getLiferayHome());
+					ILiferayRuntime liferayRuntime = ServerUtil.getLiferayRuntime(ServerUtil.getServer(serverName));
+
+					sdk.addOrUpdateServerProperties(liferayRuntime.getLiferayHome());
 
 					pluginsSDK.refreshLocal(IResource.DEPTH_INFINITE, null);
 				}
 			}
 		}
 		catch (Exception e) {
-			ProjectCore.logError("Add Liferay server failed", e);
+			return ProjectCore.createErrorStatus("Add Liferay server failed", e, true);
 		}
+
+		return Status.OK_STATUS;
 	}
 
 	public static void clearWorkspace(String location) {
@@ -434,9 +446,9 @@ public class LiferayWorkspaceUtil {
 	}
 
 	public static boolean isValidWorkspace(IProject project) {
-		if ((project != null) && (project.getLocation() != null) &&
-			isValidWorkspaceLocation(project.getLocation().toOSString())) {
+		IPath location = project.getLocation();
 
+		if ((project != null) && (location != null) && isValidWorkspaceLocation(location.toOSString())) {
 			return true;
 		}
 
@@ -456,20 +468,25 @@ public class LiferayWorkspaceUtil {
 	}
 
 	private static boolean _isValidGradleWorkspace(IProject project) {
-		if ((project != null) && (project.getLocation() != null) &&
-			isValidGradleWorkspaceLocation(project.getLocation().toOSString())) {
+		
+		if (project != null) {
+			IPath location = project.getLocation();
 
-			return true;
+			if (location != null && isValidGradleWorkspaceLocation(location.toOSString())) {
+				return true;
+			}
 		}
 
 		return false;
 	}
 
 	private static boolean _isValidMavenWorkspace(IProject project) {
-		if ((project != null) && (project.getLocation() != null) &&
-			isValidMavenWorkspaceLocation(project.getLocation().toOSString())) {
+		if (project != null) {
+			IPath location = project.getLocation();
 
-			return true;
+			if (location != null && isValidMavenWorkspaceLocation(location.toOSString())) {
+				return true;
+			}
 		}
 
 		return false;

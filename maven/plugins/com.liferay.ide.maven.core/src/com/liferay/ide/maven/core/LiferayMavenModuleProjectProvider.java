@@ -36,6 +36,7 @@ import org.eclipse.sapphire.platform.PathBridge;
 
 /**
  * @author Joye Luo
+ * @author Charles Wu
  */
 public class LiferayMavenModuleProjectProvider
 	extends LiferayMavenProjectProvider implements NewLiferayProjectProvider<NewLiferayModuleProjectOp> {
@@ -112,11 +113,13 @@ public class LiferayMavenModuleProjectProvider
 
 			ElementList<ProjectName> projectNames = op.getProjectNames();
 
-			projectNames.insert().setName(projectName);
+			ProjectName insert = projectNames.insert();
+
+			insert.setName(projectName);
 
 			if (projectTemplateName.equals("service-builder")) {
-				projectNames.insert().setName(projectName + "-api");
-				projectNames.insert().setName(projectName + "-service");
+				insert.setName(projectName + "-api");
+				insert.setName(projectName + "-service");
 			}
 
 			IPath projectLocation = location;
@@ -129,7 +132,13 @@ public class LiferayMavenModuleProjectProvider
 				}
 			}
 
-			MavenUtil.importProject(projectLocation.toPortableString(), monitor);
+			IStatus openProjectStatus = ProjectCore.openProject(projectName, projectLocation, true, monitor);
+
+			if (openProjectStatus != Status.OK_STATUS) {
+				return openProjectStatus;
+			}
+
+			MavenUtil.importOpenedProject(projectName, projectLocation.toPortableString(), monitor);
 		}
 		catch (Exception e) {
 			retval = ProjectCore.createErrorStatus("can't create module project.", e);

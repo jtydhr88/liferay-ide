@@ -35,7 +35,7 @@ public class NewLiferayWorkspaceWizardMavenTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.prepareMaven(project.getName());
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		String[] moduleNames = {project.getName(), project.getName() + "-modules (in modules)"};
 
@@ -70,7 +70,7 @@ public class NewLiferayWorkspaceWizardMavenTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.deselectDownloadLiferayBundle();
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		String[] moduleNames = {project.getName(), project.getName() + "-modules (in modules)"};
 		String[] themeNames = {project.getName(), project.getName() + "-themes (in themes)"};
@@ -97,7 +97,7 @@ public class NewLiferayWorkspaceWizardMavenTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.location().setText(workspacePath + "/" + newFolderName);
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		String[] moduleNames = {project.getName(), project.getName() + "-modules (in modules)"};
 		String[] themeNames = {project.getName(), project.getName() + "-themes (in themes)"};
@@ -126,7 +126,7 @@ public class NewLiferayWorkspaceWizardMavenTests extends SwtbotBase {
 		wizardAction.newLiferayWorkspace.setBundleUrl(
 			"http://ide-resources-site/portal/7.0.4-ga5/liferay-ce-portal-tomcat-7.0-ga5-20171018150113838.zip");
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		Assert.assertTrue(viewAction.project.visibleFileTry(projectName, "bundles"));
 
@@ -157,37 +157,6 @@ public class NewLiferayWorkspaceWizardMavenTests extends SwtbotBase {
 		viewAction.project.closeAndDelete(project.getName());
 	}
 
-	@Ignore("Ignore forever and test the download bundle in createLiferayWorkspaceWithDownloadBundleChangeBundleUrl")
-	@Test
-	public void createLiferayWorkspaceWithDownloadBundle() {
-		wizardAction.openNewLiferayWorkspaceWizard();
-
-		wizardAction.newLiferayWorkspace.prepareMaven(project.getName());
-
-		wizardAction.newLiferayWorkspace.selectDownloadLiferayBundle();
-
-		wizardAction.finish();
-
-		String[] moduleNames = {project.getName(), project.getName() + "-modules (in modules)"};
-		String[] themeNames = {project.getName(), project.getName() + "-themes (in themes)"};
-		String[] warNames = {project.getName(), project.getName() + "-wars (in wars)"};
-
-		viewAction.project.closeAndDelete(moduleNames);
-		viewAction.project.closeAndDelete(themeNames);
-		viewAction.project.closeAndDelete(warNames);
-
-		viewAction.project.closeAndDelete(project.getName());
-
-		dialogAction.openPreferencesDialog();
-
-		dialogAction.preferences.openServerRuntimeEnvironmentsTry();
-
-		dialogAction.serverRuntimeEnvironments.deleteRuntimeTryConfirm("Liferay 7-download-bundle");
-
-		dialogAction.preferences.confirm();
-	}
-
-	@Ignore("waiting for server configuration")
 	@Test
 	public void createLiferayWorkspaceWithDownloadBundleChangeBundleUrl() {
 		if (!envAction.internal()) {
@@ -209,7 +178,7 @@ public class NewLiferayWorkspaceWizardMavenTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.setBundleUrl(bundleUrl);
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		String[] moduleNames = {project.getName(), project.getName() + "-modules (in modules)"};
 		String[] themeNames = {project.getName(), project.getName() + "-themes (in themes)"};
@@ -221,14 +190,13 @@ public class NewLiferayWorkspaceWizardMavenTests extends SwtbotBase {
 
 		viewAction.project.closeAndDelete(project.getName());
 
-		// wait for IDE-3595 fixed
-		// dialogAction.openPreferencesDialog();
+		dialogAction.openPreferencesDialog();
 
-		// dialogAction.preferences.openServerRuntimeEnvironmentsTry();
+		dialogAction.preferences.openServerRuntimeEnvironmentsTry();
 
-		// dialogAction.serverRuntimeEnvironments.deleteRuntimeTryConfirm("Liferay 7-change-bundle-url");
+		dialogAction.serverRuntimeEnvironments.deleteRuntimeTryConfirm("Liferay 7-change-bundle-url");
 
-		// dialogAction.preferences.confirm();
+		dialogAction.preferences.confirm();
 
 	}
 

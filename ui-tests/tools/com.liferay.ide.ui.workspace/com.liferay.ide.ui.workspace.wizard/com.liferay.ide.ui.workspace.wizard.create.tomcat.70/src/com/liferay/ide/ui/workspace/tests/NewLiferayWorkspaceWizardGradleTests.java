@@ -18,7 +18,6 @@ import com.liferay.ide.ui.liferay.SwtbotBase;
 import com.liferay.ide.ui.liferay.support.project.ProjectSupport;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -36,7 +35,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.prepareGradle(project.getName());
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		String[] moduleNames = {project.getName(), "modules"};
 
@@ -63,7 +62,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.deselectDownloadLiferayBundle();
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		viewAction.project.closeAndDelete(project.getName());
 	}
@@ -82,7 +81,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.location().setText(workspacePath + "/" + newFolderName);
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		viewAction.project.closeAndDelete(project.getName());
 	}
@@ -93,7 +92,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.prepareGradle(project.getName());
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		viewAction.project.openFile(project.getName(), "gradle.properties");
 
@@ -117,7 +116,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.newModule.prepareGradle(projectName, MVC_PORTLET);
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		String[] projectNames = {project.getName(), newModulesFolderName, projectName};
 
@@ -138,7 +137,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.prepareGradle(project.getName());
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		viewAction.project.openFile(project.getName(), "gradle.properties");
 
@@ -162,7 +161,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.newModule.prepareGradle("test-theme", THEME);
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		String[] projectNames = {project.getName(), newWarsFolderName, projectName};
 
@@ -177,29 +176,6 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 		viewAction.project.closeAndDelete(project.getName());
 	}
 
-	@Ignore("Ignore forever and test the download bundle in createLiferayWorkspaceWithDownloadBundleChangeBundleUrl")
-	@Test
-	public void createLiferayWorkspaceWithDownloadBundle() {
-		wizardAction.openNewLiferayWorkspaceWizard();
-
-		wizardAction.newLiferayWorkspace.prepareGradle(project.getName());
-
-		wizardAction.newLiferayWorkspace.selectDownloadLiferayBundle();
-
-		wizardAction.finish();
-
-		viewAction.project.closeAndDelete(project.getName());
-
-		dialogAction.openPreferencesDialog();
-
-		dialogAction.preferences.openServerRuntimeEnvironmentsTry();
-
-		dialogAction.serverRuntimeEnvironments.deleteRuntimeTryConfirm("Liferay 7-download-bundle");
-
-		dialogAction.preferences.confirm();
-	}
-
-	@Ignore("waiting for server configuration")
 	@Test
 	public void createLiferayWorkspaceWithDownloadBundleChangeBundleUrl() {
 		if (!envAction.internal()) {
@@ -221,7 +197,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.newLiferayWorkspace.setBundleUrl(bundleUrl);
 
-		wizardAction.finish();
+		wizardAction.finishWithNoRuningJobs();
 
 		viewAction.project.closeAndDelete(project.getName());
 

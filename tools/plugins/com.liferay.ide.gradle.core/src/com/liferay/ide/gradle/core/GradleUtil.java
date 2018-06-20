@@ -65,11 +65,7 @@ import org.osgi.framework.Version;
 @SuppressWarnings("restriction")
 public class GradleUtil {
 
-	public static IStatus sychronizeProject(IPath dir, IProgressMonitor monitor) {
-		if (FileUtil.notExists(dir)) {
-			return GradleCore.createErrorStatus("Unable to find gradle project at " + dir);
-		}
-
+	public static BuildConfiguration createBuildConfiguration(File file) {
 		Validator<File> projectDirValidator = Validators.and(
 			Validators.requiredDirectoryValidator("Project root directory"),
 			Validators.nonWorkspaceFolderValidator("Project root directory"));
@@ -85,14 +81,13 @@ public class GradleUtil {
 			workingSetsValidator);
 
 		// read configuration from gradle preference
-
 		ConfigurationManager configurationManager = CorePlugin.configurationManager();
 
 		WorkspaceConfiguration gradleConfig = configurationManager.loadWorkspaceConfiguration();
 
 		GradleDistribution gradleDistribution = gradleConfig.getGradleDistribution();
 
-		configuration.setProjectDir(dir.toFile());
+		configuration.setProjectDir(file);
 		configuration.setOverwriteWorkspaceSettings(false);
 		configuration.setDistributionInfo(gradleDistribution.getDistributionInfo());
 		configuration.setGradleUserHome(gradleConfig.getGradleUserHome());
@@ -102,6 +97,16 @@ public class GradleUtil {
 		configuration.setAutoSync(true);
 
 		BuildConfiguration buildConfig = configuration.toBuildConfig();
+
+		return buildConfig;
+	}
+
+	public static IStatus sychronizeProject(IPath dir, IProgressMonitor monitor) {
+		if (FileUtil.notExists(dir)) {
+			return GradleCore.createErrorStatus("Unable to find gradle project at " + dir);
+		}
+
+		BuildConfiguration buildConfig = createBuildConfiguration(dir.toFile());
 
 		GradleWorkspaceManager gradleWorkspaceManager = CorePlugin.gradleWorkspaceManager();
 
@@ -186,8 +191,19 @@ public class GradleUtil {
 		GradleWorkspaceManager gradleWorkspaceManager = CorePlugin.gradleWorkspaceManager();
 
 		Optional<GradleBuild> optional = gradleWorkspaceManager.getGradleBuild(project);
+		
+		IPath path = project.getFullPath();
 
-		GradleBuild build = optional.get();
+		GradleBuild build = null;
+
+		if (!optional.isPresent()) {
+			BuildConfiguration buildConfig = createBuildConfiguration(path.toFile());
+			
+			build = gradleWorkspaceManager.getGradleBuild(buildConfig);
+		}
+		else {
+			build = optional.get();
+		}
 
 		new SynchronizationJob(NewProjectHandler.IMPORT_AND_MERGE, build).schedule();
 	}

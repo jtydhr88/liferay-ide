@@ -1239,8 +1239,11 @@ public class InitConfigureProjectPage extends Page implements IServerLifecycleLi
 		builder.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
 		builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
+		if (FileUtil.notExists(ivySettingFile)) {
+			return;
+		}
+
 		try (InputStream ivyInput = Files.newInputStream(ivySettingFile.toPath())) {
-			if (ivySettingFile.exists()) {
 				Document doc = builder.build(ivyInput);
 
 				Element itemRem = null;
@@ -1292,7 +1295,6 @@ public class InitConfigureProjectPage extends Page implements IServerLifecycleLi
 				}
 
 				_saveXML(ivySettingFile, doc);
-			}
 		}
 		catch (CoreException | IOException | JDOMException e) {
 			ProjectUI.logError(e);

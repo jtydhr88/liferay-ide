@@ -53,7 +53,7 @@ public class NoRunningJobsCondition extends JobCondition {
 		return false;
 	}
 
-	private List<Job> _checkRunningJobs() {
+	protected List<Job> _checkRunningJobs() {
 		Job[] jobs = Job.getJobManager().find(family);
 
 		List<Job> runningJobs = new ArrayList<>();

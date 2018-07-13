@@ -14,15 +14,15 @@
 
 package com.liferay.ide.project.core.modules;
 
+import com.liferay.ide.core.ILiferayProject;
+import com.liferay.ide.core.LiferayCore;
 import com.liferay.ide.core.util.CoreUtil;
-
-import java.util.List;
+import com.liferay.ide.core.util.FileUtil;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.sapphire.java.JavaPackageName;
 import org.eclipse.sapphire.modeling.Status;
@@ -41,23 +41,21 @@ public class JavaPackageNameValidationService extends ValidationService {
 
 		NewLiferayComponentOp op = _op();
 
-		String projectName = op.getProjectName().text(true); 
+		String projectName = op.getProjectName().text(true);
 
 		if (projectName != null) {
-			IJavaProject javaproject = JavaCore.create(CoreUtil.getProject(projectName));
+			IProject project = CoreUtil.getProject(projectName);
 
-			List<IFolder> sourceFolders = CoreUtil.getSourceFolders(javaproject);
-
-			boolean sourceFolder = false;
-
-			for (IFolder folder : sourceFolders) {
-				if (folder.exists()) {
-					sourceFolder = true;
-				}
+			if (project == null) {
+				return Status.createErrorStatus("Unable to find project " + projectName);
 			}
 
-			if (!sourceFolder) {
-				return Status.createErrorStatus("Unable to find any source folders.");
+			ILiferayProject liferayProject = LiferayCore.create(project);
+
+			IFolder sourceFolder = liferayProject.getSourceFolder("java");
+
+			if (FileUtil.notExists(sourceFolder)) {
+				return Status.createErrorStatus("Unable to find any 'java' source folders.");
 			}
 		}
 

@@ -70,7 +70,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.SashForm;
@@ -218,8 +217,8 @@ public class FindBreakingChangesPage extends Page implements IDoubleClickListene
 						else {
 							TreePath[] paths = treeSelection.getPathsFor(selectedItem);
 
-							for (int i = 0; i < paths.length; i++) {
-								_treeViewer.setExpandedState(paths[i], !_treeViewer.getExpandedState(paths[i]));
+							for (TreePath path : paths) {
+								_treeViewer.setExpandedState(path, !_treeViewer.getExpandedState(path));
 							}
 						}
 					}
@@ -250,7 +249,7 @@ public class FindBreakingChangesPage extends Page implements IDoubleClickListene
 				public void handleEvent(Event event) {
 					IViewPart view = UIUtil.findView(UpgradeView.ID);
 
-					new RunMigrationToolAction("Run Migration Tool", view.getViewSite().getShell()).run();
+					new RunMigrationToolAction("Run Migration Tool", view.getViewSite().getShell(), dataModel).run();
 				}
 
 			});
@@ -502,7 +501,7 @@ public class FindBreakingChangesPage extends Page implements IDoubleClickListene
 	}
 
 	private void _createColumns(final TableViewer problemsViewer) {
-		final String[] titles = {"Resolved", "Line", "Problem"};
+		final String[] titles = {"Resolved", "Line", "Version", "Problem"};
 
 		TableViewerColumn col0 = _createTableViewerColumn(titles[0], problemsViewer);
 
@@ -555,7 +554,7 @@ public class FindBreakingChangesPage extends Page implements IDoubleClickListene
 
 				@Override
 				public String getText(Object element) {
-					return null;
+					return "";
 				}
 
 			});
@@ -587,16 +586,27 @@ public class FindBreakingChangesPage extends Page implements IDoubleClickListene
 				public String getText(Object element) {
 					Problem p = (Problem)element;
 
-					return p.title;
+					if (p.version == null) {
+						return "7.0";
+					}
+
+					return p.version;
 				}
 
+			});
+
+		TableViewerColumn col3 = _createTableViewerColumn(titles[3], problemsViewer);
+
+		col3.getColumn().pack();
+
+		col3.setLabelProvider(
+			new ColumnLabelProvider() {
+
 				@Override
-				public void update(ViewerCell cell) {
-					super.update(cell);
+				public String getText(Object element) {
+					Problem p = (Problem)element;
 
-					Table table = problemsViewer.getTable();
-
-					table.getColumn(2).pack();
+					return p.title.trim();
 				}
 
 			});
@@ -606,10 +616,12 @@ public class FindBreakingChangesPage extends Page implements IDoubleClickListene
 		TableColumn column0 = col0.getColumn();
 		TableColumn column1 = col1.getColumn();
 		TableColumn column2 = col2.getColumn();
+		TableColumn column3 = col3.getColumn();
 
-		tableLayout.setColumnData(column0, new ColumnWeightData(50, column0.getWidth()));
-		tableLayout.setColumnData(column1, new ColumnWeightData(50, column1.getWidth()));
-		tableLayout.setColumnData(column2, new ColumnWeightData(100, column2.getWidth()));
+		tableLayout.setColumnData(column0, new ColumnWeightData(35, column0.getWidth()));
+		tableLayout.setColumnData(column1, new ColumnWeightData(30, column1.getWidth()));
+		tableLayout.setColumnData(column2, new ColumnWeightData(30, column2.getWidth()));
+		tableLayout.setColumnData(column3, new ColumnWeightData(100, column3.getWidth()));
 
 		Table table = problemsViewer.getTable();
 

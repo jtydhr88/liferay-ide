@@ -98,6 +98,11 @@ public class MigrateProjectHandler extends AbstractHandler {
 		EvaluationContext applicationContext = (EvaluationContext)event.getApplicationContext();
 
 		_combineExistedProblem = (Boolean)applicationContext.getVariable("CombineExistedProblem");
+		String[] breakingChangeVersionArrays = (String[])applicationContext.getVariable("BreakingChangeVersions");
+
+		if (ListUtil.isNotEmpty(breakingChangeVersionArrays)) {
+			_breakingChangeVersions = Arrays.asList(breakingChangeVersionArrays);
+		}
 
 		if (selection instanceof IStructuredSelection) {
 			Object element = null;
@@ -129,7 +134,8 @@ public class MigrateProjectHandler extends AbstractHandler {
 				_setButtonState(false);
 				final IPath location = project.getLocation();
 
-				findMigrationProblems(new IPath[] {location}, new String[] {project.getName()});
+				findMigrationProblems(
+					new IPath[] {location}, new String[] {project.getName()}, _breakingChangeVersions);
 			}
 			else if (projects != null) {
 				final List<IPath> locations = new ArrayList<>();
@@ -143,18 +149,21 @@ public class MigrateProjectHandler extends AbstractHandler {
 				}
 
 				_setButtonState(false);
-				findMigrationProblems(locations.toArray(new IPath[0]), projectNames.toArray(new String[0]));
+				findMigrationProblems(
+					locations.toArray(new IPath[0]), projectNames.toArray(new String[0]), _breakingChangeVersions);
 			}
 		}
 
 		return null;
 	}
 
-	public void findMigrationProblems(final IPath[] locations) {
-		findMigrationProblems(locations, new String[] {""});
+	public void findMigrationProblems(final IPath[] locations, final List<String> versions) {
+		findMigrationProblems(locations, new String[] {""}, versions);
 	}
 
-	public void findMigrationProblems(final IPath[] locations, final String[] projectName) {
+	public void findMigrationProblems(
+		final IPath[] locations, final String[] projectName, final List<String> versions) {
+
 		Job job = new WorkspaceJob("Finding migration problems...") {
 
 			@Override
@@ -207,7 +216,7 @@ public class MigrateProjectHandler extends AbstractHandler {
 
 					MigrationProblemsContainer container = null;
 
-					if (_combineExistedProblem == true) {
+					if (_combineExistedProblem) {
 						container = UpgradeAssistantSettingsUtil.getObjectFromStore(MigrationProblemsContainer.class);
 					}
 
@@ -238,10 +247,10 @@ public class MigrateProjectHandler extends AbstractHandler {
 
 								files.add(locations[j].toFile());
 
-								problems = m.findProblems(files, override);
+								problems = m.findProblems(files, versions, override);
 							}
 							else {
-								problems = m.findProblems(locations[j].toFile(), override);
+								problems = m.findProblems(locations[j].toFile(), versions, override);
 							}
 
 							for (Problem problem : problems) {
@@ -636,6 +645,7 @@ public class MigrateProjectHandler extends AbstractHandler {
 		return true;
 	}
 
+	private List<String> _breakingChangeVersions;
 	private Boolean _combineExistedProblem = true;
 	private String[] _ignoreSuperClasses = {
 		"com.liferay.portal.service.BaseLocalServiceImpl", "com.liferay.portal.model.CacheModel",

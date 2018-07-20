@@ -190,15 +190,18 @@ public class NavigatorControl extends AbstractCanvas implements SelectionChanged
 			if (page != null) {
 				if (page.showBackPage() && (_backBox != null) && _backBox.contains(x, y)) {
 					_hover = _BUTTON_BACK;
+
 					return;
 				}
 
 				if (page.showNextPage() && (_nextBox != null) && _nextBox.contains(x, y)) {
 					_hover = _BUTTON_NEXT;
+
 					return;
 				}
 
 				_hover = actionOnMouseMove(x, y);
+
 				return;
 			}
 		}

@@ -33,9 +33,9 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public ElementType TYPE = new ElementType(LiferayUpgradeDataModel.class);
 
-	// *** SdkLocation ***
-
 	public Value<Boolean> getBackupSdk();
+
+	public Value<String> getBreakingChangeVersion();
 
 	public Value<String> getBundleName();
 
@@ -43,15 +43,13 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public Value<Path> getConvertedProjectLocation();
 
-	// *** Layout ***
-
 	public Value<Boolean> getConvertLiferayWorkspace();
 
 	public Value<Boolean> getDownloadBundle();
 
 	public Value<Boolean> getHasExt();
 
-	// *** Liferay70ServerName ***
+	public Value<Boolean> getHasGradleProject();
 
 	public Value<Boolean> getHasHook();
 
@@ -59,31 +57,29 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public Value<Boolean> getHasMavenProject();
 
-	// *** Liferay62ServerLocation ***
-
 	public Value<Boolean> getHasPortlet();
 
 	public Value<Boolean> getHasServiceBuilder();
 
 	public Value<Boolean> getHasTheme();
 
-	// *** BundleName ***
-
 	public Value<Boolean> getHasWeb();
 
 	public Value<Boolean> getImportFinished();
 
-	public Value<String> getLayout();
+	public Value<Boolean> getInputIsLiferayWorkspace();
 
-	// *** BundleUrl ***
+	public Value<String> getLayout();
 
 	public Value<String> getLiferay62ServerLocation();
 
+	// *** BreakingChangeVersion ***
+
 	public Value<String> getLiferay70ServerName();
 
-	public Value<Path> getSdkLocation();
+	// *** InputIsLiferayWorkspace ***
 
-	// *** HasMavenProject ***
+	public Value<Path> getSdkLocation();
 
 	public void setBackupLocation(Path backupLocation);
 
@@ -93,7 +89,7 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public void setBackupSdk(String backupSdk);
 
-	// *** HasHook ***
+	public void setBreakingChangeVersion(String value);
 
 	public void setBundleName(String bundleName);
 
@@ -103,8 +99,6 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public void setConvertedProjectLocation(String convertedProjectLocation);
 
-	// *** HasPortlet ***
-
 	public void setConvertLiferayWorkspace(Boolean convertLiferayWorkspace);
 
 	public void setConvertLiferayWorkspace(String convertLiferayWorkspace);
@@ -113,17 +107,17 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public void setDownloadBundle(String downloadBundle);
 
-	// *** HasTheme ***
-
 	public void setHasExt(Boolean hasExt);
 
 	public void setHasExt(String hasExt);
 
+	public void setHasGradleProject(Boolean hasGradleProject);
+
+	public void setHasGradleProject(String hasGradleProject);
+
 	public void setHasHook(Boolean hasHook);
 
 	public void setHasHook(String hasHook);
-
-	// *** HasExt ***
 
 	public void setHasLayout(Boolean hasLayout);
 
@@ -133,8 +127,6 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public void setHasMavenProject(String hasMavenProject);
 
-	// *** HasServiceBuilder ***
-
 	public void setHasPortlet(Boolean hasPortlet);
 
 	public void setHasPortlet(String hasPortlet);
@@ -142,8 +134,6 @@ public interface LiferayUpgradeDataModel extends Element {
 	public void setHasServiceBuilder(Boolean hasServiceBuilder);
 
 	public void setHasServiceBuilder(String hasServiceBuilder);
-
-	// *** HasLayout ***
 
 	public void setHasTheme(Boolean hasTheme);
 
@@ -153,19 +143,23 @@ public interface LiferayUpgradeDataModel extends Element {
 
 	public void setHasWeb(String hasWeb);
 
-	// *** HasWeb ***
-
 	public void setImportFinished(Boolean importFinished);
 
 	public void setImportFinished(String importFinished);
+
+	public void setInputIsLiferayWorkspace(Boolean inputIsLifeayWorkspace);
+
+	public void setInputIsLiferayWorkspace(String inputIsLifeayWorkspace);
 
 	public void setLayout(String layout);
 
 	public void setLiferay62ServerLocation(String value);
 
-	// *** ConvertedProjectLocation ***
+	// *** BreakingChangeVersion ***
 
 	public void setLiferay70ServerName(String value);
+
+	// *** InputIsLiferayWorkspace ***
 
 	public void setSdkLocation(Path sdkLocation);
 
@@ -184,15 +178,18 @@ public interface LiferayUpgradeDataModel extends Element {
 	@Type(base = Boolean.class)
 	public ValueProperty PROP_BACKUP_SDK = new ValueProperty(TYPE, "BackupSdk");
 
+	@DefaultValue(text = "7.0")
+	public ValueProperty PROP_BREAKING_CHANGE_VERSION = new ValueProperty(TYPE, "BreakingChangeVersion");
+
 	@DefaultValue(text = "Liferay 7.x")
 	@Service(impl = BundleNameValidationService.class)
 	public ValueProperty PROP_BUNDLE_NAME = new ValueProperty(TYPE, "BundleName");
 
+	// *** DownloadBundle ***
+
 	@DefaultValue(text = DEFAULT_BUNDLE_URL)
 	@Service(impl = BundleUrlValidationService.class)
 	public ValueProperty PROP_BUNDLE_URL = new ValueProperty(TYPE, "BundleUrl");
-
-	// *** DownloadBundle ***
 
 	@DefaultValue(text = "false")
 	@Type(base = Boolean.class)
@@ -206,11 +203,15 @@ public interface LiferayUpgradeDataModel extends Element {
 	@Type(base = Boolean.class)
 	public ValueProperty PROP_DOWNLOAD_BUNDLE = new ValueProperty(TYPE, "downloadBundle");
 
+	// *** BackupSdk ***
+
 	@DefaultValue(text = "false")
 	@Type(base = Boolean.class)
 	public ValueProperty PROP_HAS_EXT = new ValueProperty(TYPE, "HasExt");
 
-	// *** BackupSdk ***
+	@DefaultValue(text = "false")
+	@Type(base = Boolean.class)
+	public ValueProperty PROP_HAS_GRADLE_PROJECT = new ValueProperty(TYPE, "HasGradleProject");
 
 	@DefaultValue(text = "false")
 	@Type(base = Boolean.class)
@@ -224,11 +225,11 @@ public interface LiferayUpgradeDataModel extends Element {
 	@Type(base = Boolean.class)
 	public ValueProperty PROP_HAS_MAVEN_PROJECT = new ValueProperty(TYPE, "HasMavenProject");
 
+	// *** BackupLocation ***
+
 	@DefaultValue(text = "false")
 	@Type(base = Boolean.class)
 	public ValueProperty PROP_HAS_PORTLET = new ValueProperty(TYPE, "HasPortlet");
-
-	// *** BackupLocation ***
 
 	@DefaultValue(text = "false")
 	@Type(base = Boolean.class)
@@ -242,11 +243,15 @@ public interface LiferayUpgradeDataModel extends Element {
 	@Type(base = Boolean.class)
 	public ValueProperty PROP_HAS_WEB = new ValueProperty(TYPE, "HasWeb");
 
+	// *** ImportFinished ***
+
 	@DefaultValue(text = "false")
 	@Type(base = Boolean.class)
 	public ValueProperty PROP_IMPORT_FINISHED = new ValueProperty(TYPE, "ImportFinished");
 
-	// *** ImportFinished ***
+	@DefaultValue(text = "false")
+	@Type(base = Boolean.class)
+	public ValueProperty PROP_INPUT_IS_LIFERAY_WORKSPACE = new ValueProperty(TYPE, "InputIsLiferayWorkspace");
 
 	public ValueProperty PROP_LAYOUT = new ValueProperty(TYPE, "Layout");
 

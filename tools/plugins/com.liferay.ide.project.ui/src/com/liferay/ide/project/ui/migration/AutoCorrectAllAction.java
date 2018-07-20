@@ -26,6 +26,9 @@ import com.liferay.ide.project.core.upgrade.ProblemsContainer;
 import com.liferay.ide.project.core.upgrade.UpgradeAssistantSettingsUtil;
 import com.liferay.ide.project.core.upgrade.UpgradeProblems;
 import com.liferay.ide.project.ui.ProjectUI;
+import com.liferay.ide.project.ui.upgrade.animated.FindBreakingChangesPage;
+import com.liferay.ide.project.ui.upgrade.animated.LiferayUpgradeDataModel;
+import com.liferay.ide.project.ui.upgrade.animated.Page;
 import com.liferay.ide.project.ui.upgrade.animated.UpgradeView;
 import com.liferay.ide.ui.util.UIUtil;
 
@@ -65,6 +68,11 @@ public class AutoCorrectAllAction extends Action {
 
 	public void run() {
 		final BundleContext context = FrameworkUtil.getBundle(AutoCorrectAction.class).getBundleContext();
+
+		final FindBreakingChangesPage page = UpgradeView.getPage(
+			Page.findbreackingchangesPageId, FindBreakingChangesPage.class);
+
+		LiferayUpgradeDataModel dataModel = page.getDataModel();
 
 		WorkspaceJob job = new WorkspaceJob("Auto correcting all of migration problem.") {
 
@@ -167,7 +175,8 @@ public class AutoCorrectAllAction extends Action {
 									}
 
 									new RunMigrationToolAction(
-										"Run Migration Tool", view.getViewSite().getShell(), projectSelection).run();
+										"Run Migration Tool", view.getViewSite().getShell(), projectSelection,
+										dataModel).run();
 								}
 								catch (IOException ioe) {
 									ProjectUI.logError(ioe);

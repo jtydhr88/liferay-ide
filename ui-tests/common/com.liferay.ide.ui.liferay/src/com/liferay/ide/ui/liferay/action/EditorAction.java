@@ -129,6 +129,10 @@ public class EditorAction extends UIAction {
 			_serverEditor.getHttpPort().setText(httpPort);
 		}
 
+		public void setPassword(String Password) {
+			_serverEditor.getPassword().setText(Password);
+		}
+
 		private final ServerEditor _serverEditor = new ServerEditor(bot);
 
 	}

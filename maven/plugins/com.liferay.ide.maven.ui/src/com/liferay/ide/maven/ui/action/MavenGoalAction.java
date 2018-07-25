@@ -133,6 +133,10 @@ public abstract class MavenGoalAction extends AbstractObjectAction {
 		if (fSelection instanceof IStructuredSelection) {
 			Object[] elems = ((IStructuredSelection)fSelection).toArray();
 
+			if ( elems.length < 1) {
+				return;
+			}
+
 			Object elem = elems[0];
 
 			if (elem instanceof IFile) {

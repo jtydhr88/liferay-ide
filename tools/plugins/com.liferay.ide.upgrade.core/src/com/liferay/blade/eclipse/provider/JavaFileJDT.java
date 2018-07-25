@@ -45,6 +45,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -473,6 +474,92 @@ public class JavaFileJDT extends WorkspaceFile implements JavaFile {
 
 							searchResults.add(
 								createSearchResult(null, startOffset, endOffset, startLine, endLine, fullMatch));
+						}
+					}
+
+					return true;
+				}
+
+			});
+
+		return searchResults;
+	}
+
+	/**
+	 * find the method invocations for a particular method on a given object name
+	 *
+	 * @param objectName
+	 *            the name of object in jsp
+	 * @param methodName
+	 *            the method name
+	 * @param methodParamTypes
+	 *            the type of all parameters, if can't resolve parameter type, please set it to <tt>null</tt>
+	 * @return search results
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SearchResult> findMethodInvocations(String objectName, String methodName, String[] methodParamTypes) {
+		List<SearchResult> searchResults = new ArrayList<>();
+
+		_ast.accept(
+			new ASTVisitor() {
+
+				@Override
+				public boolean visit(MethodInvocation node) {
+					SimpleName simple = node.getName();
+
+					String methodNameValue = simple.toString();
+
+					Expression expression = node.getExpression();
+
+					String expressionValue = expression.toString();
+
+					boolean typeAllResolved = true;
+
+					if ((methodName.equals(methodNameValue) || "*".equals(methodName)) && (objectName != null) &&
+						objectName.equals(expressionValue)) {
+
+						if (methodParamTypes != null) {
+							boolean argumentsMatch = true;
+
+							Expression[] argExpressions =
+								((List<Expression>)node.arguments()).toArray(new Expression[0]);
+
+							if (argExpressions.length == methodParamTypes.length) {
+								for (int i = 0; i < argExpressions.length; i++) {
+									Expression arg = argExpressions[i];
+
+									ITypeBinding argType = arg.resolveTypeBinding();
+
+									if ((methodParamTypes[i] != null) && (argType != null)) {
+										if (_typeMatch(methodParamTypes[i], argType.getQualifiedName())) {
+											continue;
+										}
+										else {
+											argumentsMatch = false;
+
+											break;
+										}
+									}
+									else {
+										typeAllResolved = false;
+									}
+								}
+
+								if (argumentsMatch) {
+									int startOffset = expression.getStartPosition();
+
+									int startLine = _ast.getLineNumber(startOffset);
+
+									int endOffset = node.getStartPosition() + node.getLength();
+
+									int endLine = _ast.getLineNumber(endOffset);
+
+									searchResults.add(
+										createSearchResult(
+											null, startOffset, endOffset, startLine, endLine, typeAllResolved));
+								}
+							}
 						}
 					}
 

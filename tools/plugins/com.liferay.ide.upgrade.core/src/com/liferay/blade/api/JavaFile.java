@@ -34,6 +34,9 @@ public interface JavaFile extends SourceFile {
 	public List<SearchResult> findMethodInvocations(
 		String typeHint, String expressionValue, String methodName, String[] methodParamTypes);
 
+	public List<SearchResult> findMethodInvocations(
+		String objectName, String methodName, String[] methodParamTypes);
+
 	public SearchResult findPackage(String packageName);
 
 	public List<SearchResult> findServiceAPIs(String[] serviceApiPrefixes);

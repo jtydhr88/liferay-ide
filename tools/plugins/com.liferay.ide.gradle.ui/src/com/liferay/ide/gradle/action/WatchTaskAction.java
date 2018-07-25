@@ -21,6 +21,7 @@ import com.liferay.ide.gradle.ui.GradleUI;
 import com.liferay.ide.project.ui.ProjectUI;
 import com.liferay.ide.server.core.ILiferayServer;
 import com.liferay.ide.server.core.gogo.GogoTelnetClient;
+import com.liferay.ide.server.core.portal.PortalServerBehavior;
 import com.liferay.ide.ui.action.AbstractObjectAction;
 
 import java.io.File;
@@ -41,6 +42,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobManager;
@@ -48,9 +50,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.wst.server.core.IServer;
+import org.eclipse.wst.server.core.ServerCore;
 
 /**
  * @author Terry Jia
+ * @author Simon Jiang
  */
 public class WatchTaskAction extends AbstractObjectAction {
 
@@ -58,6 +63,10 @@ public class WatchTaskAction extends AbstractObjectAction {
 	public void run(IAction action) {
 		if (fSelection instanceof IStructuredSelection) {
 			Object[] elems = ((IStructuredSelection)fSelection).toArray();
+
+			if (elems.length < 1) {
+				return;
+			}
 
 			Object elem = elems[0];
 
@@ -87,12 +96,19 @@ public class WatchTaskAction extends AbstractObjectAction {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
+						GradleUtil.runGradleTask(
+							project, new String[] {"watch"}, new String[] {"--continuous"}, monitor);
 
-						GradleUtil.runGradleTask(project, new String[] {
-							"watch"
-						}, new String[] {
-							"--continuous"
-						}, monitor);
+						IServer[] servers = ServerCore.getServers();
+
+						for (IServer server : servers) {
+							PortalServerBehavior portalServerBehavior = (PortalServerBehavior)server.loadAdapter(
+								PortalServerBehavior.class, new NullProgressMonitor());
+
+							if (portalServerBehavior != null) {
+								portalServerBehavior.removeWatchProject(project);
+							}
+						}
 					}
 					catch (Exception e) {
 						return ProjectUI.createErrorStatus("Error running Gradle watch task for project " + project, e);
@@ -119,11 +135,9 @@ public class WatchTaskAction extends AbstractObjectAction {
 								Properties properties = new Properties();
 
 								try (InputStream in = Files.newInputStream(bndPath)) {
-
 									properties.load(in);
 
 									String bsn = properties.getProperty("Bundle-SymbolicName");
-
 
 									String cmd = "uninstall " + bsn;
 
@@ -133,8 +147,22 @@ public class WatchTaskAction extends AbstractObjectAction {
 								}
 							}
 						}
-						catch (IOException e) {
-							GradleUI.logError("Could not uninstall bundles installed by watch task", e);
+						catch (IOException ioe) {
+							GradleUI.logError("Could not uninstall bundles installed by watch task", ioe);
+						}
+					}
+
+					@Override
+					public void scheduled(IJobChangeEvent event) {
+						IServer[] servers = ServerCore.getServers();
+
+						for (IServer server : servers) {
+							PortalServerBehavior portalServerBehavior = (PortalServerBehavior)server.loadAdapter(
+								PortalServerBehavior.class, new NullProgressMonitor());
+
+							if (portalServerBehavior != null) {
+								portalServerBehavior.addWatchProject(project);
+							}
 						}
 					}
 
@@ -156,12 +184,11 @@ public class WatchTaskAction extends AbstractObjectAction {
 
 			try {
 				Files.walkFileTree(
-					Paths.get(location.toOSString()), new SimpleFileVisitor<Path>() {
+					Paths.get(location.toOSString()),
+					new SimpleFileVisitor<Path>() {
 
 						@Override
-						public FileVisitResult postVisitDirectory(Path dir, IOException e)
-							throws IOException {
-
+						public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 							if (FileUtil.exists(new File(dir.toFile(), "bnd.bnd"))) {
 								return FileVisitResult.SKIP_SUBTREE;
 							}
@@ -170,9 +197,7 @@ public class WatchTaskAction extends AbstractObjectAction {
 						}
 
 						@Override
-						public FileVisitResult visitFile(Path path, BasicFileAttributes attrs)
-							throws IOException {
-
+						public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
 							if (path.endsWith("bnd.bnd")) {
 								bndPaths.add(path);
 
@@ -181,9 +206,10 @@ public class WatchTaskAction extends AbstractObjectAction {
 
 							return FileVisitResult.CONTINUE;
 						}
+
 					});
 			}
-			catch (IOException e) {
+			catch (IOException ioe) {
 			}
 		}
 		else {

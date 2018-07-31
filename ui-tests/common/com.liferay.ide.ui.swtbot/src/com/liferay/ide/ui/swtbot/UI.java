@@ -20,6 +20,7 @@ package com.liferay.ide.ui.swtbot;
  * @author Ying Xu
  * @author Vicky Wang
  * @author Li Lu
+ * @author Rui Wang
  */
 public interface UI {
 
@@ -366,6 +367,8 @@ public interface UI {
 	public final String JSP_FOLDER = "JSP folder:";
 
 	public final String KALEO_DESIGNER = "Kaleo Designer";
+
+	public final String KALEO_WORKFLOWS = "Kaleo Workflows";
 
 	public final String LANGUAGE_PROPERTIES = "Language properties";
 
@@ -832,6 +835,8 @@ public interface UI {
 
 	public final String USE_DEFAULT_PORTLET_MVCPORTLET = "Use default portlet (MVCPortlet)";
 
+	public final String UPLOAD_NEW_WORKFLOW = "Upload new workflow...";
+
 	public final String USER_ID = "User-id:";
 
 	public final String VAADIN = "Vaadin";
@@ -871,6 +876,8 @@ public interface UI {
 	public final String WORKSPACE_LOCATION = "Workspace location:";
 
 	public final String WORKSPACE_NAME = "Workspace name:";
+
+	public final String WORKSPACE_FILE = "workspace file";
 
 	public final String YES = "Yes";
 

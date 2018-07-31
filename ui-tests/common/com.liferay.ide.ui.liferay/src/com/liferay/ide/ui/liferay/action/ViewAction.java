@@ -16,6 +16,7 @@ package com.liferay.ide.ui.liferay.action;
 
 import com.liferay.ide.ui.liferay.UIAction;
 import com.liferay.ide.ui.liferay.page.view.CodeUpgradeView;
+import com.liferay.ide.ui.liferay.support.server.PureTomcatDxpSupport;
 import com.liferay.ide.ui.swtbot.eclipse.page.DeleteResourcesDialog;
 import com.liferay.ide.ui.swtbot.eclipse.page.ErrorLogView;
 import com.liferay.ide.ui.swtbot.eclipse.page.PackageExplorerView;
@@ -31,6 +32,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 /**
  * @author Terry Jia
  * @author Ying Xu
+ * @author Rui Wang
  */
 public class ViewAction extends UIAction {
 
@@ -333,6 +335,27 @@ public class ViewAction extends UIAction {
 			_serversView.getServers().contextMenu(true, "Remove", serverLabel, projectName);
 		}
 
+		public void openUpLoadNewWorkflowDialog(String serverLabel) {
+			ide.sleep(2000);
+
+			_serversView.getServers().setFocus();
+
+			_serversView.getServers().getTreeItem(serverLabel, KALEO_WORKFLOWS).click();
+
+			_serversView.getServers().contextMenu(true, "Upload new workflow..." , serverLabel , KALEO_WORKFLOWS);
+
+		}
+
+		public void clickKaleoNameDialog(String serverLabel) {
+			ide.sleep(5000);
+
+			_serversView.getServers().setFocus();
+
+			_serversView.getServers().getTreeItem(serverLabel, KALEO_WORKFLOWS, "New Workflow  [Version: 1, Draft Version: 1]").click();
+
+			ide.sleep();
+		}
+
 		public void start(String serverLabel) {
 			ide.sleep(5000);
 
@@ -359,6 +382,49 @@ public class ViewAction extends UIAction {
 				_serversView.getServers().expand(serverLabel);
 
 				return _serversView.getServers().isVisibleStartsBy(serverLabel, projectName);
+			}
+		}
+
+		public boolean visibleKaleofolderTry(String serverLabel) {
+			try {
+				return _serversView.getServers().isVisibleStartsBy( KALEO_WORKFLOWS);
+			}
+			catch (Exception e) {
+				_serversView.getServers().setFocus();
+
+				_serversView.getServers().select(serverLabel);
+
+				_serversView.getServers().expand(serverLabel);
+
+				_serversView.getServers().expand(KALEO_WORKFLOWS);
+
+				_serversView.getServers().getTreeItem(serverLabel, KALEO_WORKFLOWS , "New Workflow  [Version: 1, Draft Version: 1]").click();
+
+				return _serversView.getServers().isVisibleStartsBy( KALEO_WORKFLOWS);
+			}
+		}
+
+		public boolean visibleKaleoNameTry(String serverLabel,String kaleoName) {
+			try {
+				return _serversView.getServers().isVisibleStartsBy(serverLabel,KALEO_WORKFLOWS,kaleoName);
+			}
+			catch (Exception e) {
+
+				_serversView.getServers().setFocus();
+
+				_serversView.getServers().select(serverLabel);
+
+				_serversView.getServers().expand(serverLabel);
+
+				_serversView.getServers().expand(KALEO_WORKFLOWS);
+
+				_serversView.getServers().select(KALEO_WORKFLOWS);
+
+				_serversView.getServers().expand("New Workflow  [Version: 1, Draft Version: 1]");
+
+				_serversView.getServers().getTreeItem(serverLabel, KALEO_WORKFLOWS, "New Workflow  [Version: 1, Draft Version: 1]");
+		
+				return _serversView.getServers().isVisibleStartsBy(serverLabel, KALEO_WORKFLOWS, "New Workflow  [Version: 1, Draft Version: 1]");
 			}
 		}
 

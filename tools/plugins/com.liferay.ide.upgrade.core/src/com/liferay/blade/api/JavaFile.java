@@ -31,6 +31,8 @@ public interface JavaFile extends SourceFile {
 
 	public List<SearchResult> findMethodDeclaration(String name, String[] params, String returnType);
 
+	public List<SearchResult> findMethodInvocations(String objectName, String methodName, int parameterCount);
+
 	public List<SearchResult> findMethodInvocations(
 		String typeHint, String expressionValue, String methodName, String[] methodParamTypes);
 

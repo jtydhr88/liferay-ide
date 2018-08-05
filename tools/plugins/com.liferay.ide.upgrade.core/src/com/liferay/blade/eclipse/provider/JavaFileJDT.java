@@ -45,6 +45,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -297,6 +298,61 @@ public class JavaFileJDT extends WorkspaceFile implements JavaFile {
 								}
 
 							});
+					}
+
+					return false;
+				}
+
+			});
+
+		return searchResults;
+	}
+
+	/**
+	 * find the method invocations for a particular method on a given object name
+	 *
+	 * @param objectName
+	 *            the name of object in jsp
+	 * @param methodName
+	 *            the method name
+	 * @param parameterCount
+	 *            the count of parameters for old method
+	 * @return search results
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SearchResult> findMethodInvocations(String objectName, String methodName, int parameterCount) {
+		List<SearchResult> searchResults = new ArrayList<>();
+
+		_ast.accept(
+			new ASTVisitor() {
+
+				@Override
+				public boolean visit(MethodInvocation node) {
+					SimpleName simple = node.getName();
+
+					String methodNameValue = simple.toString();
+
+					Expression expression = node.getExpression();
+
+					String expressionValue = expression.toString();
+
+					Expression[] argExpressions = ((List<Expression>)node.arguments()).toArray(new Expression[0]);
+
+					if (methodName.equals(methodNameValue) && (objectName != null) &&
+						objectName.equals(expressionValue) && (argExpressions.length == parameterCount)) {
+
+						int startOffset = expression.getStartPosition();
+
+						int startLine = _ast.getLineNumber(startOffset);
+
+						int endOffset = node.getStartPosition() + node.getLength();
+
+						int endLine = _ast.getLineNumber(endOffset);
+
+						searchResults.add(createSearchResult(null, startOffset, endOffset, startLine, endLine, false));
+
+						return true;
 					}
 
 					return false;

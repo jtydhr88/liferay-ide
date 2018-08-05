@@ -101,6 +101,32 @@ public class JavaFileJDTTest {
 	}
 
 	@Test
+	public void checkGuessMethodInvocationOnObjectName() throws Exception {
+		File file = new File("jsptests/portal-page-context-attribute/PortalPageContextAttributeTest.jsp");
+
+		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
+
+		Collection<ServiceReference<JavaFile>> sr = context.getServiceReferences(
+			JavaFile.class, "(file.extension=jsp)");
+
+		JavaFile javaFileChecker = context.getService(sr.iterator().next());
+
+		javaFileChecker.setFile(file);
+
+		List<SearchResult> results = javaFileChecker.findMethodInvocations("portletDisplay", "setId", 1);
+
+		Assert.assertNotNull(results);
+
+		Assert.assertEquals(results.toString(), 1, results.size());
+
+		results = javaFileChecker.findMethodInvocations("portletDisplay", "isAccess", 0);
+
+		Assert.assertNotNull(results);
+
+		Assert.assertEquals(results.toString(), 1, results.size());
+	}
+
+	@Test
 	public void checkMethodInvocationTypeMatch() throws Exception {
 		File file = new File("tests/files/JavaFileCheckerTypeMatch.java");
 

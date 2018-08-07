@@ -710,6 +710,10 @@ public class InitConfigureProjectPage extends Page implements IServerLifecycleLi
 	private boolean _configureProjectValidationExclude(IProject project, boolean disableValidation) {
 		boolean retval = false;
 
+		if (project == null) {
+			return retval;
+		}
+
 		try {
 			ValManager valManager = ValManager.getDefault();
 

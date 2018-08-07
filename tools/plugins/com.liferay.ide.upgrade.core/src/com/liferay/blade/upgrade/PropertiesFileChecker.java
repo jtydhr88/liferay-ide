@@ -31,6 +31,7 @@ import java.util.Map;
 
 /**
  * @author Gregory Amerson
+ * @author Simon Jiang
  */
 public class PropertiesFileChecker {
 
@@ -299,7 +300,7 @@ public class PropertiesFileChecker {
 							return new int[] {-1, _total, emptylines};
 						}
 
-						return new int[] {len, _total, emptylines};
+						return new int[] {len, ++_total, emptylines};
 					}
 				}
 

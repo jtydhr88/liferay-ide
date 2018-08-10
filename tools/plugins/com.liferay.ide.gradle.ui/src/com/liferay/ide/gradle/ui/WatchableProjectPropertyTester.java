@@ -17,9 +17,12 @@ package com.liferay.ide.gradle.ui;
 import com.liferay.ide.gradle.core.GradleUtil;
 import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
 
+import java.io.File;
+
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Terry Jia
@@ -35,6 +38,19 @@ public class WatchableProjectPropertyTester extends PropertyTester {
 			IFile buildFile = project.getFile("build.gradle");
 
 			if (LiferayWorkspaceUtil.inLiferayWorkspace(project) || LiferayWorkspaceUtil.isValidWorkspace(project)) {
+
+				IPath projectLocation = project.getLocation();
+
+				File projectFile = projectLocation.toFile();
+
+				File parentFile = projectFile.getParentFile();
+
+				String parentName = parentFile.getName();
+
+				if (!parentName.equals("modules")) {
+					return false;
+				}
+
 				IProject workspaceProject = LiferayWorkspaceUtil.getWorkspaceProject();
 
 				buildFile = workspaceProject.getFile("settings.gradle");

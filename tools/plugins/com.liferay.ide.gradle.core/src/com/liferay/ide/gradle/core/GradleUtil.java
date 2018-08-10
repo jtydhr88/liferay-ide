@@ -93,7 +93,7 @@ public class GradleUtil {
 		return GradleProjectNature.isPresentOn(project);
 	}
 
-	public static boolean isWatchableProject(IFile buildFile) {
+	public static boolean isWatchableProject(IFile buildFile, IProject project) {
 		if (FileUtil.notExists(buildFile)) {
 			return false;
 		}
@@ -127,7 +127,17 @@ public class GradleUtil {
 					if ("com.liferay".equals(group) && "com.liferay.gradle.plugins.workspace".equals(name) &&
 						(CoreUtil.compareVersions(version, new Version("1.9.2")) >= 0)) {
 
-						watchable = true;
+						IPath projectLocation = project.getLocation();
+
+						File projectFile = projectLocation.toFile();
+
+						File parentFile = projectFile.getParentFile();
+
+						String parentName = parentFile.getName();
+
+						if (parentName.equals("modules")) {
+							watchable = true;
+						}
 
 						break;
 					}

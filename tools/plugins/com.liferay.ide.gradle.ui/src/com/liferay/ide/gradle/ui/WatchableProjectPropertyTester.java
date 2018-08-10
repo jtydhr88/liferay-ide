@@ -40,7 +40,7 @@ public class WatchableProjectPropertyTester extends PropertyTester {
 				buildFile = workspaceProject.getFile("settings.gradle");
 			}
 
-			return GradleUtil.isWatchableProject(buildFile);
+			return GradleUtil.isWatchableProject(buildFile, project);
 		}
 
 		return false;

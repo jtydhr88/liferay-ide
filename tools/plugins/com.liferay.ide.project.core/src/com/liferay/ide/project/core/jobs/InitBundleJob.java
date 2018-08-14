@@ -39,10 +39,15 @@ public class InitBundleJob extends Job {
 		_project = project;
 		_bundleUrl = bundleUrl;
 
-		this.setProperty(ILiferayProjectProvider.LIFERAY_PROJECT_JOB, new Object());
+		setProperty(ILiferayProjectProvider.LIFERAY_BUNDLE_JOB, new Object());
 
-		this.addJobChangeListener(
+		addJobChangeListener(
 			new JobChangeAdapter() {
+
+				@Override
+				public void aboutToRun(IJobChangeEvent event) {
+					JobUtil.waitForLiferayProjectJob();
+				}
 
 				@Override
 				public void done(IJobChangeEvent event) {
@@ -50,8 +55,6 @@ public class InitBundleJob extends Job {
 				}
 
 			});
-
-		JobUtil.waitForLiferayProjectJob();
 	}
 
 	@Override

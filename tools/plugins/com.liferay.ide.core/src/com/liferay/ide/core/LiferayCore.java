@@ -41,6 +41,8 @@ public class LiferayCore extends Plugin {
 
 	public static final String PLUGIN_ID = "com.liferay.ide.core";
 
+	public static final String LIFERAY_JOB_FAMILY = PLUGIN_ID + ".jobs";
+
 	public static <T> T create(Class<T> type, Object adaptable) {
 		if (type == null) {
 			return null;

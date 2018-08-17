@@ -711,6 +711,17 @@ public class InitConfigureProjectPage extends Page implements SelectionChangedLi
 			});
 	}
 
+	private void _disableUIControl(boolean state) {
+
+		Control[] controlElements = _pageParent.getChildren();
+
+		Stream.of(
+			controlElements
+		).forEach(
+			control -> control.setEnabled(state)
+		);
+	}
+
 	private void _createImportElement() {
 		_createHorizontalSpacer = createHorizontalSpacer(_pageParent, 3);
 		_createSeparator = createSeparator(_pageParent, 3);
@@ -727,7 +738,7 @@ public class InitConfigureProjectPage extends Page implements SelectionChangedLi
 					if (_validationResult && !importFinished) {
 						_saveSettings();
 
-						_importButton.setEnabled(false);
+						_disableUIControl(false);
 
 						IJobManager jobManager = Job.getJobManager();
 
@@ -739,18 +750,21 @@ public class InitConfigureProjectPage extends Page implements SelectionChangedLi
 							protected IStatus run(IProgressMonitor monitor) {
 								try {
 									groupMonitor.beginTask("Processing work", 100);
-
 									importProject(monitor, groupMonitor);
+
 
 									groupMonitor.done();
 
 									return org.eclipse.core.runtime.Status.OK_STATUS;
 								}
 								catch (OperationCanceledException oce) {
+									_disableUIControl(true);
 									return org.eclipse.core.runtime.Status.CANCEL_STATUS;
 								}
 								catch (Exception ce) {
 									groupMonitor.done();
+
+									_disableUIControl(true);
 
 									ProjectUI.logError(ce);
 
@@ -780,7 +794,7 @@ public class InitConfigureProjectPage extends Page implements SelectionChangedLi
 
 											if (changeEvent.getResult() ==
 													org.eclipse.core.runtime.Status.CANCEL_STATUS) {
-
+												_disableUIControl(true);
 												return;
 											}
 
@@ -811,7 +825,7 @@ public class InitConfigureProjectPage extends Page implements SelectionChangedLi
 
 											setNextPage(true);
 
-											_importButton.setEnabled(true);
+											_disableUIControl(true);
 
 											setSelectedAction(getSelectedAction("PageFinishAction"));
 										});

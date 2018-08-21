@@ -860,7 +860,9 @@ public class ProjectUtil {
 
 		IFile bndFile = project.getFile("bnd.bnd");
 
-		if (bndFile.exists()) {
+		File bnd = FileUtil.getFile(bndFile);
+
+		if (FileUtil.exists(bnd)) {
 			Properties prop = PropertiesUtil.loadProperties(bndFile.getLocation().toFile());
 
 			retVal = prop.getProperty(Constants.BUNDLE_SYMBOLICNAME);

@@ -52,6 +52,15 @@ import org.osgi.service.component.annotations.Component;
 	service = {AutoMigrator.class, FileMigrator.class})
 public class LiferayVersionsProperties extends PropertiesFileMigrator implements AutoMigrator {
 
+	public LiferayVersionsProperties() {
+		this(".*7\\.[0-9]\\.[0-9].*", "7.0.0+");
+	}
+
+	public LiferayVersionsProperties(String oldVersionPattern, String newVersion) {
+		_oldVersionPattern = oldVersionPattern;
+		_newVersion = newVersion;
+	}
+
 	@Override
 	public List<Problem> analyze(File file) {
 		List<Problem> problems = new ArrayList<>();
@@ -66,7 +75,7 @@ public class LiferayVersionsProperties extends PropertiesFileMigrator implements
 
 				String versions = key.value;
 
-				if (!versions.matches(".*7\\.[0-9]\\.[0-9].*")) {
+				if (!versions.matches(_oldVersionPattern)) {
 					List<SearchResult> results = propertiesFileChecker.findProperties("liferay-versions");
 
 					if (results != null) {
@@ -110,7 +119,7 @@ public class LiferayVersionsProperties extends PropertiesFileMigrator implements
 					if ((propertyData != null) && propertyData.startsWith(_PREFIX)) {
 						String propertyValue = propertyData.substring(_PREFIX.length());
 
-						contents = contents.replaceAll(propertyValue + ".*", propertyValue + "=7.0.0+");
+						contents = contents.replaceAll(propertyValue + ".*", propertyValue + "=" + _newVersion);
 
 						problemsFixed++;
 					}
@@ -134,5 +143,8 @@ public class LiferayVersionsProperties extends PropertiesFileMigrator implements
 	}
 
 	private static final String _PREFIX = "property:";
+
+	private String _newVersion;
+	private String _oldVersionPattern;
 
 }

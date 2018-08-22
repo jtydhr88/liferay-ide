@@ -47,6 +47,7 @@ import java.util.stream.Stream;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.util.tracker.ServiceTracker;
@@ -213,25 +214,23 @@ public class ProjectMigrationService implements Migration {
 
 		monitor.setTaskName("Analyzing file " + _count + "/" + _total + " " + fileName);
 
-		ServiceReference<FileMigrator>[] fileMigrators = _fileMigratorTracker.getServiceReferences();
+		ServiceReference<FileMigrator>[] fileMigratorsServiceReferences = _fileMigratorTracker.getServiceReferences();
 
-		if (ListUtil.isNotEmpty(fileMigrators)) {
-			List<ServiceReference<FileMigrator>> list = Arrays.asList(fileMigrators);
+		if (ListUtil.isNotEmpty(fileMigratorsServiceReferences)) {
+			List<ServiceReference<FileMigrator>> fileMigrators = Stream.of(
+				fileMigratorsServiceReferences
+			).filter(
+				serviceReference -> {
+					String fileExtensions = (String)serviceReference.getProperty("file.extensions");
 
-			Stream<ServiceReference<FileMigrator>> serviceStream = list.stream();
+					List<String> extensions = Arrays.asList(fileExtensions.split(","));
 
-			List<ServiceReference<FileMigrator>> fileMigratorList = serviceStream.filter(
-				predicate -> {
-					String fileExtensionString = (String)predicate.getProperty("file.extensions");
-
-					List<String> extensionList = Arrays.asList(fileExtensionString.split(","));
-
-					return extensionList.contains(extension);
+					return extensions.contains(extension);
 				}
 			).filter(
-				predicate -> {
+				serviceReference -> {
 					if (ListUtil.isNotEmpty(versions)) {
-						String version = (String)predicate.getProperty("version");
+						String version = (String)serviceReference.getProperty("version");
 
 						return versions.contains(version);
 					}
@@ -248,63 +247,44 @@ public class ProjectMigrationService implements Migration {
 					versions,
 					new Comparator<String>() {
 
+						@Override
 						public int compare(String version1, String version2) {
-							double v1 = 0;
+							Version osgiVersion1 = new Version(version1);
+							Version osgiVersion2 = new Version(version2);
 
-							try {
-								v1 = Double.parseDouble(version1);
-							}
-							catch (NumberFormatException nfe) {
-							}
-
-							double v2 = 0;
-
-							try {
-								v2 = Double.parseDouble(version2);
-							}
-							catch (NumberFormatException nfe) {
-							}
-
-							if (v1 < v2) {
-								return 1;
-							}
-							else {
-								return -1;
-							}
+							return osgiVersion2.compareTo(osgiVersion1);
 						}
 
 					});
 
 				String version = versions.get(0);
 
-				Stream<ServiceReference<FileMigrator>> stream = fileMigratorList.stream();
+				Stream<ServiceReference<FileMigrator>> stream = fileMigrators.stream();
 
-				List<String> inVersionsTitles = stream.filter(
-					predicate -> version.equals(predicate.getProperty("version"))
-				).map(
-					migrator -> (String)migrator.getProperty("problem.title")
+				List<ServiceReference<FileMigrator>> serviceReferencesWithVersion = stream.filter(
+					serviceReference -> version.equals(serviceReference.getProperty("version"))
 				).collect(
 					Collectors.toList()
 				);
 
-				stream = fileMigratorList.stream();
+				stream = fileMigrators.stream();
 
-				List<ServiceReference<FileMigrator>> notInVersionsMigrators = stream.filter(
+				List<ServiceReference<FileMigrator>> serviceReferencesWithoutVersion = stream.filter(
 					predicate -> !version.equals(predicate.getProperty("version"))
 				).collect(
 					Collectors.toList()
 				);
 
-				for (ServiceReference<FileMigrator> migrator : notInVersionsMigrators) {
-					if (inVersionsTitles.contains(migrator.getProperty("problem.title"))) {
-						fileMigratorList.remove(migrator);
+				for (ServiceReference<FileMigrator> serviceReferenceWithoutVersion : serviceReferencesWithoutVersion) {
+					if (serviceReferencesWithVersion.contains(serviceReferenceWithoutVersion)) {
+						fileMigrators.remove(serviceReferenceWithoutVersion);
 					}
 				}
 			}
 
-			if (ListUtil.isNotEmpty(fileMigratorList)) {
+			if (ListUtil.isNotEmpty(fileMigrators)) {
 				try {
-					Stream<ServiceReference<FileMigrator>> migratorStream = fileMigratorList.stream();
+					Stream<ServiceReference<FileMigrator>> migratorStream = fileMigrators.stream();
 
 					migratorStream.map(
 						_context::getService

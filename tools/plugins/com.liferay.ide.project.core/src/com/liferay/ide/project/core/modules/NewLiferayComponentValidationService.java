@@ -14,11 +14,20 @@
 
 package com.liferay.ide.project.core.modules;
 
+import com.liferay.ide.core.ILiferayProject;
+import com.liferay.ide.core.LiferayCore;
 import com.liferay.ide.core.util.CoreUtil;
+import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.project.core.ProjectCore;
 
+import java.io.File;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaConventions;
@@ -85,6 +94,26 @@ public class NewLiferayComponentValidationService extends ValidationService {
 
 					if (pack != null) {
 						String packageName = pack.toString();
+
+						IPath packageFullPath = new Path(packageName.toString().replace('.', IPath.SEPARATOR));
+
+						String fileName = className + ".java";
+
+						IPath javaPath = packageFullPath.append(fileName);
+
+						ILiferayProject liferayProject = LiferayCore.create(project);
+
+						IFolder sourceFolder = liferayProject.getSourceFolder("java");
+
+						IFile file = sourceFolder.getFile(javaPath);
+
+						IPath javaFileLocation = file.getLocation();
+
+						File javaFile = javaFileLocation.toFile();
+
+						if (FileUtil.exists(javaFile)) {
+							retval = Status.createErrorStatus("Type with same name but different case exists.");
+						}
 
 						IJavaProject javaProject = JavaCore.create(project);
 

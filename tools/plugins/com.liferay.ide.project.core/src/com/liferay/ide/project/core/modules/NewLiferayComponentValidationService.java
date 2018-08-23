@@ -35,6 +35,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.sapphire.FilteredListener;
 import org.eclipse.sapphire.PropertyContentEvent;
+import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.java.JavaPackageName;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.services.ValidationService;
@@ -50,9 +51,17 @@ public class NewLiferayComponentValidationService extends ValidationService {
 		NewLiferayComponentOp op = _op();
 
 		if (_listener != null) {
-			op.property(NewLiferayComponentOp.PROP_PROJECT_NAME).detach(_listener);
-			op.property(NewLiferayComponentOp.PROP_PACKAGE_NAME).detach(_listener);
-			op.property(NewLiferayComponentOp.PROP_COMPONENT_CLASS_TEMPLATE_NAME).detach(_listener);
+			Value<Object> projectNameProperty = op.property(NewLiferayComponentOp.PROP_PROJECT_NAME);
+
+			projectNameProperty.detach(_listener);
+
+			Value<Object> packageNameProperty = op.property(NewLiferayComponentOp.PROP_PACKAGE_NAME);
+
+			packageNameProperty.detach(_listener);
+
+			Value<Object> templateNameProperty = op.property(NewLiferayComponentOp.PROP_COMPONENT_CLASS_TEMPLATE_NAME);
+
+			templateNameProperty.detach(_listener);
 
 			_listener = null;
 		}
@@ -66,7 +75,9 @@ public class NewLiferayComponentValidationService extends ValidationService {
 
 		NewLiferayComponentOp op = _op();
 
-		String className = op.getComponentClassName().content(true);
+		Value<String> componentClassName = op.getComponentClassName();
+
+		String className = componentClassName.content(true);
 
 		if (!CoreUtil.isNullOrEmpty(className)) {
 			IStatus status = JavaConventions.validateJavaTypeName(
@@ -83,19 +94,23 @@ public class NewLiferayComponentValidationService extends ValidationService {
 			}
 		}
 
-		String projectName = op.getProjectName().content(true);
+		Value<String> projectNameValue = op.getProjectName();
+
+		String projectName = projectNameValue.content(true);
 
 		if (projectName != null) {
 			IProject project = CoreUtil.getProject(projectName);
 
 			if (project != null) {
 				try {
-					JavaPackageName pack = op.getPackageName().content(true);
+					Value<JavaPackageName> javaPackageName = op.getPackageName();
+
+					JavaPackageName pack = javaPackageName.content(true);
 
 					if (pack != null) {
 						String packageName = pack.toString();
 
-						IPath packageFullPath = new Path(packageName.toString().replace('.', IPath.SEPARATOR));
+						IPath packageFullPath = new Path(packageName.replace('.', IPath.SEPARATOR));
 
 						String fileName = className + ".java";
 
@@ -148,9 +163,17 @@ public class NewLiferayComponentValidationService extends ValidationService {
 
 		NewLiferayComponentOp op = _op();
 
-		op.property(NewLiferayComponentOp.PROP_PROJECT_NAME).attach(_listener);
-		op.property(NewLiferayComponentOp.PROP_PACKAGE_NAME).attach(_listener);
-		op.property(NewLiferayComponentOp.PROP_COMPONENT_CLASS_TEMPLATE_NAME).attach(_listener);
+		Value<Object> projectNameProperty = op.property(NewLiferayComponentOp.PROP_PROJECT_NAME);
+
+		projectNameProperty.attach(_listener);
+
+		Value<Object> packageNameProperty = op.property(NewLiferayComponentOp.PROP_PACKAGE_NAME);
+
+		packageNameProperty.attach(_listener);
+
+		Value<Object> templateNameProperty = op.property(NewLiferayComponentOp.PROP_COMPONENT_CLASS_TEMPLATE_NAME);
+
+		templateNameProperty.attach(_listener);
 	}
 
 	private NewLiferayComponentOp _op() {

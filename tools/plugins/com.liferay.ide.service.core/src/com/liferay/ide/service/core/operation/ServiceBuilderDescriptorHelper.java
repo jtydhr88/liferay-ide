@@ -107,7 +107,13 @@ public class ServiceBuilderDescriptorHelper extends LiferayDescriptorHelper {
 	}
 
 	public IFile getDescriptorFile() {
-		return super.getDescriptorFile(_DESCRIPTOR_FILE);
+		IFile file = project.getFile(_DESCRIPTOR_FILE);
+
+		if (FileUtil.exists(file)) {
+			return file;
+		}
+
+		return null;
 	}
 
 	public IStatus removeAllEntities() {

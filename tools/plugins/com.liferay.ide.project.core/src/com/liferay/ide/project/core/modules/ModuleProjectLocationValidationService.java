@@ -32,7 +32,7 @@ import org.eclipse.sapphire.services.ValidationService;
 /**
  * @author Simon Jiang
  */
-public class AbstractProjectLocationValidationService<T extends BaseModuleOp> extends ValidationService {
+public class ModuleProjectLocationValidationService<T extends BaseModuleOp> extends ValidationService {
 
 	@Override
 	public void dispose() {

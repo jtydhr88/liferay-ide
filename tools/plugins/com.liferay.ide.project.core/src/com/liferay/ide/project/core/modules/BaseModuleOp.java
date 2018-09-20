@@ -87,7 +87,7 @@ public interface BaseModuleOp extends ExecutableElement {
 	@AbsolutePath
 	@Enablement(expr = "${ UseDefaultLocation == 'false' }")
 	@Label(standard = "location")
-	@Service(impl = AbstractProjectLocationValidationService.class)
+	@Service(impl = ModuleProjectLocationValidationService.class)
 	@Type(base = Path.class)
 	@ValidFileSystemResourceType(FileSystemResourceType.FOLDER)
 	public ValueProperty PROP_LOCATION = new ValueProperty(TYPE, "Location");

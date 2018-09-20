@@ -22,7 +22,6 @@ import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.sapphire.ExecutableElement;
 import org.eclipse.sapphire.FilteredListener;
 import org.eclipse.sapphire.Listener;
 import org.eclipse.sapphire.PropertyContentEvent;
@@ -33,7 +32,7 @@ import org.eclipse.sapphire.services.ValidationService;
 /**
  * @author Simon Jiang
  */
-public abstract class AbstractProjectLocationValidationService<T extends ExecutableElement> extends ValidationService {
+public class AbstractProjectLocationValidationService<T extends BaseModuleOp> extends ValidationService {
 
 	@Override
 	public void dispose() {
@@ -134,7 +133,9 @@ public abstract class AbstractProjectLocationValidationService<T extends Executa
 		SapphireUtil.attachListener(op.getProjectProvider(), _listener);
 	}
 
-	protected abstract BaseModuleOp op();
+	protected BaseModuleOp op() {
+		return (BaseModuleOp)context().lock();
+	}
 
 	private boolean _canCreate(File file) {
 		while (FileUtil.notExists(file)) {

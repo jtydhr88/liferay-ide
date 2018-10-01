@@ -37,12 +37,6 @@ import org.junit.jupiter.api.condition.OS;
  */
 public class LiferayProjectSdkTest {
 
-	@EnabledOnOs(OS.LINUX)
-	@Test
-	public void quickInstallOnLinux() {
-		Assertions.assertTrue(true);
-	}
-
 	@EnabledOnOs(OS.WINDOWS)
 	@Test
 	public void quickInstallOnWindows() throws Exception {

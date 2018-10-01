@@ -26,7 +26,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<testSourceDirectory>src</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>

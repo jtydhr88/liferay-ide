@@ -12,29 +12,23 @@
  * details.
  */
 
-package com.liferay.ide.core;
+package com.liferay.ide.project.core.modules.ext;
 
-import java.util.List;
-import java.util.Set;
+import com.liferay.ide.core.IWorkspaceProject;
+import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
 
-import org.eclipse.core.resources.IProject;
+import org.eclipse.sapphire.DefaultValueService;
 
 /**
- * @author Gregory Amerson
- * @author Simon Jiang
+ * @author Charles Wu
  */
-public interface IWorkspaceProject extends ILiferayProject {
+public class TargetPlatformVersionDefaultValueService extends DefaultValueService {
 
-	public Set<IProject> getChildProjects();
+	@Override
+	protected String compute() {
+		IWorkspaceProject gradleWorkspaceProject = LiferayWorkspaceUtil.getGradleWorkspaceProject();
 
-	public List<Artifact> getTargetPlatformArtifacts(boolean reload);
-
-	public String getTargetPlatformVersion();
-
-	public boolean isWatchable();
-
-	public void watch(Set<IProject> childProjects);
-
-	public Set<IProject> watching();
+		return gradleWorkspaceProject.getTargetPlatformVersion();
+	}
 
 }

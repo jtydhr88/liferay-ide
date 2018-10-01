@@ -25,10 +25,22 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class JobUtil {
 
-	public static void waitForLiferayProjectJob() {
-		IJobManager jobManager = Job.getJobManager();
+	public static Job getJobByName(String name) {
+		assert name != null;
 
-		Job[] jobs = jobManager.find(null);
+		Job[] jobs = _jobManager.find(null);
+
+		for (Job job : jobs) {
+			if (name.equals(job.getName())) {
+				return job;
+			}
+		}
+
+		return null;
+	}
+
+	public static void waitForLiferayProjectJob() {
+		Job[] jobs = _jobManager.find(null);
 
 		for (Job job : jobs) {
 			if (job.getProperty(ILiferayProjectProvider.LIFERAY_PROJECT_JOB) != null) {
@@ -41,5 +53,7 @@ public class JobUtil {
 			}
 		}
 	}
+
+	private static IJobManager _jobManager = Job.getJobManager();
 
 }

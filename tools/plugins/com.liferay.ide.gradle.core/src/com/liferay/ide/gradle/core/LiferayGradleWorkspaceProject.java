@@ -14,12 +14,17 @@
 
 package com.liferay.ide.gradle.core;
 
+import com.liferay.ide.core.Artifact;
+import com.liferay.ide.core.TargetPlatformManager;
+import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ListUtil;
 import com.liferay.ide.core.util.PropertiesUtil;
+import com.liferay.ide.core.util.WorkspaceConstants;
 import com.liferay.ide.project.core.IProjectBuilder;
 import com.liferay.ide.project.core.IWorkspaceProjectBuilder;
 import com.liferay.ide.project.core.LiferayWorkspaceProject;
+import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
 import com.liferay.ide.server.core.ILiferayServer;
 
 import java.io.File;
@@ -39,6 +44,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
+
+import org.gradle.tooling.GradleConnector;
+import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.model.DomainObjectSet;
+import org.gradle.tooling.model.GradleModuleVersion;
+import org.gradle.tooling.model.eclipse.EclipseExternalDependency;
+import org.gradle.tooling.model.eclipse.EclipseProject;
 
 /**
  * @author Andy Wu
@@ -80,6 +92,44 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject {
 		}
 
 		return retVal;
+	}
+
+	@Override
+	public List<Artifact> getTargetPlatformArtifacts() {
+		TargetPlatformManager targetPlatformManager = TargetPlatformManager.getInstance();
+
+		String tpVersion = getTargetPlatformVersion();
+
+		List<Artifact> artifacts = targetPlatformManager.getArtifactsByVersion(tpVersion);
+
+		if (ListUtil.isEmpty(artifacts)) {
+			if (tpVersion != null) {
+				artifacts = _getArtifactsFromGradle();
+
+				targetPlatformManager.put(tpVersion, artifacts);
+			}
+			else {
+				artifacts = Collections.emptyList();
+			}
+		}
+
+		return artifacts;
+	}
+
+	@Override
+	public String getTargetPlatformVersion() {
+		IProject project = getProject();
+
+		IPath location = project.getLocation();
+
+		String targetPlatform = LiferayWorkspaceUtil.getGradleProperty(
+			location.toString(), WorkspaceConstants.TARGET_PLATFORM_VERSION_PROPERTY, "");
+
+		if (CoreUtil.isNotNullOrEmpty(targetPlatform)) {
+			return targetPlatform;
+		}
+
+		return null;
 	}
 
 	@Override
@@ -183,6 +233,40 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject {
 		}
 
 		return watchTask;
+	}
+
+	private List<Artifact> _getArtifactsFromGradle() {
+		GradleConnector connector = GradleConnector.newConnector();
+
+		connector.forProjectDirectory(FileUtil.getFile(getProject()));
+
+		ProjectConnection connection = connector.connect();
+
+		List<Artifact> artifacts = Collections.emptyList();
+
+		try {
+			EclipseProject project = connection.getModel(EclipseProject.class);
+
+			DomainObjectSet<? extends EclipseExternalDependency> dependencies = project.getClasspath();
+
+			artifacts = new ArrayList<>(dependencies.size());
+
+			for (EclipseExternalDependency dependency : dependencies) {
+				GradleModuleVersion moduleVersion = dependency.getGradleModuleVersion();
+
+				if (moduleVersion != null) {
+					artifacts.add(
+						new Artifact(
+							moduleVersion.getGroup(), moduleVersion.getName(), moduleVersion.getVersion(),
+							dependency.getSource()));
+				}
+			}
+		}
+		finally {
+			connection.close();
+		}
+
+		return artifacts;
 	}
 
 	private static final Set<IProject> _watchingProjects = new HashSet<>();

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 
 /**
  * @author Gregory Amerson
@@ -28,7 +27,9 @@ public interface IWorkspaceProject extends ILiferayProject {
 
 	public List<IProject> getChildProjects();
 
-	public List<IPath> getTargetPlatformArtifacts();
+	public List<Artifact> getTargetPlatformArtifacts();
+
+	public String getTargetPlatformVersion();
 
 	public void watch(Set<IProject> childProjects);
 

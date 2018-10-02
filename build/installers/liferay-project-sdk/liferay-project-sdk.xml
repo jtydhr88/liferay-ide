@@ -205,8 +205,8 @@
 				</fileTest>
 				<compareValues>
 					<logic>equals</logic>
-					<value1>${initlrws}</value1>
-					<value2>lrws</value2>
+					<value1>${initworkspace}</value1>
+					<value2>workspace</value2>
 				</compareValues>
 			</conditionRuleList>
 		</if>
@@ -321,10 +321,10 @@
 				</setInstallerVariable>
 				<runProgram>
 					<program>${bladeCommondPath}</program>
-					<programArguments>--base "${lrws}" init -v "${selectbundleversion}"</programArguments>
+					<programArguments>--base "${workspace}" init -v "${selectbundleversion}"</programArguments>
 				</runProgram>
 				<propertiesFileSet>
-					<file>${lrws}${platform_path_separator}gradle.properties</file>
+					<file>${workspace}${platform_path_separator}gradle.properties</file>
 					<key>liferay.workspace.bundle.url</key>
 					<value>https://api.liferay.com/downloads/portal/7.1.10/liferay-dxp-tomcat-7.1.10-ga1-20180703090613030.zip</value>
 					<ruleList>
@@ -336,7 +336,7 @@
 					</ruleList>
 				</propertiesFileSet>
 				<propertiesFileSet>
-					<file>${lrws}${platform_path_separator}gradle.properties</file>
+					<file>${workspace}${platform_path_separator}gradle.properties</file>
 					<key>liferay.workspace.bundle.token.download</key>
 					<value>true</value>
 					<ruleList>
@@ -461,8 +461,8 @@
 			<conditionRuleList>
 				<compareValues>
 					<logic>equals</logic>
-					<value1>${initlrws}</value1>
-					<value2>lrws</value2>
+					<value1>${initworkspace}</value1>
+					<value2>workspace</value2>
 				</compareValues>
 			</conditionRuleList>
 		</if>
@@ -482,7 +482,7 @@
 		</deleteFile>
 		<runProgram>
 			<program>chown</program>
-			<programArguments>-R ${env(SUDO_USER)} ${lrws}</programArguments>
+			<programArguments>-R ${env(SUDO_USER)} ${workspace}</programArguments>
 			<ruleList>
 				<isTrue>
 					<value>${installer_is_root_install}</value>
@@ -494,7 +494,7 @@
 					<value>win</value>
 				</compareText>
 				<fileExists>
-					<path>${lrws}</path>
+					<path>${workspace}</path>
 				</fileExists>
 			</ruleList>
 		</runProgram>
@@ -523,7 +523,7 @@
 			<width>30</width>
 		</directoryParameter>
 		<choiceParameterGroup>
-			<name>initlrws</name>
+			<name>initworkspace</name>
 			<title>Select directory to initialize a Liferay Workspace</title>
 			<description>Initilalize Liferay Workspace directory</description>
 			<explanation></explanation>
@@ -531,7 +531,7 @@
 			<default></default>
 			<parameterList>
 				<directoryParameter>
-					<name>lrws</name>
+					<name>workspace</name>
 					<title>Liferay Workspace</title>
 					<description>Directory:</description>
 					<explanation></explanation>
@@ -543,8 +543,8 @@
 					<width>30</width>
 				</directoryParameter>
 				<labelParameter>
-					<name>skiplsws</name>
-					<title>skipLrws</title>
+					<name>skip</name>
+					<title>Skip Liferay Workspace</title>
 					<description>Don't initialize Liferay Workspace directory</description>
 					<explanation></explanation>
 					<image></image>
@@ -552,7 +552,7 @@
 			</parameterList>
 			<validationActionList>
 				<if>
-					<explanation>lrws path is empty</explanation>
+					<explanation>workspace path is empty</explanation>
 					<actionList>
 						<throwError>
 							<text>the folder must be empty</text>
@@ -561,14 +561,14 @@
 					<conditionRuleList>
 						<fileTest>
 							<condition>is_not_empty</condition>
-							<path>${lrws}</path>
+							<path>${workspace}</path>
 						</fileTest>
 					</conditionRuleList>
 					<ruleList>
 						<compareValues>
 							<logic>equals</logic>
-							<value1>${initlrws}</value1>
-							<value2>lrws</value2>
+							<value1>${initworkspace}</value1>
+							<value2>workspace</value2>
 						</compareValues>
 					</ruleList>
 				</if>
@@ -600,8 +600,8 @@
 			<ruleList>
 				<compareValues>
 					<logic>equals</logic>
-					<value1>${initlrws}</value1>
-					<value2>lrws</value2>
+					<value1>${initworkspace}</value1>
+					<value2>workspace</value2>
 				</compareValues>
 			</ruleList>
 		</choiceParameterGroup>
@@ -636,8 +636,8 @@
 				</compareValues>
 				<compareValues>
 					<logic>equals</logic>
-					<value1>${initlrws}</value1>
-					<value2>lrws</value2>
+					<value1>${initworkspace}</value1>
+					<value2>workspace</value2>
 				</compareValues>
 			</ruleList>
 		</choiceParameterGroup>
@@ -731,8 +731,8 @@
 			<ruleList>
 				<compareValues>
 					<logic>equals</logic>
-					<value1>${initlrws}</value1>
-					<value2>lrws</value2>
+					<value1>${initworkspace}</value1>
+					<value2>workspace</value2>
 				</compareValues>
 			</ruleList>
 		</choiceParameterGroup>

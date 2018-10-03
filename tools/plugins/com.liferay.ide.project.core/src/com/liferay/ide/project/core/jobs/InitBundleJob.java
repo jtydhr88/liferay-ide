@@ -14,7 +14,6 @@
 
 package com.liferay.ide.project.core.jobs;
 
-import com.liferay.ide.core.LiferayCore;
 import com.liferay.ide.project.core.IWorkspaceProjectBuilder;
 import com.liferay.ide.project.core.ProjectCore;
 import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
@@ -25,13 +24,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 /**
  * @author Charles Wu
  */
-public class InitBundleJob extends Job {
+public class InitBundleJob extends LiferayJob {
 
 	public InitBundleJob(IProject project, String serverName, String bundleUrl) {
 		super("Initializing Liferay bundle");
@@ -53,11 +51,6 @@ public class InitBundleJob extends Job {
 				}
 
 			});
-	}
-
-	@Override
-	public boolean belongsTo(Object family) {
-		return family.equals(LiferayCore.LIFERAY_JOB_FAMILY);
 	}
 
 	@Override

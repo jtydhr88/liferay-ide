@@ -44,7 +44,45 @@ public class NewModuleExtWizard extends BaseProjectWizard<NewModuleExtOp> {
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		NewModuleExtOp op = element().nearest(NewModuleExtOp.class);
 
+		String version = SapphireUtil.getContent(op.getTargetPlatformVersion());
+
+		if (CoreUtil.isNullOrEmpty(version)) {
+			return;
+		}
+
+		Job job = JobUtil.getJobByName(_calculateArtifactsJobName);
+
+		if (job != null) {
+			return;
+		}
+
+		job = new LiferayJob(_calculateArtifactsJobName) {
+
+			@Override
+			protected IStatus run(IProgressMonitor arg0) {
+				if (CoreUtil.isNotNullOrEmpty(version)) {
+					IWorkspaceProject gradleWorkspaceProject = LiferayWorkspaceUtil.getGradleWorkspaceProject();
+
+					try {
+						gradleWorkspaceProject.getTargetPlatformArtifacts();
+					}
+					catch (Exception e) {
+
+						// Do not want to show the exception to user
+
+					}
+				}
+
+				return Status.OK_STATUS;
+			}
+
+		};
+
+		job.setSystem(true);
+
+		job.schedule();
 	}
 
 	@Override

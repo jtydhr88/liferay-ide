@@ -43,9 +43,9 @@
                 <property-editor>
                     <property>OriginalModuleName</property>
                     <action-handler>
-    					<action>Sapphire.Browse</action>
-   						<impl>com.liferay.ide.project.ui.modules.ext.ModuleExtArtifactsBrowseActionHandler</impl>
-  					</action-handler>
+                        <action>Sapphire.Browse</action>
+                        <impl>com.liferay.ide.project.ui.modules.ext.ModuleExtArtifactsBrowseActionHandler</impl>
+                    </action-handler>
                 </property-editor>
                 <property-editor>
                     <property>OriginalModuleVersion</property>

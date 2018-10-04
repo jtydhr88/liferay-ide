@@ -261,6 +261,14 @@ public class LiferayCore extends Plugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		if (TargetPlatformManager.shouldSerialize) {
+			TargetPlatformManager manager = TargetPlatformManager.getInstance();
+
+			manager.serialize();
+
+			TargetPlatformManager.shouldSerialize = false;
+		}
+
 		_plugin = null;
 
 		super.stop(context);

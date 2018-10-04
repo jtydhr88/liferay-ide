@@ -14,6 +14,7 @@
 
 package com.liferay.ide.project.core.jsf;
 
+import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.SapphireUtil;
 import com.liferay.ide.project.core.NewLiferayProjectProvider;
 import com.liferay.ide.project.core.ProjectCore;
@@ -40,6 +41,8 @@ public class NewLiferayJSFModuleProjectOpMethods {
 
 		Status retval = null;
 
+		Throwable errorStack = null;
+
 		try {
 			NewLiferayProjectProvider<BaseModuleOp> projectProvider = SapphireUtil.getContent(op.getProjectProvider());
 
@@ -49,17 +52,21 @@ public class NewLiferayJSFModuleProjectOpMethods {
 
 			if (retval.ok()) {
 				_updateBuildPrefs(op);
+
+				return retval;
 			}
+
+			errorStack = retval.exception();
 		}
 		catch (Exception e) {
-			String msg = "Error creating Liferay module project.";
-
-			ProjectCore.logError(msg, e);
-
-			return Status.createErrorStatus(msg + " " + e.getMessage(), e);
+			errorStack = e;
 		}
 
-		return retval;
+		String readableStack = CoreUtil.getStackTrace(errorStack);
+
+		ProjectCore.logError(readableStack);
+
+		return Status.createErrorStatus(readableStack + "\t Please see Eclipse error log for more details.");
 	}
 
 	private static void _updateBuildPrefs(NewLiferayJSFModuleProjectOp op) {

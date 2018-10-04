@@ -240,6 +240,8 @@ public class NewLiferayModuleProjectOpMethods {
 
 		Status retval = Status.createOkStatus();
 
+		Throwable errorStack = null;
+
 		try {
 			NewLiferayProjectProvider<BaseModuleOp> projectProvider = SapphireUtil.getContent(op.getProjectProvider());
 
@@ -285,17 +287,21 @@ public class NewLiferayModuleProjectOpMethods {
 
 			if (retval.ok()) {
 				_updateBuildAndVersionPrefs(op);
+
+				return retval;
 			}
+
+			errorStack = retval.exception();
 		}
 		catch (Exception e) {
-			String msg = "Error creating Liferay module project.";
-
-			ProjectCore.logError(msg, e);
-
-			return Status.createErrorStatus(msg + " " + e.getMessage(), e);
+			errorStack = e;
 		}
 
-		return retval;
+		String readableStack = CoreUtil.getStackTrace(errorStack);
+
+		ProjectCore.logError(readableStack);
+
+		return Status.createErrorStatus(readableStack + "\t Please see Eclipse error log for more details.");
 	}
 
 	public static String getMavenParentPomGroupId(NewLiferayModuleProjectOp op, String projectName, IPath path) {

@@ -96,7 +96,6 @@ public interface NewModuleFragmentOp extends BaseModuleOp {
 	public ValueProperty PROP_LIFERAY_RUNTIME_NAME = new ValueProperty(TYPE, "LiferayRuntimeName");
 
 	@Service(impl = CommonProjectLocationInitialValueService.class)
-	@Service(impl = FragmentProjectLocationValidationService.class)
 	public ValueProperty PROP_LOCATION = new ValueProperty(TYPE, BaseModuleOp.PROP_LOCATION);
 
 	public ValueProperty PROP_LPKG_NAME = new ValueProperty(TYPE, "LpkgName");

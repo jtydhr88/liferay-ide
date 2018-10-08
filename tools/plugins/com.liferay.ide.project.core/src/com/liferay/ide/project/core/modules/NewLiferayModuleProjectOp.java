@@ -102,7 +102,6 @@ public interface NewLiferayModuleProjectOp extends BaseModuleOp {
 	public ValueProperty PROP_LIFERAY_VERSION = new ValueProperty(TYPE, "LiferayVersion");
 
 	@Service(impl = CommonProjectLocationInitialValueService.class)
-	@Service(impl = ModuleProjectLocationValidationService.class)
 	public ValueProperty PROP_LOCATION = new ValueProperty(TYPE, BaseModuleOp.PROP_LOCATION);
 
 	@Label(standard = "Package name")

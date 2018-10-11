@@ -106,6 +106,16 @@ public class NewModuleExtWizard extends BaseProjectWizard<NewModuleExtOp> {
 	}
 
 	private static NewModuleExtOp _createDefaultOp() {
+		if (LiferayWorkspaceUtil.getGradleWorkspaceProject() == null) {
+			Shell activeShell = UIUtil.getActiveShell();
+
+			MessageDialog.openError(
+				activeShell, "No available Gradle workspace project",
+				"We recommend Liferay Gradle workspace to develop Module ext project!");
+
+			throw new RuntimeException();
+		}
+
 		return NewModuleExtOp.TYPE.instantiate();
 	}
 

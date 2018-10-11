@@ -15,9 +15,7 @@
 package com.liferay.ide.project.core.modules.ext;
 
 import com.liferay.ide.core.util.CoreUtil;
-import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.SapphireUtil;
-import com.liferay.ide.project.core.ProjectCore;
 import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
 
 import org.eclipse.core.resources.IProject;
@@ -46,32 +44,16 @@ public class ModuleExtProjectNameListener extends FilteredListener<PropertyConte
 		if (useDefaultLocation) {
 			Path newLocationBase = null;
 
-			boolean hasGradleWorkspace = false;
+			IProject liferayWorkspaceProject = LiferayWorkspaceUtil.getWorkspaceProject();
 
-			try {
-				hasGradleWorkspace = LiferayWorkspaceUtil.hasGradleWorkspace();
-			}
-			catch (Exception e) {
-				ProjectCore.logError("Failed to check LiferayWorkspace project.");
-			}
+			String extFolder = LiferayWorkspaceUtil.getModuleExtDir(liferayWorkspaceProject);
 
-			if (!hasGradleWorkspace) {
-				newLocationBase = PathBridge.create(CoreUtil.getWorkspaceRootLocation());
-			}
-			else {
-				IProject liferayWorkspaceProject = LiferayWorkspaceUtil.getWorkspaceProject();
+			if (extFolder != null) {
+				IPath path = liferayWorkspaceProject.getLocation();
 
-				if (FileUtil.exists(liferayWorkspaceProject)) {
-					String extFolder = LiferayWorkspaceUtil.getModuleExtDir(liferayWorkspaceProject);
+				IPath appendPath = path.append(extFolder);
 
-					if (extFolder != null) {
-						IPath path = liferayWorkspaceProject.getLocation();
-
-						IPath appendPath = path.append(extFolder);
-
-						newLocationBase = PathBridge.create(appendPath);
-					}
-				}
+				newLocationBase = PathBridge.create(appendPath);
 			}
 
 			if (newLocationBase != null) {

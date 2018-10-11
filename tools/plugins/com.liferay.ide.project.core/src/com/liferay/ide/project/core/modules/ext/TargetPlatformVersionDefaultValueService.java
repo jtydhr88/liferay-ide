@@ -28,10 +28,6 @@ public class TargetPlatformVersionDefaultValueService extends DefaultValueServic
 	protected String compute() {
 		IWorkspaceProject gradleWorkspaceProject = LiferayWorkspaceUtil.getGradleWorkspaceProject();
 
-		if (gradleWorkspaceProject == null) {
-			return null;
-		}
-
 		return gradleWorkspaceProject.getTargetPlatformVersion();
 	}
 

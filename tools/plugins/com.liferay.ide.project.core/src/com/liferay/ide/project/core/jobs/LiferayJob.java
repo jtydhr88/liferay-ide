@@ -12,27 +12,24 @@
  * details.
  */
 
-package com.liferay.ide.core;
+package com.liferay.ide.project.core.jobs;
 
-import java.util.List;
-import java.util.Set;
+import com.liferay.ide.core.LiferayCore;
 
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
- * @author Gregory Amerson
- * @author Simon Jiang
+ * @author Charles Wu
  */
-public interface IWorkspaceProject extends ILiferayProject {
+public abstract class LiferayJob extends Job {
 
-	public List<IProject> getChildProjects();
+	public LiferayJob(String name) {
+		super(name);
+	}
 
-	public List<Artifact> getTargetPlatformArtifacts();
-
-	public String getTargetPlatformVersion();
-
-	public void watch(Set<IProject> childProjects);
-
-	public Set<IProject> watching();
+	@Override
+	public boolean belongsTo(Object family) {
+		return family.equals(LiferayCore.LIFERAY_JOB_FAMILY);
+	}
 
 }

@@ -12,27 +12,13 @@
  * details.
  */
 
-package com.liferay.ide.core;
-
-import java.util.List;
-import java.util.Set;
-
-import org.eclipse.core.resources.IProject;
+package com.liferay.ide.project.core.jobs;
 
 /**
- * @author Gregory Amerson
- * @author Simon Jiang
+ * @author Charles Wu
  */
-public interface IWorkspaceProject extends ILiferayProject {
+public class JobNameId {
 
-	public List<IProject> getChildProjects();
-
-	public List<Artifact> getTargetPlatformArtifacts();
-
-	public String getTargetPlatformVersion();
-
-	public void watch(Set<IProject> childProjects);
-
-	public Set<IProject> watching();
+	public static final String CALCULATE_ARTIFACTS_JOB_NAME = "Reading target platform configuration";
 
 }

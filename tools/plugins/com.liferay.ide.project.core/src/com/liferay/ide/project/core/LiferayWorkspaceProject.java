@@ -14,6 +14,7 @@
 
 package com.liferay.ide.project.core;
 
+import com.liferay.ide.core.Artifact;
 import com.liferay.ide.core.BaseLiferayProject;
 import com.liferay.ide.core.ILiferayPortal;
 import com.liferay.ide.core.ILiferayProject;
@@ -40,6 +41,8 @@ import org.eclipse.jdt.core.JavaCore;
  * @author Terry Jia
  */
 public abstract class LiferayWorkspaceProject extends BaseLiferayProject implements IWorkspaceProject {
+
+	public static List<Artifact> targetPlatformArtifacts = Collections.emptyList();
 
 	public LiferayWorkspaceProject(IProject project) {
 		super(project);
@@ -110,8 +113,13 @@ public abstract class LiferayWorkspaceProject extends BaseLiferayProject impleme
 	}
 
 	@Override
-	public List<IPath> getTargetPlatformArtifacts() {
-		return Collections.emptyList();
+	public List<Artifact> getTargetPlatformArtifacts() {
+		return targetPlatformArtifacts;
+	}
+
+	@Override
+	public String getTargetPlatformVersion() {
+		return null;
 	}
 
 	@Override

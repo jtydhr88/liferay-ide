@@ -30,7 +30,7 @@ public class TargetLiferayVersionDefaultValueService extends DefaultValueService
 
 	@Override
 	protected String compute() {
-		String retval = "7.0";
+		String retval = "7.1";
 
 		IScopeContext[] prefContexts = {DefaultScope.INSTANCE, InstanceScope.INSTANCE};
 

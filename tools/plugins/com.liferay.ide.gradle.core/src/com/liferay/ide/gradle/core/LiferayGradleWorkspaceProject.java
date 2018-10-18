@@ -239,7 +239,7 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject {
 					GradleUtil.runGradleTask(getProject(), tasks.toArray(new String[0]), args, monitor);
 				}
 				catch (Exception e) {
-					return GradleCore.createErrorStatus(
+					return LiferayGradleCore.createErrorStatus(
 						"Error running Gradle " + taskName + " task for project " + getProject(), e);
 				}
 

@@ -16,12 +16,12 @@ package com.liferay.ide.gradle.ui;
 
 import com.liferay.ide.ui.util.UIUtil;
 
-import org.eclipse.buildship.core.CorePlugin;
-import org.eclipse.buildship.core.event.Event;
-import org.eclipse.buildship.core.event.EventListener;
-import org.eclipse.buildship.core.event.ListenerRegistry;
-import org.eclipse.buildship.core.workspace.ProjectCreatedEvent;
-import org.eclipse.buildship.core.workspace.ProjectDeletedEvent;
+import org.eclipse.buildship.core.internal.CorePlugin;
+import org.eclipse.buildship.core.internal.event.Event;
+import org.eclipse.buildship.core.internal.event.EventListener;
+import org.eclipse.buildship.core.internal.event.ListenerRegistry;
+import org.eclipse.buildship.core.internal.workspace.ProjectCreatedEvent;
+import org.eclipse.buildship.core.internal.workspace.ProjectDeletedEvent;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
@@ -31,7 +31,6 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 

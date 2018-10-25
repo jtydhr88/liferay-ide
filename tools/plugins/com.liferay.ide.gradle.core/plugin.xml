@@ -40,4 +40,31 @@
 		>
 		</liferayProjectImporter>
 	</extension>
+	<extension
+		point="org.eclipse.core.expressions.propertyTesters"
+	>
+		<propertyTester
+			class="com.liferay.ide.gradle.core.GradleProjectPropertyTester"
+			id="com.liferay.ide.gralde.core.isGardleProject"
+			namespace="com.liferay.ide.gradle.core"
+			properties="isGradleProject"
+			type="org.eclipse.core.resources.IProject"
+		>
+		</propertyTester>
+	</extension>
+
+	<extension point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+		<deleteParticipant
+			class="com.liferay.ide.gradle.core.LiferayGradleModuleProjectDeleteParticipant"
+			id="com.liferay.ide.gradle.core.LiferayGradleModuleProjectDeleteParticipant"
+			name="liferayGradleModuleProjectDeleteParticipant"
+		>
+			<enablement>
+				<adapt type="org.eclipse.core.resources.IProject">
+					<test property="com.liferay.ide.gradle.core.isGradleProject">
+					</test>
+				</adapt>
+			</enablement>
+		</deleteParticipant>
+	</extension>
 </plugin>

@@ -51,6 +51,8 @@ public abstract class GradleTaskAction extends AbstractObjectAction {
 				return;
 			}
 
+			beforeTask();
+
 			Job job = new Job(project.getName() + " - " + getGradleTask()) {
 
 				@Override
@@ -116,6 +118,9 @@ public abstract class GradleTaskAction extends AbstractObjectAction {
 	}
 
 	protected void afterTask() {
+	}
+
+	protected void beforeTask() {
 	}
 
 	protected abstract String getGradleTask();

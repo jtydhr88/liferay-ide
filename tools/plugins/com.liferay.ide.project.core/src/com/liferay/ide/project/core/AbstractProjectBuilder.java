@@ -16,11 +16,23 @@ package com.liferay.ide.project.core;
 
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
+import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
+
+import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.wst.server.core.IRuntime;
+import org.eclipse.wst.server.core.ServerCore;
 
 /**
  * @author Gregory Amerson
@@ -34,6 +46,50 @@ public abstract class AbstractProjectBuilder implements IProjectBuilder {
 
 	public IProject getProject() {
 		return _project;
+	}
+
+	public IStatus initBundle(IProject project, String bundleUrl, IProgressMonitor monitor) {
+		if (CoreUtil.isNotNullOrEmpty(bundleUrl)) {
+			IPath bundlesLocation = LiferayWorkspaceUtil.getHomeLocation(_project);
+
+			Stream.of(
+				ServerCore.getServers()
+			).filter(
+				server -> server != null
+			).filter(
+				server -> {
+					IRuntime runtime = server.getRuntime();
+
+					return bundlesLocation.equals(runtime.getLocation());
+				}
+			).forEach(
+				server -> {
+					try {
+						IRuntime runtime = server.getRuntime();
+
+						server.delete();
+
+						if (runtime != null) {
+							runtime.delete();
+						}
+					}
+					catch (Exception e) {
+						ProjectCore.logError("Failed to delete server and runtime", e);
+					}
+				}
+			);
+
+			try {
+				FileUtil.deleteDir(bundlesLocation.toFile(), true);
+
+				project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+			}
+			catch (CoreException ce) {
+				ProjectCore.logError(ce);
+			}
+		}
+
+		return Status.OK_STATUS;
 	}
 
 	protected IFile getDocrootFile(String path) {

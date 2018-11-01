@@ -28,7 +28,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ltk.core.refactoring,
  org.eclipse.ui.workbench,
  org.eclipse.jdt.launching,
- org.eclipse.ui.console
+ org.eclipse.ui.console,
+ com.liferay.ide.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

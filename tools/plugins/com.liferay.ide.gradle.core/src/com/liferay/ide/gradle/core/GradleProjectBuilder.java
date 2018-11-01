@@ -67,6 +67,8 @@ public class GradleProjectBuilder extends AbstractProjectBuilder implements IWor
 	}
 
 	public IStatus initBundle(IProject project, String bundleUrl, IProgressMonitor monitor) {
+		super.initBundle(project, bundleUrl, monitor);
+
 		if (bundleUrl != null) {
 			try {
 				PropertiesConfiguration config = new PropertiesConfiguration(

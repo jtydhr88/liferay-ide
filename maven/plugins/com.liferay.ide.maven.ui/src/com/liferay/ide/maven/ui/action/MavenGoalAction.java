@@ -79,6 +79,8 @@ public abstract class MavenGoalAction extends AbstractObjectAction {
 				catch (CoreException ce) {
 				}
 
+				beforeAction();
+
 				Job job = new Job(p.getName() + " - " + getMavenGoals()) {
 
 					@Override
@@ -113,9 +115,8 @@ public abstract class MavenGoalAction extends AbstractObjectAction {
 
 				job.addJobChangeListener(
 					new JobChangeAdapter() {
-
 						public void done(IJobChangeEvent event) {
-							afterGoal();
+							afterAction();
 						}
 
 					});
@@ -152,10 +153,7 @@ public abstract class MavenGoalAction extends AbstractObjectAction {
 	}
 
 	public Plugin plugin = null;
-
-	protected void afterGoal() {
-	}
-
+	
 	protected String getGroupId() {
 		return ILiferayMavenConstants.NEW_LIFERAY_MAVEN_PLUGINS_GROUP_ID;
 	}

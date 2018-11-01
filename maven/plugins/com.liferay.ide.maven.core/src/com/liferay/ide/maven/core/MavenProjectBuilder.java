@@ -268,6 +268,8 @@ public class MavenProjectBuilder extends AbstractProjectBuilder implements IWork
 	}
 
 	public IStatus initBundle(IProject project, String bundleUrl, IProgressMonitor monitor) {
+		super.initBundle(project, bundleUrl, monitor);
+
 		if (bundleUrl != null) {
 			File pomFile = FileUtil.getFile(project.getFile("pom.xml"));
 

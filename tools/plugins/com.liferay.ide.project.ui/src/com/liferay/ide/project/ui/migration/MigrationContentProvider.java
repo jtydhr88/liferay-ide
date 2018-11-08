@@ -15,6 +15,8 @@
 package com.liferay.ide.project.ui.migration;
 
 import com.liferay.ide.core.util.ListUtil;
+import com.liferay.ide.project.core.upgrade.FileProblems;
+import com.liferay.ide.project.core.upgrade.MigrationProblems;
 import com.liferay.ide.project.core.upgrade.MigrationProblemsContainer;
 import com.liferay.ide.project.core.upgrade.ProblemsContainer;
 import com.liferay.ide.project.core.upgrade.UpgradeAssistantSettingsUtil;
@@ -113,6 +115,38 @@ public class MigrationContentProvider implements ITreeContentProvider {
 					MigrationProblemsContainer.class);
 
 				if (container != null) {
+					MigrationProblems[] projectProblem = container.getProblemsArray();
+
+					for (MigrationProblems pProblem : projectProblem) {
+						FileProblems[] fProblems = pProblem.getProblems();
+
+						int newlength = 0;
+
+						for (FileProblems fp : fProblems) {
+							String fpstr = fp.file.toString();
+
+							if (!fpstr.contains("/build/")) {
+								newlength++;
+							}
+						}
+
+						FileProblems[] refProblems = new FileProblems[newlength];
+
+						int i = 0;
+
+						for (FileProblems fp : fProblems) {
+							String fpstr = fp.file.toString();
+
+							if (!fpstr.contains("/build/")) {
+								refProblems[i] = fp;
+
+								i++;
+							}
+						}
+
+						pProblem.setProblems(refProblems);
+					}
+
 					_problems.add(container);
 				}
 			}

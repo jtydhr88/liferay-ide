@@ -381,10 +381,28 @@ public class ViewAction extends UIAction {
 			_serversView.clickStartBtn();
 		}
 
+		public void startWatchingProject(String serverName, String workspaceName) {
+			_getServers().selectTreeItem(serverName, workspaceName);
+
+			_getServers().contextMenu(true, "Start watching project", serverName, workspaceName);
+		}
+
+		public void startWatchingProject(String serverName, String workspaceName, String... modules) {
+			_getServers().selectTreeItem(serverName, workspaceName, modules[0]);
+
+			_getServers().contextMenu(true, "Start watching project", serverName, workspaceName, modules[0]);
+		}
+
 		public void stop(String serverLabel) {
 			ide.sleep(2000);
 
 			_getServers().contextMenu(true, STOP, serverLabel);
+		}
+
+		public void stopWatchingProject(String serverName, String workspaceName, String... modules) {
+			_getServers().selectTreeItem(serverName, workspaceName, modules[0]);
+
+			_getServers().contextMenu(true, "Stop watching project", serverName, workspaceName, modules[0]);
 		}
 
 		public boolean visibleKaleofolderTry(String serverLabel) {
@@ -448,6 +466,29 @@ public class ViewAction extends UIAction {
 
 		public boolean visibleServer(String serverName) {
 			return _getServers().isVisibleStartsBy(serverName);
+		}
+
+		public boolean visibleWorkspaceModuleTry(String serverLabel, String workspaceName, String projectName) {
+			try {
+				return _getServers().isVisibleStartsBy(serverLabel, workspaceName, projectName);
+			}
+			catch (Exception e) {
+				_getServers().setFocus();
+
+				_getServers().select(serverLabel);
+
+				_getServers().expand(serverLabel);
+
+				_getServers().expand(workspaceName);
+
+				_getServers().select(workspaceName);
+
+				_getServers().expand(projectName);
+
+				_getServers().selectTreeItem(serverLabel, workspaceName, projectName);
+
+				return _getServers().isVisibleStartsBy(projectName);
+			}
 		}
 
 		private Tree _getServers() {

@@ -35,6 +35,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -414,6 +416,33 @@ public class MigrationUtil {
 		MigrationProblemsContainer container = getMigrationProblemsContainer();
 
 		return _removeProblemFromMigrationContainer(resource.getName(), container);
+	}
+
+	public static void removeProblemsInBuildForlder(MigrationProblemsContainer container)
+	{
+
+		MigrationProblems[] projectProblems = container.getProblemsArray();
+
+		for (MigrationProblems migrationProblems : projectProblems) {
+			FileProblems[] fileProblems = migrationProblems.getProblems();
+
+			Stream<FileProblems> streamFileProblems = Arrays.stream(fileProblems);
+
+			Stream<FileProblems> streamAfterFilter = streamFileProblems.filter(
+				fileProblem -> {
+					String filePath = fileProblem.file.toString();
+
+					return !filePath.contains("/build/");
+				});
+
+			List<FileProblems> fileProblemsList = streamAfterFilter.collect(Collectors.toList());
+
+			FileProblems[] newFileProblems = new FileProblems[fileProblemsList.size()];
+
+			fileProblemsList.toArray(newFileProblems);
+
+			migrationProblems.setProblems(newFileProblems);
+		}
 	}
 
 	public static void updateMigrationProblemToStore(Problem problem) {

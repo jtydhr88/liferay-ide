@@ -171,7 +171,7 @@ public class BundlePublishFullAdd extends BundlePublishOperation {
 		URL url = uri.toURL();
 
 		if (bundlePathLowerCase.endsWith(".war")) {
-			bundleUrl = "webbundle:" + url.toExternalForm() + "?Web-ContextPath=/" + bsn;
+			bundleUrl = "'webbundle:" + url.toExternalForm() + "?Web-ContextPath=/" + bsn + "'";
 		}
 		else {
 			bundleUrl = url.toExternalForm();

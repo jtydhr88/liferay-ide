@@ -16,6 +16,7 @@ package com.liferay.ide.server.core.portal;
 
 import com.liferay.ide.core.IBundleProject;
 import com.liferay.ide.core.LiferayCore;
+import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.core.gogo.GogoBundleDeployer;
@@ -41,6 +42,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
 
+import org.osgi.framework.Version;
 import org.osgi.framework.dto.BundleDTO;
 
 /**
@@ -171,7 +173,20 @@ public class BundlePublishFullAdd extends BundlePublishOperation {
 		URL url = uri.toURL();
 
 		if (bundlePathLowerCase.endsWith(".war")) {
-			bundleUrl = "webbundle:" + url.toExternalForm() + "?Web-ContextPath=/" + bsn;
+			String targetPortalVersionString = portalRuntime.getPortalVersion();
+
+			if (CoreUtil.isNotNullOrEmpty(targetPortalVersionString)) {
+				Version targetPortalVersion = new Version(targetPortalVersionString);
+
+				Version compatiblePortalVersion = new Version("7.1.1");
+
+				if (targetPortalVersion.compareTo(compatiblePortalVersion) < 0) {
+					bundleUrl = "webbundle:" + url.toExternalForm() + "?Web-ContextPath=/" + bsn;
+				}
+				else {
+					bundleUrl = "webbundle:" + url.toExternalForm()+ "\\?Web-ContextPath=/" + bsn;
+				}
+			}
 		}
 		else {
 			bundleUrl = url.toExternalForm();

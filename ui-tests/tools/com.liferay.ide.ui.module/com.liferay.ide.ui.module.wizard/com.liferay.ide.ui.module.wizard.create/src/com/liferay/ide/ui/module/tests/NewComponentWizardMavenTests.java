@@ -30,6 +30,67 @@ import org.junit.Test;
 public class NewComponentWizardMavenTests extends SwtbotBase {
 
 	@Test
+	public void createComponentForServiceBuilder() {
+		wizardAction.openNewLiferayModuleWizard();
+
+		wizardAction.newModule.prepareMaven(project.getName(), SERVICE_BUILDER);
+
+		wizardAction.finish();
+
+		jobAction.waitForNoRunningProjectBuildingJobs();
+
+		String[] apiNames = {project.getName(), project.getName() + "-api"};
+
+		String[] serviceNames = {project.getName(), project.getName() + "-service"};
+
+		viewAction.project.runBuildService(serviceNames);
+
+		jobAction.waitForNoRunningJobs();
+
+		wizardAction.openNewLiferayComponentClassWizard();
+
+		wizardAction.newLiferayComponent.prepareProjectName(project.getName() + "-api");
+
+		wizardAction.finish();
+
+		jobAction.waitForNoRunningJobs();
+
+		try {
+			editorAction.close();
+		}
+		catch (Exception e) {
+		}
+
+		Assert.assertTrue(
+			viewAction.project.visibleFileTry(
+				project.getName(), project.getName() + "-api", "src/main/java",
+				project.getName() + ".service.persistence", project.getCapitalName() + "ApiPortlet.java"));
+
+		wizardAction.openNewLiferayComponentClassWizard();
+
+		wizardAction.newLiferayComponent.prepareProjectName(project.getName() + "-service");
+
+		wizardAction.finish();
+
+		jobAction.waitForNoRunningJobs();
+
+		try {
+			editorAction.close();
+		}
+		catch (Exception e) {
+		}
+
+		Assert.assertTrue(
+			viewAction.project.visibleFileTry(
+				project.getName(), project.getName() + "-service", "src/main/java", project.getName() + ".service.util",
+				project.getCapitalName() + "ServicePortlet.java"));
+
+		viewAction.project.closeAndDelete(apiNames);
+		viewAction.project.closeAndDelete(serviceNames);
+		viewAction.project.closeAndDelete(project.getName());
+	}
+
+	@Test
 	public void createComponentModelListener() {
 		wizardAction.openNewLiferayModuleWizard();
 
@@ -53,6 +114,8 @@ public class NewComponentWizardMavenTests extends SwtbotBase {
 		dialogAction.confirm();
 
 		wizardAction.finish();
+
+		jobAction.waitForNoRunningJobs();
 
 		Assert.assertTrue(
 			viewAction.project.visibleFileTry(project.getName(), "src/main/java", packageName, className + ".java"));

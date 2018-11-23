@@ -28,6 +28,11 @@ public class LiferayWorkspaceGradleSupport extends LiferayWorkspaceSupport {
 	}
 
 	@Override
+	public void after() {
+		viewAction.project.closeAndDeleteFromDisk(getName());
+	}
+
+	@Override
 	public void before() {
 		super.before();
 
@@ -60,6 +65,13 @@ public class LiferayWorkspaceGradleSupport extends LiferayWorkspaceSupport {
 
 	public String getWarsDirName() {
 		return "wars";
+	}
+
+	@Override
+	public void initBundle() {
+		viewAction.project.runGradleInitBundle(getName());
+
+		jobAction.waitForNoRunningJobs();
 	}
 
 }

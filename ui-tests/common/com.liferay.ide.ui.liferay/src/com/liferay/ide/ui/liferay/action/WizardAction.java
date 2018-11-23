@@ -650,6 +650,10 @@ public class WizardAction extends UIAction {
 			return _newLiferayComponentWizard.getPackageName();
 		}
 
+		public ComboBox projectNames() {
+			return _newLiferayComponentWizard.getProjectNames();
+		}
+
 		public void prepare(String template) {
 			componentClassTemplate().setSelection(template);
 

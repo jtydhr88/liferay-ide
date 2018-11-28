@@ -38,7 +38,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.finish();
 
-		jobAction.waitForNoRunningProjectBuildingJobs();
+		jobAction.waitForNoRunningJobs();
 
 		String targetPlateformVersionMessage = "liferay.workspace.target.platform.version = 7.0.6";
 
@@ -75,7 +75,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.finish();
 
-		jobAction.waitForNoRunningProjectBuildingJobs();
+		jobAction.waitForNoRunningJobs();
 
 		String targetPlateformVersionMessage = "liferay.workspace.target.platform.version = 7.1.0";
 
@@ -104,7 +104,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.finish();
 
-		jobAction.waitForNoRunningProjectBuildingJobs();
+		jobAction.waitForNoRunningJobs();
 
 		viewAction.project.closeAndDelete(project.getName());
 	}
@@ -117,7 +117,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.finish();
 
-		jobAction.waitForNoRunningProjectBuildingJobs();
+		jobAction.waitForNoRunningJobs();
 
 		viewAction.project.openFile(project.getName(), "gradle.properties");
 
@@ -145,7 +145,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		viewAction.project.refreshGradleProject(project.getName());
 
-		jobAction.waitForNoRunningProjectBuildingJobs();
+		jobAction.waitForNoRunningJobs();
 
 		String[] projectNames = {project.getName(), newModulesFolderName, projectName};
 
@@ -168,7 +168,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.finish();
 
-		jobAction.waitForNoRunningProjectBuildingJobs();
+		jobAction.waitForNoRunningJobs();
 
 		viewAction.project.openFile(project.getName(), "gradle.properties");
 
@@ -196,7 +196,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		viewAction.project.refreshGradleProject(project.getName());
 
-		jobAction.waitForNoRunningProjectBuildingJobs();
+		jobAction.waitForNoRunningJobs();
 
 		String[] projectNames = {project.getName(), newWarsFolderName, projectName};
 
@@ -256,7 +256,7 @@ public class NewLiferayWorkspaceWizardGradleTests extends SwtbotBase {
 
 		wizardAction.finish();
 
-		jobAction.waitForNoRunningProjectBuildingJobs();
+		jobAction.waitForNoRunningJobs();
 
 		dialogAction.openPreferencesDialog();
 

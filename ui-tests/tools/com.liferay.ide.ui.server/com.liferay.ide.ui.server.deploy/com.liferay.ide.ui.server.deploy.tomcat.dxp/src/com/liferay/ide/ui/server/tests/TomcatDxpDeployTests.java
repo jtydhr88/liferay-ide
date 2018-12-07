@@ -17,7 +17,7 @@ package com.liferay.ide.ui.server.tests;
 import com.liferay.ide.ui.liferay.support.server.PureTomcatDxpSupport;
 import com.liferay.ide.ui.liferay.support.server.ServerSupport;
 import com.liferay.ide.ui.liferay.util.RuleUtil;
-import com.liferay.ide.ui.server.deploy.base.Tomcat7xDeployBase;
+import com.liferay.ide.ui.server.deploy.base.Server7xDeployBase;
 
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import org.junit.rules.RuleChain;
 /**
  * @author Terry Jia
  */
-public class TomcatDxpDeployTests extends Tomcat7xDeployBase {
+public class TomcatDxpDeployTests extends Server7xDeployBase {
 
 	@ClassRule
 	public static RuleChain chain = RuleUtil.getTomcat7xRunningSdkRuleChain(bot, getServer());

@@ -16,14 +16,18 @@ package com.liferay.ide.ui.server.deploy.base;
 
 import com.liferay.ide.ui.liferay.ServerTestBase;
 import com.liferay.ide.ui.liferay.support.project.ProjectSupport;
+import com.liferay.ide.ui.liferay.support.server.PureTomcat70Support;
+import com.liferay.ide.ui.liferay.support.server.PureTomcat71Support;
+import com.liferay.ide.ui.liferay.support.server.PureTomcatDxpSupport;
 
 import org.junit.Assert;
 import org.junit.Rule;
 
 /**
  * @author Terry Jia
+ * @author Rui Wang
  */
-public abstract class Tomcat7xDeployBase extends ServerTestBase {
+public abstract class Server7xDeployBase extends ServerTestBase {
 
 	public void deployFragment() {
 		wizardAction.openNewFragmentWizard();
@@ -54,13 +58,21 @@ public abstract class Tomcat7xDeployBase extends ServerTestBase {
 
 		dialogAction.confirm(FINISH);
 
-		jobAction.waitForConsoleContent(server.getServerName(), "STOPPED com.liferay.blogs.web", M1);
+		if (server instanceof PureTomcat70Support || server instanceof PureTomcat71Support ||
+			server instanceof PureTomcatDxpSupport) {
 
-		jobAction.waitForConsoleContent(server.getServerName(), "STARTED com.liferay.blogs.web", M1);
+			jobAction.waitForConsoleContent(server.getServerName(), "STARTED com.liferay.blogs.web", M1);
+		}
 
 		viewAction.servers.removeModule(server.getServerName(), project.getName());
 
 		dialogAction.confirm();
+
+		if (server instanceof PureTomcat70Support || server instanceof PureTomcat71Support ||
+			server instanceof PureTomcatDxpSupport) {
+
+			jobAction.waitForConsoleContent(server.getServerName(), "STOPPED com.liferay.blogs.web", M1);
+		}
 
 		viewAction.project.closeAndDelete(project.getName());
 	}
@@ -80,15 +92,25 @@ public abstract class Tomcat7xDeployBase extends ServerTestBase {
 
 		dialogAction.confirm(FINISH);
 
+		jobAction.waitForNoRunningJobs();
+
 		Assert.assertTrue(viewAction.servers.visibleModuleTry(server.getStartedLabel(), project.getName()));
 
-		jobAction.waitForConsoleContent(server.getServerName(), "STARTED " + project.getName() + "_", M1);
+		if (server instanceof PureTomcat70Support || server instanceof PureTomcat71Support ||
+			server instanceof PureTomcatDxpSupport) {
+
+			jobAction.waitForConsoleContent(server.getServerName(), "STARTED " + project.getName() + "_", M1);
+		}
 
 		viewAction.servers.removeModule(server.getServerName(), project.getName());
 
 		dialogAction.confirm();
 
-		jobAction.waitForConsoleContent(server.getServerName(), "STOPPED " + project.getName() + "_", M1);
+		if (server instanceof PureTomcat70Support || server instanceof PureTomcat71Support ||
+			server instanceof PureTomcatDxpSupport) {
+
+			jobAction.waitForConsoleContent(server.getServerName(), "STOPPED " + project.getName() + "_", M1);
+		}
 
 		viewAction.project.closeAndDelete(project.getName());
 	}
@@ -134,14 +156,22 @@ public abstract class Tomcat7xDeployBase extends ServerTestBase {
 
 		Assert.assertTrue(viewAction.servers.visibleModuleTry(server.getStartedLabel(), project.getName()));
 
-		jobAction.waitForConsoleContent(
-			server.getServerName(), "1 portlet for " + project.getName() + " is available for use", M5);
+		if (server instanceof PureTomcat70Support || server instanceof PureTomcat71Support ||
+			server instanceof PureTomcatDxpSupport) {
+
+			jobAction.waitForConsoleContent(
+				server.getServerName(), "1 portlet for " + project.getName() + " is available for use", M5);
+		}
 
 		viewAction.servers.removeModule(server.getServerName(), project.getName());
 
 		dialogAction.confirm();
 
-		jobAction.waitForConsoleContent(server.getServerName(), "STOPPED " + project.getName() + "_", M1);
+		if (server instanceof PureTomcat70Support || server instanceof PureTomcat71Support ||
+			server instanceof PureTomcatDxpSupport) {
+
+			jobAction.waitForConsoleContent(server.getServerName(), "STOPPED " + project.getName() + "_", M1);
+		}
 
 		viewAction.project.closeAndDelete(project.getName());
 	}

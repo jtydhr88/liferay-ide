@@ -14,17 +14,50 @@
 
 package com.liferay.ide.ui.server.tests;
 
-import com.liferay.ide.ui.liferay.SwtbotBase;
+import com.liferay.ide.ui.liferay.support.server.PureWildfly70Support;
+import com.liferay.ide.ui.liferay.support.server.ServerSupport;
+import com.liferay.ide.ui.liferay.util.RuleUtil;
+import com.liferay.ide.ui.server.deploy.base.Server7xDeployBase;
 
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 /**
  * @author Terry Jia
+ * @author Rui Wang
  */
-public class WildflyDeployTests extends SwtbotBase {
+public class WildflyDeployTests extends Server7xDeployBase {
+
+	@ClassRule
+	public static RuleChain chain = RuleUtil.getTomcat7xRunningRuleChain(bot, getServer());
+
+	public static ServerSupport getServer() {
+		if ((server == null) || !(server instanceof PureWildfly70Support)) {
+			server = new PureWildfly70Support(bot);
+		}
+
+		return server;
+	}
 
 	@Test
-	public void addLiferayRuntime() {
+	public void deployFragment() {
+		super.deployFragment();
+	}
+
+	@Test
+	public void deployModule() {
+		super.deployModule();
+	}
+
+	@Test
+	public void deployWar() {
+		super.deployWar();
+	}
+
+	@Override
+	protected String getVersion() {
+		return "7.0";
 	}
 
 }

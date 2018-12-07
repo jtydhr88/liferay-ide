@@ -113,6 +113,10 @@ public class ServerSupport extends SupportBase {
 		return _bundle.getType() + timestamp;
 	}
 
+	public String getServerType() {
+		return _bundle.getType();
+	}
+
 	public String getStartedLabel() {
 		return getServerName() + "  [Started]";
 	}

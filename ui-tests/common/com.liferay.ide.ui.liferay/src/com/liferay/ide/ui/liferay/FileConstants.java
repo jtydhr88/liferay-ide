@@ -37,6 +37,8 @@ public interface FileConstants {
 
 	public static final String SRC_MAIN_RESOURCES = "src/main/resources";
 
+	public static final String TOMCAT = "tomcat";
+
 	public static final String WEB_INF = "WEB-INF";
 
 	public static final String WEBAPP = "webapp";

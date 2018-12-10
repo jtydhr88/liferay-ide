@@ -342,19 +342,15 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject imple
 
 		IProject project = getProject();
 
-		IFile buildGradle = project.getFile("build.gradle");
-
-		IPath buildGradlePath = buildGradle.getProjectRelativePath();
-
-		if (affectedResourcePaths.contains(buildGradlePath)) {
+		if (affectedResourcePaths.contains(FileUtil.getProjectFileRelativePath(project, "gradle.properties"))) {
 			return true;
 		}
 
-		IFile settingsGradle = project.getFile("settings.gradle");
+		if (affectedResourcePaths.contains(FileUtil.getProjectFileRelativePath(project, "build.gradle"))) {
+			return true;
+		}
 
-		IPath settingsGradletPath = settingsGradle.getProjectRelativePath();
-
-		if (affectedResourcePaths.contains(settingsGradletPath)) {
+		if (affectedResourcePaths.contains(FileUtil.getProjectFileRelativePath(project, "settings.gradle"))) {
 			return true;
 		}
 

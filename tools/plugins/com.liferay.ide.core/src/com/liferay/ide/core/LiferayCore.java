@@ -16,6 +16,7 @@ package com.liferay.ide.core;
 
 import com.liferay.ide.core.util.ListUtil;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -273,6 +274,10 @@ public class LiferayCore extends Plugin {
 	}
 
 	public LiferayCore() {
+	}
+
+	public Collection<ILiferayProject> getCachedProjects() {
+		return _projectCache.values();
 	}
 
 	@Override

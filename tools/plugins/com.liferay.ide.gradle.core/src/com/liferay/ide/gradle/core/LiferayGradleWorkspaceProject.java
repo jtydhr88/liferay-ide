@@ -382,6 +382,6 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject imple
 
 	private static final Set<IProject> _watchingProjects = new HashSet<>();
 
-	private boolean _stale = false;
+	private volatile boolean _stale = false;
 
 }

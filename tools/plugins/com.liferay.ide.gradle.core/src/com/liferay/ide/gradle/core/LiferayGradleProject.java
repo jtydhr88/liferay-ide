@@ -18,7 +18,9 @@ import aQute.bnd.osgi.Jar;
 
 import com.liferay.blade.gradle.model.CustomModel;
 import com.liferay.ide.core.BaseLiferayProject;
+import com.liferay.ide.core.CacheImportantResourceChangeListener;
 import com.liferay.ide.core.IBundleProject;
+import com.liferay.ide.core.ILiferayProjectCacheEntry;
 import com.liferay.ide.core.IResourceBundleProject;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
@@ -63,6 +65,8 @@ public class LiferayGradleProject extends BaseLiferayProject implements IBundleP
 
 	public LiferayGradleProject(IProject project) {
 		super(project);
+
+		_cacheChangeListener = new CacheImportantResourceChangeListener(project, new String[] {"build.gradle"});
 	}
 
 	@Override
@@ -77,6 +81,18 @@ public class LiferayGradleProject extends BaseLiferayProject implements IBundleP
 			final IProjectBuilder projectBuilder = new GradleProjectBuilder(getProject());
 
 			return adapterType.cast(projectBuilder);
+		}
+
+		if (ILiferayProjectCacheEntry.class.equals(adapterType)) {
+			return adapterType.cast(
+				new ILiferayProjectCacheEntry() {
+
+					@Override
+					public boolean isStale() {
+						return _cacheChangeListener.getStale();
+					}
+
+				});
 		}
 
 		return null;
@@ -361,5 +377,7 @@ public class LiferayGradleProject extends BaseLiferayProject implements IBundleP
 	}
 
 	private static final String[] _IGNORE_PATHS = {".gradle", "build", "dist", "liferay-theme.json"};
+
+	private CacheImportantResourceChangeListener _cacheChangeListener;
 
 }

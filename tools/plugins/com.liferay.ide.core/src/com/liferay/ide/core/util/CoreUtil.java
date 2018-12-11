@@ -53,6 +53,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -103,6 +104,12 @@ public class CoreUtil {
 		description.setNatureIds(newNatures);
 
 		proj.setDescription(description, monitor);
+	}
+
+	public static void addResourceChangeListener(IResourceChangeListener listener) {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+		workspace.addResourceChangeListener(listener);
 	}
 
 	/**
@@ -676,6 +683,12 @@ public class CoreUtil {
 		while (node.hasChildNodes()) {
 			node.removeChild(node.getFirstChild());
 		}
+	}
+
+	public static void removeResourceChangeListener(IResourceChangeListener listener) {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+		workspace.removeResourceChangeListener(listener);
 	}
 
 	public static IStatus validateName(String segment, int typeMask) {

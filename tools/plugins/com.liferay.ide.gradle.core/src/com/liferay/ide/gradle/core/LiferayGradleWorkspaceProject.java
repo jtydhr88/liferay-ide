@@ -14,6 +14,7 @@
 
 package com.liferay.ide.gradle.core;
 
+import com.liferay.ide.core.CacheImportantResourceChangeListener;
 import com.liferay.ide.core.IBundleProject;
 import com.liferay.ide.core.ILiferayProjectCacheEntry;
 import com.liferay.ide.core.LiferayCore;
@@ -39,15 +40,6 @@ import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -64,14 +56,13 @@ import org.eclipse.wst.server.core.ServerCore;
  * @author Simon Jiang
  * @author Terry Jia
  */
-public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject implements IResourceChangeListener {
+public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject {
 
 	public LiferayGradleWorkspaceProject(IProject project) {
 		super(project);
 
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
-		workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+		_cacheChangeListener = new CacheImportantResourceChangeListener(
+			project, new String[] {"gradle.properties", "build.gradle", "settings.gradle"});
 	}
 
 	@Override
@@ -88,7 +79,7 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject imple
 
 					@Override
 					public boolean isStale() {
-						return _stale;
+						return _cacheChangeListener.getStale();
 					}
 
 				});
@@ -128,24 +119,6 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject imple
 	}
 
 	@Override
-	public void resourceChanged(IResourceChangeEvent event) {
-		IResourceDelta resourceDelta = event.getDelta();
-
-		if (resourceDelta != null) {
-			try {
-				_visitResourceDelta(resourceDelta);
-			}
-			catch (CoreException ce) {
-				_stale = true;
-
-				IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
-				workspace.removeResourceChangeListener(this);
-			}
-		}
-	}
-
-	@Override
 	public void watch(Set<IProject> childProjects) {
 		boolean runOnRoot = false;
 		Set<IProject> runOnProjects = childProjects;
@@ -178,24 +151,6 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject imple
 		return Collections.unmodifiableSet(_watchingProjects);
 	}
 
-	private Set<IPath> _collectAffectedResourcePaths(IResourceDelta[] resourceDeltas) {
-		Set<IPath> result = new HashSet<>();
-
-		_collectAffectedResourcePaths(result, resourceDeltas);
-
-		return result;
-	}
-
-	private void _collectAffectedResourcePaths(Set<IPath> paths, IResourceDelta[] resourceDeltas) {
-		for (IResourceDelta resourceDelta : resourceDeltas) {
-			IResource resource = resourceDelta.getResource();
-
-			paths.add(resource.getProjectRelativePath());
-
-			_collectAffectedResourcePaths(paths, resourceDelta.getAffectedChildren());
-		}
-	}
-
 	private String _convertToModuleTaskPath(IPath moduleLocation, String taskName) {
 		IProject project = getProject();
 
@@ -216,29 +171,6 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject imple
 		}
 
 		return taskPath;
-	}
-
-	private boolean _doVisitDelta(IResourceDelta resourceDelta) {
-		IResource resource = resourceDelta.getResource();
-
-		if (resource instanceof IProject) {
-			IProject project = (IProject)resource;
-
-			if (project.equals(getProject())) {
-				if (_importantResourcesAffected(resourceDelta)) {
-					_stale = true;
-
-					IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
-					workspace.removeResourceChangeListener(this);
-				}
-			}
-
-			return false;
-		}
-		else {
-			return resource instanceof IWorkspaceRoot;
-		}
 	}
 
 	private void _executeTask(boolean runOnRoot, Set<IProject> childProjects) {
@@ -337,51 +269,8 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject imple
 		}
 	}
 
-	private boolean _importantResourcesAffected(IResourceDelta resourceDelta) {
-		Set<IPath> affectedResourcePaths = _collectAffectedResourcePaths(resourceDelta.getAffectedChildren());
-
-		IProject project = getProject();
-
-		if (affectedResourcePaths.contains(FileUtil.getProjectFileRelativePath(project, "gradle.properties"))) {
-			return true;
-		}
-
-		if (affectedResourcePaths.contains(FileUtil.getProjectFileRelativePath(project, "build.gradle"))) {
-			return true;
-		}
-
-		if (affectedResourcePaths.contains(FileUtil.getProjectFileRelativePath(project, "settings.gradle"))) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private void _visitResourceDelta(IResourceDelta resourceDelta) throws CoreException {
-		resourceDelta.accept(
-			new IResourceDeltaVisitor() {
-
-				@Override
-				public boolean visit(IResourceDelta delta) throws CoreException {
-					try {
-						return _doVisitDelta(delta);
-					}
-					catch (Exception e) {
-						_stale = true;
-
-						IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
-						workspace.removeResourceChangeListener(LiferayGradleWorkspaceProject.this);
-
-						throw new CoreException(new Status(IStatus.WARNING, GradleCore.PLUGIN_ID, e.getMessage(), e));
-					}
-				}
-
-			});
-	}
-
 	private static final Set<IProject> _watchingProjects = new HashSet<>();
 
-	private volatile boolean _stale = false;
+	private CacheImportantResourceChangeListener _cacheChangeListener;
 
 }

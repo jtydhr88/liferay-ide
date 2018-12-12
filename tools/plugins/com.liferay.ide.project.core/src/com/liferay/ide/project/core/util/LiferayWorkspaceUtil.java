@@ -74,7 +74,7 @@ public class LiferayWorkspaceUtil {
 
 			IWorkspaceProject workspaceProject = LiferayCore.create(IWorkspaceProject.class, project);
 
-			String bundlesDir = workspaceProject.getHomeDirName();
+			String bundlesDir = workspaceProject.getLiferayHome();
 
 			IPath projectLocation = project.getLocation();
 

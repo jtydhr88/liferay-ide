@@ -157,7 +157,7 @@ public class LiferayGradleWorkspaceProjectProvider
 					LiferayCore liferayCore = LiferayCore.getDefault();
 
 					for (ILiferayProject liferayProject : liferayCore.getCachedProjects()) {
-						if (liferayProject instanceof LiferayGradleWorkspaceProject &&
+						if (liferayProject instanceof LiferayGradleWorkspaceProject && !liferayProject.isStale() &&
 							project.equals(liferayProject.getProject())) {
 
 							return liferayProject;

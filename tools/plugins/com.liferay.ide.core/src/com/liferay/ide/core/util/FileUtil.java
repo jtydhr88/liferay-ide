@@ -523,12 +523,6 @@ public class FileUtil {
 		return location.toString();
 	}
 
-	public static IPath getProjectFileRelativePath(IProject project, String fileName) {
-		IFile file = project.getFile(fileName);
-
-		return file.getProjectRelativePath();
-	}
-
 	public static IPath getRawLocation(IContainer container) {
 		if (container == null) {
 			return null;

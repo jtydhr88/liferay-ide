@@ -196,7 +196,7 @@ public class GradleProjectProvider
 					LiferayCore liferayCore = LiferayCore.getDefault();
 
 					for (ILiferayProject liferayProject : liferayCore.getCachedProjects()) {
-						if (liferayProject instanceof LiferayGradleProject &&
+						if (liferayProject instanceof LiferayGradleProject && !liferayProject.isStale() &&
 							project.equals(liferayProject.getProject())) {
 
 							return liferayProject;

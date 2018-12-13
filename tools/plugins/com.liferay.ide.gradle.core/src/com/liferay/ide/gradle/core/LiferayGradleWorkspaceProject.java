@@ -14,10 +14,13 @@
 
 package com.liferay.ide.gradle.core;
 
-import com.liferay.ide.core.CacheImportantResourceChangeListener;
+import com.google.common.collect.ImmutableSet;
+
 import com.liferay.ide.core.IBundleProject;
-import com.liferay.ide.core.ILiferayProjectCacheEntry;
 import com.liferay.ide.core.LiferayCore;
+import com.liferay.ide.core.event.Event;
+import com.liferay.ide.core.event.EventListener;
+import com.liferay.ide.core.event.ProjectsChangeEvent;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ListUtil;
 import com.liferay.ide.core.util.PropertiesUtil;
@@ -56,13 +59,16 @@ import org.eclipse.wst.server.core.ServerCore;
  * @author Simon Jiang
  * @author Terry Jia
  */
-public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject {
+public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject implements EventListener {
 
 	public LiferayGradleWorkspaceProject(IProject project) {
 		super(project);
 
-		_cacheChangeListener = new CacheImportantResourceChangeListener(
-			project, new String[] {"gradle.properties", "build.gradle", "settings.gradle"});
+		IPath projectPath = project.getFullPath();
+
+		_importantResources = ImmutableSet.of(
+			projectPath.append("gradle.properties"), projectPath.append("build.gradle"),
+			projectPath.append("settings.gradle"));
 	}
 
 	@Override
@@ -71,18 +77,6 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject {
 			IProjectBuilder projectBuilder = new GradleProjectBuilder(getProject());
 
 			return adapterType.cast(projectBuilder);
-		}
-
-		if (ILiferayProjectCacheEntry.class.equals(adapterType)) {
-			return adapterType.cast(
-				new ILiferayProjectCacheEntry() {
-
-					@Override
-					public boolean isStale() {
-						return _cacheChangeListener.getStale();
-					}
-
-				});
 		}
 
 		return super.adapt(adapterType);
@@ -110,12 +104,34 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject {
 	}
 
 	@Override
+	public boolean isStale() {
+		return _stale;
+	}
+
+	@Override
 	public boolean isWatchable() {
 		IProject project = getProject();
 
 		IFile settingsGradleFile = project.getFile("settings.gradle");
 
 		return GradleUtil.isWatchableProject(settingsGradleFile);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		IProject project = getProject();
+
+		if (event instanceof ProjectsChangeEvent && project.equals(((ProjectsChangeEvent)event).getProject())) {
+			Set<IPath> affectedResources = ((ProjectsChangeEvent)event).getAffectedResources();
+
+			for (IPath importantResource : _importantResources) {
+				if (affectedResources.contains(importantResource)) {
+					_stale = true;
+
+					break;
+				}
+			}
+		}
 	}
 
 	@Override
@@ -271,6 +287,7 @@ public class LiferayGradleWorkspaceProject extends LiferayWorkspaceProject {
 
 	private static final Set<IProject> _watchingProjects = new HashSet<>();
 
-	private CacheImportantResourceChangeListener _cacheChangeListener;
+	private ImmutableSet<IPath> _importantResources;
+	private volatile boolean _stale = false;
 
 }

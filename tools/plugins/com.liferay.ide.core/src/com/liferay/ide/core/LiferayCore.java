@@ -14,9 +14,15 @@
 
 package com.liferay.ide.core;
 
+import com.liferay.ide.core.event.DefaultListenerRegistry;
+import com.liferay.ide.core.event.LiferayListenerRegistry;
+import com.liferay.ide.core.event.LiferayResourceChangeManager;
 import com.liferay.ide.core.util.ListUtil;
 
+import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,6 +37,8 @@ import org.eclipse.core.runtime.Status;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -59,14 +67,12 @@ public class LiferayCore extends Plugin {
 
 		ILiferayProject liferayProject = projectCache.get(key);
 
-		if (liferayProject != null) {
-			ILiferayProjectCacheEntry liferayProjectCacheEntry = liferayProject.adapt(ILiferayProjectCacheEntry.class);
+		if ((liferayProject != null) && liferayProject.isStale()) {
+			projectCache.remove(key);
 
-			if ((liferayProjectCacheEntry == null) || liferayProjectCacheEntry.isStale()) {
-				projectCache.remove(key);
+			listenerRegistry().removeEventListener(liferayProject);
 
-				liferayProject = null;
-			}
+			liferayProject = null;
 		}
 
 		if (liferayProject == null) {
@@ -74,11 +80,9 @@ public class LiferayCore extends Plugin {
 		}
 
 		if ((liferayProject != null) && type.isAssignableFrom(liferayProject.getClass())) {
-			ILiferayProjectCacheEntry liferayProjectCacheEntry = liferayProject.adapt(ILiferayProjectCacheEntry.class);
+			projectCache.put(key, liferayProject);
 
-			if (liferayProjectCacheEntry != null) {
-				projectCache.put(key, liferayProject);
-			}
+			listenerRegistry().addEventListener(liferayProject);
 
 			retval = type.cast(liferayProject);
 		}
@@ -119,13 +123,9 @@ public class LiferayCore extends Plugin {
 		return createErrorStatus(PLUGIN_ID, e);
 	}
 
-	// The shared instance
-
 	public static IStatus createErrorStatus(String msg) {
 		return createErrorStatus(PLUGIN_ID, msg);
 	}
-
-	// The plugin ID
 
 	public static IStatus createErrorStatus(String pluginId, String msg) {
 		return new Status(IStatus.ERROR, pluginId, msg);
@@ -240,6 +240,10 @@ public class LiferayCore extends Plugin {
 		return proxyService;
 	}
 
+	public static LiferayListenerRegistry listenerRegistry() {
+		return (LiferayListenerRegistry)_plugin._listenerServiceTracker.getService();
+	}
+
 	public static void logError(IStatus status) {
 		ILog log = getDefault().getLog();
 
@@ -275,18 +279,60 @@ public class LiferayCore extends Plugin {
 	public LiferayCore() {
 	}
 
+	public synchronized Collection<ILiferayProject> getCachedProjects() {
+		return _projectCache.values();
+	}
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 
 		_plugin = this;
+
+		_registerServices(context);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		_unRegisterServices();
 		_plugin = null;
 
 		super.stop(context);
+	}
+
+	private ServiceTracker<?, ?> _createServiceTracker(BundleContext context, Class<?> clazz) {
+		ServiceTracker<?, ?> serviceTracker = new ServiceTracker<>(context, clazz.getName(), null);
+
+		serviceTracker.open();
+
+		return serviceTracker;
+	}
+
+	private <T> ServiceRegistration<?> _registerService(
+		BundleContext context, Class<T> clazz, T service, Dictionary<String, Object> properties) {
+
+		return context.registerService(clazz.getName(), service, properties);
+	}
+
+	private void _registerServices(BundleContext context) {
+		Dictionary<String, Object> preferences = new Hashtable<>();
+
+		preferences.put(Constants.SERVICE_RANKING, 1);
+
+		_listenerServiceTracker = _createServiceTracker(context, LiferayListenerRegistry.class);
+
+		_listenerService = _registerService(
+			context, LiferayListenerRegistry.class, new DefaultListenerRegistry(), preferences);
+
+		_resourceChangeManager = LiferayResourceChangeManager.createAndRegister();
+	}
+
+	private void _unRegisterServices() {
+		_resourceChangeManager.close();
+
+		_listenerService.unregister();
+
+		_listenerServiceTracker.close();
 	}
 
 	private static final LiferayProjectAdapterReader _adapterReader = new LiferayProjectAdapterReader();
@@ -294,7 +340,10 @@ public class LiferayCore extends Plugin {
 	private static LiferayCore _plugin;
 	private static LiferayProjectProviderReader _providerReader;
 
+	private ServiceRegistration<?> _listenerService;
+	private ServiceTracker<?, ?> _listenerServiceTracker;
 	private final Map<ProjectCacheKey<?>, ILiferayProject> _projectCache = new HashMap<>();
+	private LiferayResourceChangeManager _resourceChangeManager;
 
 	private static class ProjectCacheKey<T extends ILiferayProject> {
 

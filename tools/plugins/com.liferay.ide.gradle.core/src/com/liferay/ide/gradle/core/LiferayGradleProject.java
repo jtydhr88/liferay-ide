@@ -16,10 +16,14 @@ package com.liferay.ide.gradle.core;
 
 import aQute.bnd.osgi.Jar;
 
+import com.google.common.collect.ImmutableSet;
+
 import com.liferay.blade.gradle.model.CustomModel;
 import com.liferay.ide.core.BaseLiferayProject;
 import com.liferay.ide.core.IBundleProject;
 import com.liferay.ide.core.IResourceBundleProject;
+import com.liferay.ide.core.event.EventListener;
+import com.liferay.ide.core.event.ProjectsChangeEvent;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ListUtil;
@@ -59,10 +63,15 @@ import org.gradle.tooling.ProjectConnection;
  * @author Terry Jia
  * @author Andy Wu
  */
-public class LiferayGradleProject extends BaseLiferayProject implements IBundleProject, IResourceBundleProject {
+public class LiferayGradleProject
+	extends BaseLiferayProject implements IBundleProject, IResourceBundleProject, EventListener {
 
 	public LiferayGradleProject(IProject project) {
 		super(project);
+
+		IPath projectPath = project.getFullPath();
+
+		_importantResources = ImmutableSet.of(projectPath.append("build.gradle"));
 	}
 
 	@Override
@@ -316,6 +325,28 @@ public class LiferayGradleProject extends BaseLiferayProject implements IBundleP
 		return false;
 	}
 
+	@Override
+	public boolean isStale() {
+		return _stale;
+	}
+
+	@Override
+	public void onEvent(ProjectsChangeEvent event) {
+		IProject project = getProject();
+
+		if (project.equals(event.getProject())) {
+			Set<IPath> affectedResources = event.getAffectedResources();
+
+			for (IPath importantResource : _importantResources) {
+				if (affectedResources.contains(importantResource)) {
+					_stale = true;
+
+					break;
+				}
+			}
+		}
+	}
+
 	private IFolder _createResorcesFolder(IProject project) {
 		try {
 			IJavaProject javaProject = JavaCore.create(project);
@@ -361,5 +392,8 @@ public class LiferayGradleProject extends BaseLiferayProject implements IBundleP
 	}
 
 	private static final String[] _IGNORE_PATHS = {".gradle", "build", "dist", "liferay-theme.json"};
+
+	private ImmutableSet<IPath> _importantResources;
+	private volatile boolean _stale = false;
 
 }

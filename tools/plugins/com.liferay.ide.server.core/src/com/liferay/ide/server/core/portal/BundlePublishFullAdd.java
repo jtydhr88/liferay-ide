@@ -149,6 +149,9 @@ public class BundlePublishFullAdd extends BundlePublishOperation {
 				retval = LiferayServerCore.error("Unable to copy file to auto deploy folder", ioe);
 			}
 		}
+		else {
+			retval = LiferayServerCore.error("Unable auto deploy bundle " + output.toPortableString());
+		}
 
 		if (FileUtil.exists(statePath)) {
 			FileUtil.deleteDir(statePath.toFile(), true);

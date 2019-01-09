@@ -15,6 +15,7 @@
 package com.liferay.ide.gradle.ui;
 
 import com.liferay.ide.core.util.ListUtil;
+import com.liferay.ide.gradle.core.LiferayGradleCore;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.jobs.IJobManager;
@@ -36,7 +37,7 @@ public class WatchDecorator extends LabelProvider implements ILightweightLabelDe
 
 		IProject project = (IProject)element;
 
-		String jobName = project.getName() + " - watch";
+		String jobName = project.getName() + ":" + LiferayGradleCore.LIFERAY_WATCH;
 
 		IJobManager jobManager = Job.getJobManager();
 

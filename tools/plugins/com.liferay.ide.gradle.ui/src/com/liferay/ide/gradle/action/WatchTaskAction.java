@@ -16,6 +16,7 @@ package com.liferay.ide.gradle.action;
 
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ListUtil;
+import com.liferay.ide.gradle.core.GradleUtil;
 import com.liferay.ide.gradle.core.LiferayGradleCore;
 import com.liferay.ide.gradle.core.WatchJob;
 import com.liferay.ide.gradle.ui.LiferayGradleUI;
@@ -43,7 +44,6 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -57,6 +57,8 @@ import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.server.core.ServerCore;
+
+import org.gradle.tooling.model.GradleProject;
 
 /**
  * @author Terry Jia
@@ -120,13 +122,15 @@ public class WatchTaskAction extends AbstractObjectAction {
 
 									client.send(cmd);
 
-									IFolder folder = FileUtil.getFolder(project, "build");
+									GradleProject workspaceGradleModel = GradleUtil.getWorkspaceGradleModel(project);
 
-									if (folder != null) {
-										File file = FileUtil.getFile(folder.getFile("installedBundleId"));
+									if (workspaceGradleModel != null) {
+										GradleProject childModel = GradleUtil.getNestedGradleModel(
+											workspaceGradleModel, project.getName());
 
-										if (FileUtil.exists(file)) {
-											FileUtil.delete(file);
+										if (childModel != null) {
+											FileUtil.delete(
+												new File(childModel.getBuildDirectory(), "installedBundleId"));
 										}
 									}
 								}

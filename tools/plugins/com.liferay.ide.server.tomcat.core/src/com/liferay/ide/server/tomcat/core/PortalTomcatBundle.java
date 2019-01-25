@@ -14,15 +14,8 @@
 
 package com.liferay.ide.server.tomcat.core;
 
-import com.liferay.ide.core.util.CoreUtil;
-import com.liferay.ide.core.util.FileListing;
-import com.liferay.ide.core.util.FileUtil;
-import com.liferay.ide.server.core.LiferayServerCore;
-import com.liferay.ide.server.core.portal.AbstractPortalBundle;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +32,19 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.IVMInstall2;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.liferay.ide.core.util.CoreUtil;
+import com.liferay.ide.core.util.FileListing;
+import com.liferay.ide.core.util.FileUtil;
+import com.liferay.ide.server.core.LiferayServerCore;
+import com.liferay.ide.server.core.portal.AbstractPortalBundle;
+import com.liferay.ide.server.util.JavaUtil;
 
 /**
  * @author Gregory Amerson
@@ -135,8 +136,8 @@ public class PortalTomcatBundle extends AbstractPortalBundle {
 	}
 
 	@Override
-	public String[] getRuntimeStartVMArgs() {
-		return _getRuntimeVMArgs();
+	public String[] getRuntimeStartVMArgs(IVMInstall vmInstall) {
+		return _getRuntimeVMArgs(vmInstall);
 	}
 
 	@Override
@@ -149,8 +150,8 @@ public class PortalTomcatBundle extends AbstractPortalBundle {
 	}
 
 	@Override
-	public String[] getRuntimeStopVMArgs() {
-		return _getRuntimeVMArgs();
+	public String[] getRuntimeStopVMArgs(IVMInstall vmInstall) {
+		return _getRuntimeVMArgs(vmInstall);
 	}
 
 	@Override
@@ -250,8 +251,8 @@ public class PortalTomcatBundle extends AbstractPortalBundle {
 
 		return retval;
 	}
-
-	private String[] _getRuntimeVMArgs() {
+	
+	private String[] _getRuntimeVMArgs(IVMInstall vmInstall) {
 		List<String> args = new ArrayList<>();
 		IPath tempPath = bundlePath.append("temp");
 		IPath endorsedPath = bundlePath.append("endorsed");
@@ -263,7 +264,15 @@ public class PortalTomcatBundle extends AbstractPortalBundle {
 		args.add("-Dcom.sun.management.jmxremote.port=" + getJmxRemotePort());
 		args.add("-Dcom.sun.management.jmxremote.ssl=false");
 		args.add("-Dfile.encoding=UTF8");
-		args.add("-Djava.endorsed.dirs=\"" + endorsedPath.toPortableString() + "\"");
+
+		if (vmInstall instanceof IVMInstall2) {
+			String javaVersion = ((IVMInstall2)vmInstall).getJavaVersion();
+
+			if ((javaVersion != null) && JavaUtil.isVMRequireVersion(javaVersion, 108)) {
+				args.add("-Djava.endorsed.dirs=\"" + endorsedPath.toPortableString() + "\"");
+			}
+		}
+
 		args.add("-Djava.io.tmpdir=\"" + tempPath.toPortableString() + "\"");
 		args.add("-Djava.net.preferIPv4Stack=true");
 		args.add("-Djava.util.logging.config.file=\"" + bundlePath.append("conf/logging.properties") + "\"");
@@ -274,6 +283,7 @@ public class PortalTomcatBundle extends AbstractPortalBundle {
 		return args.toArray(new String[0]);
 	}
 
+	
 	private String _getShellExtension() {
 		if (Platform.OS_WIN32.equals(Platform.getOS())) {
 			return "bat";

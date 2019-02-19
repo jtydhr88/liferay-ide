@@ -86,14 +86,15 @@ public class UpgradePlannerService implements UpgradePlanner {
 
 	@Override
 	public UpgradePlan loadUpgradePlan(String name) {
-		return new StandardUpgradePlan(name, null, null, null);
+		return new StandardUpgradePlan(name, null, null, null, null);
 	}
 
 	@Override
 	public UpgradePlan newUpgradePlan(
-		String name, String currentVersion, String targetVersion, Path sourceCodeLocation) {
+		String name, String currentVersion, String targetVersion, Path sourceCodeLocation,
+		List<String> upgradeCategories) {
 
-		return new StandardUpgradePlan(name, currentVersion, targetVersion, sourceCodeLocation);
+		return new StandardUpgradePlan(name, currentVersion, targetVersion, sourceCodeLocation, upgradeCategories);
 	}
 
 	@Override

@@ -16,6 +16,8 @@ package com.liferay.ide.upgrade.plan.core;
 
 import java.nio.file.Path;
 
+import java.util.List;
+
 /**
  * @author Gregory Amerson
  */
@@ -30,7 +32,8 @@ public interface UpgradePlanner {
 	public UpgradePlan loadUpgradePlan(String name);
 
 	public UpgradePlan newUpgradePlan(
-		String name, String currentVersion, String targetVersion, Path sourceCodeLocation);
+		String name, String currentVersion, String targetVersion, Path sourceCodeLocation,
+		List<String> upgradeCategories);
 
 	public void removeListener(UpgradeListener upgradeListener);
 

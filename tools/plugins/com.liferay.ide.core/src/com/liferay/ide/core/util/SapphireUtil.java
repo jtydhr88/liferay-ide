@@ -51,6 +51,14 @@ public class SapphireUtil {
 
 		value.detach(listener);
 	}
+	
+	public static void detachListener(ElementList<?> values, Listener listener) {
+		if ((values == null) || (listener == null)) {
+			return;
+		}
+
+		values.detach(listener);
+	}	
 
 	public static boolean exists(Path path) {
 		if (path != null) {

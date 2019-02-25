@@ -108,6 +108,10 @@ public class UpgradePlannerService implements UpgradePlanner {
 		try (InputStream inputStream = new FileInputStream(_getUpgradePlannerStorageFile())) {
 			IMemento rootMemento = XMLMemento.loadMemento(inputStream);
 
+			if (rootMemento == null) {
+				return null;
+			}
+
 			Optional<IMemento> upgradePlanMementoOptional = Stream.of(
 				rootMemento.getChildren("upgradePlan")
 			).filter(

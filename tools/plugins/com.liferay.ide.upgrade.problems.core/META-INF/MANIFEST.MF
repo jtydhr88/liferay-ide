@@ -165,3 +165,4 @@ Service-Component: OSGI-INF/com.liferay.ide.upgrade.problems.core.internal.SSEXM
  OSGI-INF/com.liferay.ide.upgrade.problems.core.internal.LayoutTemplateFile.xml,
  OSGI-INF/com.liferay.ide.upgrade.problems.core.internal.liferay70.LegacyLayoutTemplate.xml
 Export-Package: com.liferay.ide.upgrade.problems.core
+Import-Package: com.liferay.blade.api

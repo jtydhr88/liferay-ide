@@ -14,6 +14,7 @@
 
 package com.liferay.ide.upgrade.problems.core.internal.tasks;
 
+import com.liferay.blade.api.MigrationConstants;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.upgrade.plan.core.BaseUpgradeTaskStepAction;
 import com.liferay.ide.upgrade.plan.core.UpgradePlan;
@@ -31,7 +32,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -76,11 +80,53 @@ public class FindUpgradeProblemsTaskStepAction extends BaseUpgradeTaskStepAction
 					searchFile, upgradeVersions, progressMonitor);
 
 				upgradePlan.addUpgradeProblems(foundUpgradeProblems);
+
+				_addMarkers(foundUpgradeProblems);
 			});
 
 		_upgradePlanner.dispatch(new UpgradeTaskStepActionDoneEvent(FindUpgradeProblemsTaskStepAction.this));
 
 		return Status.OK_STATUS;
+	}
+
+	private static void _problemToMarker(UpgradeProblem problem, IMarker marker) throws CoreException {
+		marker.setAttribute(IMarker.MESSAGE, problem.getTitle());
+		marker.setAttribute("migrationProblem.summary", problem.getSummary());
+		marker.setAttribute("migrationProblem.ticket", problem.getTicket());
+		marker.setAttribute("migrationProblem.type", problem.getType());
+		marker.setAttribute(IMarker.LINE_NUMBER, problem.getLineNumber());
+		marker.setAttribute(IMarker.CHAR_START, problem.getStartOffset());
+		marker.setAttribute(IMarker.CHAR_END, problem.getEndOffset());
+		marker.setAttribute("migrationProblem.autoCorrectContext", problem.getAutoCorrectContext());
+		marker.setAttribute("migrationProblem.html", problem.getHtml());
+		marker.setAttribute("migrationProblem.status", problem.getStatus());
+
+		IResource resource = problem.getResource();
+
+		marker.setAttribute(IMarker.LOCATION, resource.getName());
+
+		marker.setAttribute(IMarker.SEVERITY, problem.getMarkerType());
+	}
+
+	private void _addMarkers(List<UpgradeProblem> upgradeProblems) {
+		Stream<UpgradeProblem> stream = upgradeProblems.stream();
+
+		stream.forEach(
+			upgradeProblem -> {
+				IResource workspaceResource = upgradeProblem.getResource();
+
+				if (FileUtil.exists(workspaceResource)) {
+					try {
+						IMarker marker = workspaceResource.createMarker(MigrationConstants.MARKER_TYPE);
+
+						upgradeProblem.setMarkerId(marker.getId());
+
+						_problemToMarker(upgradeProblem, marker);
+					}
+					catch (CoreException ce) {
+					}
+				}
+			});
 	}
 
 	@Reference

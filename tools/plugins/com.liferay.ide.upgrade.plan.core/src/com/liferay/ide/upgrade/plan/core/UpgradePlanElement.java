@@ -45,6 +45,8 @@ public interface UpgradePlanElement {
 
 	public String getImagePath();
 
+	public double getOrder();
+
 	public default String getStringProperty(Dictionary<String, Object> properties, String key) {
 		Object value = properties.get(key);
 

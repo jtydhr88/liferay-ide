@@ -31,6 +31,7 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Terry Jia
  * @author Gregory Amerson
+ * @author Simon Jiang
  */
 public class UpgradePlanUIPlugin extends AbstractUIPlugin {
 
@@ -47,6 +48,8 @@ public class UpgradePlanUIPlugin extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "com.liferay.ide.upgrade.plan.ui";
 
 	public static final String TASK_RESTART_IMAGE = "TASK_RESTART_IMAGE";
+
+	public static final String TASK_STEP_ACTION_BLANK_IMAGE = "TASK_STEP_ACTION_BLANK_IMAGE";
 
 	public static final String TASK_STEP_ACTION_COMPLETE_IMAGE = "TASK_STEP_ACTION_COMPLETE_IMAGE";
 
@@ -118,7 +121,13 @@ public class UpgradePlanUIPlugin extends AbstractUIPlugin {
 
 		imageRegistry.put(TASK_STEP_ACTION_PERFORM_IMAGE, imageDescriptor);
 
-		path = _ICONS_PATH.append("complete_task.gif");
+		path = _ICONS_PATH.append("blank.png");
+
+		imageDescriptor = _createImageDescriptor(bundle, path);
+
+		imageRegistry.put(TASK_STEP_ACTION_BLANK_IMAGE, imageDescriptor);
+
+		path = _ICONS_PATH.append("complete_status.gif");
 
 		imageDescriptor = _createImageDescriptor(bundle, path);
 

@@ -32,6 +32,7 @@ public abstract class BaseUpgradePlanElement implements UpgradePlanElement {
 		_id = getStringProperty(properties, "id");
 		_imagePath = getStringProperty(properties, "imagePath");
 		_title = getStringProperty(properties, "title");
+		_order = getDoubleProperty(properties, "order");
 	}
 
 	@Override
@@ -54,6 +55,11 @@ public abstract class BaseUpgradePlanElement implements UpgradePlanElement {
 	}
 
 	@Override
+	public double getOrder() {
+		return _order;
+	}
+
+	@Override
 	public String getTitle() {
 		return _title;
 	}
@@ -66,6 +72,7 @@ public abstract class BaseUpgradePlanElement implements UpgradePlanElement {
 	private String _description;
 	private String _id;
 	private String _imagePath;
+	private double _order;
 	private String _title;
 
 }

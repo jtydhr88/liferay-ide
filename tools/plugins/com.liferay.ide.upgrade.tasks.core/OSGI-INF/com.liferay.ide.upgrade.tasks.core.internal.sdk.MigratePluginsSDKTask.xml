@@ -4,6 +4,7 @@
    <property name="id" value="migrate_plugins_sdk"/>
    <property name="order" value="4"/>
    <property name="title" value="Migrate Plugins SDK"/>
+   <property name="description" value="This step will help you：You can initialize the current latest SDK project, or import an existing SDK project, or you can quickly move the original Plugins SDK project into Liferay Workspace"/>
    <service scope="prototype">
       <provide interface="com.liferay.ide.upgrade.plan.core.UpgradeTask"/>
    </service>

@@ -24,7 +24,8 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Terry Jia
  */
 @Component(
-	property = {"categoryId=code", "id=migrate_plugins_sdk", "order=4", "title=Migrate Plugins SDK"},
+	property = {"categoryId=code", "id=migrate_plugins_sdk", "order=4", "title=Migrate Plugins SDK",
+		"description=This step will help you£ºYou can initialize the current latest SDK project, or import an existing SDK project, or you can quickly move the original Plugins SDK project into Liferay Workspace"},
 	scope = ServiceScope.PROTOTYPE, service = UpgradeTask.class
 )
 public class MigratePluginsSDKTask extends BaseUpgradeTask {

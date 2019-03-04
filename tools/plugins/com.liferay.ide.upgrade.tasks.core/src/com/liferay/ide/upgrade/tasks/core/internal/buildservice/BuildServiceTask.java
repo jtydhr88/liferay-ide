@@ -24,7 +24,10 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Simon Jiang
  */
 @Component(
-	property = {"categoryId=code", "id=build_service", "order=6", "title=Build Service"},
+	property = {
+		"categoryId=code", "id=build_service", "order=6", "title=Build Service",
+		"description=Building service generates your project’s persistence layer by automating the creation of interfaces and classes according to your configurations."
+	},
 	scope = ServiceScope.PROTOTYPE, service = UpgradeTask.class
 )
 public class BuildServiceTask extends BaseUpgradeTask {

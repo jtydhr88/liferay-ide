@@ -24,7 +24,10 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Terry Jia
  */
 @Component(
-	property = {"categoryId=code", "id=find_upgrade_problems", "order=5", "title=Find Upgrade Problems"},
+	property = {
+		"categoryId=code", "id=find_upgrade_problems", "order=5", "title=Find Upgrade Problems",
+		"description=In this section, it finds affected plugin code and shows documentation that describes how to adapt it, helps to address the problems, to auto-correct some problems. It facilitates opening affected code in an editor to check and modify it."
+	},
 	scope = ServiceScope.PROTOTYPE, service = UpgradeTask.class
 )
 public class FindUpgradeProblemsTask extends BaseUpgradeTask {

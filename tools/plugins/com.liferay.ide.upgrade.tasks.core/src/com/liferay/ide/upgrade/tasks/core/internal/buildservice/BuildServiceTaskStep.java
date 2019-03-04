@@ -25,7 +25,9 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	property = {
-		"id=build_services", "requirement=recommended", "order=2", "taskId=build_service", "title=Build Services"
+		"id=build_services", "requirement=recommended", "order=2", "taskId=build_service", "title=Build Services",
+		"description=In this step, we will delete some legacy service builder related files and re-run build-service on service builder projects. " +
+			"Note: Please make sure the default installed JRE is JDK 8 (Preferences -> Java -> Installed JREs)."
 	},
 	scope = ServiceScope.PROTOTYPE, service = UpgradeTaskStep.class
 )

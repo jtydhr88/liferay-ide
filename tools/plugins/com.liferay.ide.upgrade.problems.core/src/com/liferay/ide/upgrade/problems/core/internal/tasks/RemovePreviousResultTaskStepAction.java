@@ -14,6 +14,7 @@
 
 package com.liferay.ide.upgrade.problems.core.internal.tasks;
 
+import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.upgrade.plan.core.BaseUpgradeTaskStepAction;
 import com.liferay.ide.upgrade.plan.core.UpgradePlan;
 import com.liferay.ide.upgrade.plan.core.UpgradePlanner;
@@ -23,7 +24,11 @@ import com.liferay.ide.upgrade.plan.core.UpgradeTaskStepActionDoneEvent;
 import com.liferay.ide.upgrade.tasks.core.MessagePrompt;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -51,6 +56,26 @@ public class RemovePreviousResultTaskStepAction extends BaseUpgradeTaskStepActio
 			UpgradePlan upgradePlan = _upgradePlanner.getCurrentUpgradePlan();
 
 			Collection<UpgradeProblem> upgradeProblems = upgradePlan.getUpgradeProblems();
+
+			Stream<UpgradeProblem> stream = upgradeProblems.stream();
+
+			stream.filter(
+				upgradeProblem -> FileUtil.exists(upgradeProblem.getResource())
+			).forEach(
+				upgradeProblem -> {
+					IResource resource = upgradeProblem.getResource();
+
+					try {
+						IMarker problemMarker = resource.findMarker(upgradeProblem.getMarkerId());
+
+						if ((problemMarker != null) && problemMarker.exists()) {
+							problemMarker.delete();
+						}
+					}
+					catch (CoreException ce) {
+					}
+				}
+			);
 
 			upgradeProblems.clear();
 

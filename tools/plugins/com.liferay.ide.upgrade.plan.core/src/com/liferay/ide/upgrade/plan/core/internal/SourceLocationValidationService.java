@@ -16,6 +16,8 @@ package com.liferay.ide.upgrade.plan.core.internal;
 
 import com.liferay.ide.core.util.ListUtil;
 import com.liferay.ide.core.util.SapphireContentAccessor;
+import com.liferay.ide.project.core.util.LiferayWorkspaceUtil;
+import com.liferay.ide.sdk.core.SDKUtil;
 import com.liferay.ide.upgrade.plan.core.NewUpgradePlanOp;
 import com.liferay.ide.upgrade.plan.core.UpgradeTaskCategoryElement;
 
@@ -44,6 +46,11 @@ public class SourceLocationValidationService extends ValidationService implement
 
 			if ((sourceLocation == null) || sourceLocation.isEmpty() || !sourceLocation.isAbsolute()) {
 				retval = Status.createErrorStatus("Source code location must be a non-empty absolute path.");
+			}
+			else if (!SDKUtil.isValidSDKLocation(sourceLocation.toString()) &&
+					 !LiferayWorkspaceUtil.isValidWorkspaceLocation(sourceLocation.toString())) {
+
+				retval = Status.createErrorStatus("Source code location must be a SDK or LiferayWorkspace location.");
 			}
 			else {
 				File sourceLocationTarget = sourceLocation.toFile();

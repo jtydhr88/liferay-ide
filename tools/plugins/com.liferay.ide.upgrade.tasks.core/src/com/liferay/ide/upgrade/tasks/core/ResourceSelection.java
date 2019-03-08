@@ -81,7 +81,7 @@ public interface ResourceSelection {
 			).filter(
 				Objects::nonNull
 			).filter(
-				p -> !(p instanceof NoopLiferayProject)
+				p -> p instanceof NoopLiferayProject
 			).isPresent();
 
 			return result;

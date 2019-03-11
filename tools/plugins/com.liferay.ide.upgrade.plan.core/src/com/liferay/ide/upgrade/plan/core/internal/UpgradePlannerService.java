@@ -194,6 +194,10 @@ public class UpgradePlannerService implements UpgradePlanner {
 	public void restartStep(UpgradeTaskStep upgradeTaskStep) {
 		List<UpgradeTaskStepAction> actions = upgradeTaskStep.getActions();
 
+		if (actions.isEmpty()) {
+			upgradeTaskStep.setStatus(UpgradePlanElementStatus.INCOMPLETE);
+		}
+
 		Stream<UpgradeTaskStepAction> stream = actions.stream();
 
 		stream.forEach(action -> action.setStatus(UpgradePlanElementStatus.INCOMPLETE));
@@ -319,6 +323,12 @@ public class UpgradePlannerService implements UpgradePlanner {
 
 				List<UpgradeTaskStepAction> actions = step.getActions();
 
+				if (actions.isEmpty()) {
+					String status = stepMemento.getString("status");
+
+					step.setStatus(UpgradePlanElementStatus.valueOf(status));
+				}
+
 				for (UpgradeTaskStepAction action : actions) {
 					if (action == null) {
 						continue;
@@ -403,6 +413,10 @@ public class UpgradePlannerService implements UpgradePlanner {
 				}
 
 				List<UpgradeTaskStepAction> actions = step.getActions();
+
+				if (actions.isEmpty()) {
+					stepMemento.putString("status", String.valueOf(step.getStatus()));
+				}
 
 				for (UpgradeTaskStepAction action : actions) {
 					IMemento actionMemento = stepMemento.getChild(action.getId());

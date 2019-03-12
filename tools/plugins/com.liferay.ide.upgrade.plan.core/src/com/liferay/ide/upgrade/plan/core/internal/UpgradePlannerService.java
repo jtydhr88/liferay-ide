@@ -194,6 +194,8 @@ public class UpgradePlannerService implements UpgradePlanner {
 	public void restartStep(UpgradeTaskStep upgradeTaskStep) {
 		List<UpgradeTaskStepAction> actions = upgradeTaskStep.getActions();
 
+		upgradeTaskStep.setStatus(UpgradePlanElementStatus.INCOMPLETE);
+
 		Stream<UpgradeTaskStepAction> stream = actions.stream();
 
 		stream.forEach(action -> action.setStatus(UpgradePlanElementStatus.INCOMPLETE));

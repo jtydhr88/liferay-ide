@@ -14,14 +14,21 @@
 
 package com.liferay.ide.upgrade.plan.ui.internal.tasks;
 
+import com.liferay.ide.ui.util.UIUtil;
+import com.liferay.ide.upgrade.plan.core.UpgradeEvent;
+import com.liferay.ide.upgrade.plan.core.UpgradeListener;
+import com.liferay.ide.upgrade.plan.core.UpgradePlanElement;
+import com.liferay.ide.upgrade.plan.core.UpgradePlanElementStatusChangedEvent;
 import com.liferay.ide.upgrade.plan.core.UpgradePlanner;
 import com.liferay.ide.upgrade.plan.core.UpgradeTask;
+import com.liferay.ide.upgrade.plan.core.UpgradeTaskStep;
 import com.liferay.ide.upgrade.plan.core.util.ServicesLookup;
 import com.liferay.ide.upgrade.plan.ui.Disposable;
 import com.liferay.ide.upgrade.plan.ui.internal.UpgradePlanUIPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,6 +43,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
@@ -51,7 +59,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
  * @author Terry Jia
  * @author Gregory Amerson
  */
-public class UpgradeTaskItem implements IExpansionListener, UpgradeItem {
+public class UpgradeTaskItem implements IExpansionListener, UpgradeItem, UpgradeListener {
 
 	public UpgradeTaskItem(FormToolkit formToolkit, ScrolledForm scrolledForm, UpgradeTask upgradeTask) {
 		_formToolkit = formToolkit;
@@ -109,6 +117,12 @@ public class UpgradeTaskItem implements IExpansionListener, UpgradeItem {
 			"Restarting " + _upgradeTask.getTitle() + "...", this::_restartTask);
 
 		_disposables.add(() -> taskRestartImageHyperlink.dispose());
+
+		_restartable = taskRestartImageHyperlink;
+
+		_upgradePlanner = ServicesLookup.getSingleService(UpgradePlanner.class, null);
+
+		_upgradePlanner.addListener(this);
 	}
 
 	@Override
@@ -117,6 +131,8 @@ public class UpgradeTaskItem implements IExpansionListener, UpgradeItem {
 	}
 
 	public void dispose() {
+		_upgradePlanner.removeListener(this);
+
 		for (Disposable disposable : _disposables) {
 			try {
 				disposable.dispose();
@@ -150,12 +166,42 @@ public class UpgradeTaskItem implements IExpansionListener, UpgradeItem {
 	}
 
 	@Override
+	public void onUpgradeEvent(UpgradeEvent upgradeEvent) {
+		if (upgradeEvent instanceof UpgradePlanElementStatusChangedEvent) {
+			UpgradePlanElementStatusChangedEvent upgradePlanElementStatusChangedEvent =
+				(UpgradePlanElementStatusChangedEvent)upgradeEvent;
+
+			UpgradePlanElement upgradePlanElement = upgradePlanElementStatusChangedEvent.getUpgradePlanElement();
+
+			String elementId = upgradePlanElement.getId();
+
+			for (UpgradeTaskStep step : _upgradeTask.getSteps()) {
+				if (elementId.equals(step.getId())) {
+					UIUtil.async(() -> _updateRestartablement(_upgradeTask, _restartable));
+				}
+			}
+		}
+	}
+
+	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		_listeners.remove(listener);
 	}
 
 	@Override
 	public void setSelection(ISelection selection) {
+	}
+
+	private static void _updateRestartablement(UpgradeTask upgradeTask, Control restartControl) {
+		AtomicBoolean restartable = new AtomicBoolean(false);
+
+		if (upgradeTask.restartable()) {
+			restartable.set(true);
+		}
+
+		if (!restartControl.isDisposed()) {
+			restartControl.setEnabled(restartable.get());
+		}
 	}
 
 	private IStatus _restartTask(IProgressMonitor progressMonitor) {
@@ -170,7 +216,9 @@ public class UpgradeTaskItem implements IExpansionListener, UpgradeItem {
 	private List<Disposable> _disposables = new ArrayList<>();
 	private FormToolkit _formToolkit;
 	private ListenerList<ISelectionChangedListener> _listeners = new ListenerList<>();
+	private Control _restartable;
 	private ScrolledForm _scrolledForm;
+	private UpgradePlanner _upgradePlanner;
 	private final UpgradeTask _upgradeTask;
 
 }

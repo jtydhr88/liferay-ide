@@ -16,6 +16,7 @@ package com.liferay.ide.upgrade.plan.core;
 
 import com.liferay.ide.upgrade.plan.core.util.ServicesLookup;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -85,6 +86,39 @@ public abstract class BaseUpgradeTask extends BaseUpgradePlanElement implements 
 		hash = 31 * hash + (Arrays.hashCode(_upgradeTaskSteps.toArray()));
 
 		return hash;
+	}
+
+	@Override
+	public boolean restartable() {
+		List<UpgradeTaskStepAction> actionList = new ArrayList<>();
+
+		for (UpgradeTaskStep step : _upgradeTaskSteps) {
+			actionList.addAll(step.getActions());
+		}
+
+		if (actionList.isEmpty()) {
+			Stream<UpgradeTaskStep> stepStream = _upgradeTaskSteps.stream();
+
+			long stepCount = stepStream.filter(
+				step -> UpgradePlanElementStatus.INCOMPLETE.equals(step.getStatus())
+			).count();
+
+			if (stepCount < _upgradeTaskSteps.size()) {
+				return true;
+			}
+		}
+
+		Stream<UpgradeTaskStepAction> actionStream = actionList.stream();
+
+		long actionCount = actionStream.filter(
+			action -> UpgradePlanElementStatus.INCOMPLETE.equals(action.getStatus())
+		).count();
+
+		if (actionCount < actionList.size()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _lookupTaskSteps(ComponentContext componentContext) {

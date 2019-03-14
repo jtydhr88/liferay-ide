@@ -26,4 +26,6 @@ public interface UpgradeTask extends UpgradePlanElement {
 
 	public List<UpgradeTaskStep> getSteps();
 
+	public boolean restartable();
+
 }

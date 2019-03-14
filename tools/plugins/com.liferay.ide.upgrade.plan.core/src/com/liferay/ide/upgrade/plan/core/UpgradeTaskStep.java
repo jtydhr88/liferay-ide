@@ -37,4 +37,6 @@ public interface UpgradeTaskStep extends UpgradePlanElement {
 
 	public IStatus perform(IProgressMonitor progressMonitor);
 
+	public boolean restartable();
+
 }

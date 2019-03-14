@@ -190,6 +190,21 @@ public abstract class BaseUpgradeTaskStep extends BaseUpgradePlanElement impleme
 		return Status.CANCEL_STATUS;
 	}
 
+	@Override
+	public boolean restartable() {
+		Stream<UpgradeTaskStepAction> stream = _upgradeTaskStepActions.stream();
+
+		long count = stream.filter(
+			action -> UpgradePlanElementStatus.INCOMPLETE.equals(action.getStatus())
+		).count();
+
+		if (count < _upgradeTaskStepActions.size()) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _lookupActions(ComponentContext componentContext) {
 		BundleContext bundleContext = componentContext.getBundleContext();
 

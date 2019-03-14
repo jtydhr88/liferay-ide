@@ -14,6 +14,11 @@
 
 package com.liferay.ide.upgrade.plan.ui.internal.tasks;
 
+import com.liferay.ide.ui.util.UIUtil;
+import com.liferay.ide.upgrade.plan.core.UpgradeEvent;
+import com.liferay.ide.upgrade.plan.core.UpgradeListener;
+import com.liferay.ide.upgrade.plan.core.UpgradePlanElement;
+import com.liferay.ide.upgrade.plan.core.UpgradePlanElementStatusChangedEvent;
 import com.liferay.ide.upgrade.plan.core.UpgradePlanner;
 import com.liferay.ide.upgrade.plan.core.UpgradeTaskStep;
 import com.liferay.ide.upgrade.plan.core.util.ServicesLookup;
@@ -22,6 +27,7 @@ import com.liferay.ide.upgrade.plan.ui.internal.UpgradePlanUIPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,6 +42,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
@@ -50,7 +57,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
  * @author Terry Jia
  * @author Gregory Amerson
  */
-public class UpgradeTaskStepIntroItem implements IExpansionListener, UpgradeItem {
+public class UpgradeTaskStepIntroItem implements IExpansionListener, UpgradeItem, UpgradeListener {
 
 	public UpgradeTaskStepIntroItem(
 		FormToolkit formToolkit, ScrolledForm scrolledForm, UpgradeTaskStep upgradeTaskStep) {
@@ -108,6 +115,13 @@ public class UpgradeTaskStepIntroItem implements IExpansionListener, UpgradeItem
 			"Restarting " + _upgradeTaskStep.getTitle() + "...", this::_restartStep);
 
 		_disposables.add(() -> taskStepRestartImageHyperlink.dispose());
+
+		_restartable = taskStepRestartImageHyperlink;
+
+		_upgradePlanner = ServicesLookup.getSingleService(UpgradePlanner.class, null);
+
+		_upgradePlanner.addListener(this);
+
 	}
 
 	@Override
@@ -116,6 +130,8 @@ public class UpgradeTaskStepIntroItem implements IExpansionListener, UpgradeItem
 	}
 
 	public void dispose() {
+		_upgradePlanner.removeListener(this);
+
 		for (Disposable disposable : _disposables) {
 			try {
 				disposable.dispose();
@@ -149,12 +165,38 @@ public class UpgradeTaskStepIntroItem implements IExpansionListener, UpgradeItem
 	}
 
 	@Override
+	public void onUpgradeEvent(UpgradeEvent upgradeEvent) {
+		if (upgradeEvent instanceof UpgradePlanElementStatusChangedEvent) {
+			UpgradePlanElementStatusChangedEvent upgradePlanElementStatusChangedEvent =
+				(UpgradePlanElementStatusChangedEvent)upgradeEvent;
+
+			UpgradePlanElement upgradePlanElement = upgradePlanElementStatusChangedEvent.getUpgradePlanElement();
+
+			if (upgradePlanElement.equals(_upgradeTaskStep)) {
+				UIUtil.async(() -> _updateRestartablement(_upgradeTaskStep, _restartable));
+			}
+		}
+	}
+
+	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		_listeners.remove(listener);
 	}
 
 	@Override
 	public void setSelection(ISelection selection) {
+	}
+
+	private static void _updateRestartablement(UpgradeTaskStep upgradeTaskStep, Control restartControl) {
+		AtomicBoolean restartable = new AtomicBoolean(false);
+
+		if (upgradeTaskStep.restartable()) {
+			restartable.set(true);
+		}
+
+		if (!restartControl.isDisposed()) {
+			restartControl.setEnabled(restartable.get());
+		}
 	}
 
 	private IStatus _restartStep(IProgressMonitor progressMonitor) {
@@ -169,7 +211,9 @@ public class UpgradeTaskStepIntroItem implements IExpansionListener, UpgradeItem
 	private List<Disposable> _disposables = new ArrayList<>();
 	private FormToolkit _formToolkit;
 	private ListenerList<ISelectionChangedListener> _listeners = new ListenerList<>();
+	private Control _restartable;
 	private ScrolledForm _scrolledForm;
+	private UpgradePlanner _upgradePlanner;
 	private final UpgradeTaskStep _upgradeTaskStep;
 
 }

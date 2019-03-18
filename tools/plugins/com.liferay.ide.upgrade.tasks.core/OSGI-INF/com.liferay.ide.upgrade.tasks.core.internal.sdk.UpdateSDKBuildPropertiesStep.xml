@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component name="com.liferay.ide.upgrade.tasks.core.internal.sdk.UpdateSDKBuildPropertiesStep" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0">
+	<property name="description" value="&lt;p&gt;Update plugin sdk build properites file and map to workspace project bundles.&lt;/p&gt;" />
+	<property name="id" value="update_plugins_sdk_build_properties" />
+	<property name="imagePath" value="icons/import.png" />
+	<property name="requirement" value="required" />
+	<property name="order" value="2" />
+	<property name="taskId" value="migrate_plugins_sdk_projects" />
+	<property name="title" value="Update SDK Build Properties Configuration" />
+	<service scope="prototype">
+		<provide interface="com.liferay.ide.upgrade.plan.core.UpgradeTaskStep" />
+	</service>
+	<reference cardinality="1..1" field="_upgradePlanner" interface="com.liferay.ide.upgrade.plan.core.UpgradePlanner" name="_upgradePlanner" />
+	<implementation class="com.liferay.ide.upgrade.tasks.core.internal.sdk.UpdateSDKBuildPropertiesStep" />
+</scr:component>

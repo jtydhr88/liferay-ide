@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -55,33 +56,57 @@ public class CreateLegacyPluginsSDKStep extends BaseUpgradeStep {
 
 	@Override
 	public IStatus perform(IProgressMonitor progressMonitor) {
+		UpgradeStepStatus oldStatus = getStatus();
+
+		setStatus(UpgradeStepStatus.RUNNING);
+
 		List<IProject> projects = _resourceSelection.selectProjects(
 			"Select Liferay Workspace Project", false, ResourceSelection.WORKSPACE_PROJECTS);
 
 		if (projects.isEmpty()) {
+			setStatus(oldStatus);
+
 			return Status.CANCEL_STATUS;
 		}
 
 		IProject project = projects.get(0);
 
+		Job createLegacySdkJob = new Job(getTitle()) {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				try {
+					GradleUtil.runGradleTask(project, "upgradePluginsSDK", progressMonitor);
+
+					project.refreshLocal(IResource.DEPTH_INFINITE, progressMonitor);
+				}
+				catch (CoreException ce) {
+					setStatus(UpgradeStepStatus.FAILED);
+
+					IStatus error = LiferayGradleCore.createErrorStatus("Unable to run task upgradePluginsSDK", ce);
+
+					LiferayGradleCore.log(error);
+
+					return error;
+				}
+
+				return Status.OK_STATUS;
+			}
+
+		};
+
+		createLegacySdkJob.schedule();
+
 		try {
-			GradleUtil.runGradleTask(project, "upgradePluginsSDK", progressMonitor);
-
-			project.refreshLocal(IResource.DEPTH_INFINITE, progressMonitor);
-
-			setStatus(UpgradeStepStatus.COMPLETED);
-
-			_upgradePlanner.dispatch(new UpgradeStepPerformedEvent(this, Collections.singletonList(project)));
+			createLegacySdkJob.join();
 		}
-		catch (CoreException ce) {
+		catch (InterruptedException ie) {
 			setStatus(UpgradeStepStatus.FAILED);
-
-			IStatus error = LiferayGradleCore.createErrorStatus("Unable to run task upgradePluginsSDK", ce);
-
-			LiferayGradleCore.log(error);
-
-			return error;
 		}
+
+		setStatus(UpgradeStepStatus.COMPLETED);
+
+		_upgradePlanner.dispatch(new UpgradeStepPerformedEvent(this, Collections.singletonList(project)));
 
 		return Status.OK_STATUS;
 	}

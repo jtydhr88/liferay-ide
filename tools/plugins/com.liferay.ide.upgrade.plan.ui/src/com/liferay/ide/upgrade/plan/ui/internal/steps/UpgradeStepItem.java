@@ -14,6 +14,7 @@
 
 package com.liferay.ide.upgrade.plan.ui.internal.steps;
 
+import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.ui.util.UIUtil;
 import com.liferay.ide.upgrade.plan.core.UpgradeEvent;
 import com.liferay.ide.upgrade.plan.core.UpgradeListener;
@@ -29,6 +30,7 @@ import com.liferay.ide.upgrade.plan.ui.internal.UpgradePlanUIPlugin;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -82,7 +84,12 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 
 		FormText description = _formToolkit.createFormText(parentComposite, true);
 
-		description.setText(_upgradeStep.getDescription(), true, false);
+		if (CoreUtil.isNotNullOrEmpty(_upgradeStep.getDescription())) {
+			description.setText(_upgradeStep.getDescription(), true, false);
+		}
+		else {
+			description.setText("", true, false);
+		}
 
 		_disposables.add(() -> description.dispose());
 
@@ -130,9 +137,9 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 			_disposables.add(() -> completeImageHyperlink.dispose());
 
 			_enables.add(completeImageHyperlink);
-
-			_fill(formToolkit, _buttonComposite, _disposables);
 		}
+
+		_fill(formToolkit, _buttonComposite, _disposables);
 
 		Image stepRestartImage = UpgradePlanUIPlugin.getImage(UpgradePlanUIPlugin.STEP_RESTART_IMAGE);
 
@@ -159,6 +166,7 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 		_upgradePlanner.addListener(this);
 
 		_updateEnablement(_upgradeStep, _enables);
+
 	}
 
 	@Override
@@ -188,10 +196,16 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 		if (upgradeEvent instanceof UpgradeStepStatusChangedEvent) {
 			UpgradeStepStatusChangedEvent upgradeStepStatusChangedEvent = (UpgradeStepStatusChangedEvent)upgradeEvent;
 
-			UpgradeStep upgradeStep = upgradeStepStatusChangedEvent.getUpgradeStep();
+			UpgradeStepStatus newStatus = upgradeStepStatusChangedEvent.getNewStatus();
 
-			if (upgradeStep.equals(_upgradeStep)) {
-				UIUtil.async(() -> _updateEnablement(_upgradeStep, _enables));
+			if (newStatus.equals(UpgradeStepStatus.FAILED) || newStatus.equals(UpgradeStepStatus.INCOMPLETE) ||
+				newStatus.equals(UpgradeStepStatus.RUNNING)) {
+
+				UpgradeStep upgradeStep = upgradeStepStatusChangedEvent.getUpgradeStep();
+
+				if (upgradeStep.equals(_upgradeStep)) {
+					UIUtil.async(() -> _updateEnablement(_upgradeStep, _enables));
+				}
 			}
 		}
 	}
@@ -208,13 +222,15 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 	private static void _updateEnablement(UpgradeStep upgradeStep, Collection<Control> enables) {
 		AtomicBoolean enabled = new AtomicBoolean(false);
 
-		if (!upgradeStep.completed()) {
+		if (!upgradeStep.completed() && !UpgradeStepStatus.RUNNING.equals(upgradeStep.getStatus())) {
 			enabled.set(true);
 		}
 
 		Stream<Control> stream = enables.stream();
 
 		stream.filter(
+			Objects::nonNull
+		).filter(
 			c -> !c.isDisposed()
 		).forEach(
 			c -> c.setEnabled(enabled.get())

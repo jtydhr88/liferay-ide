@@ -53,10 +53,16 @@ public class InitializeServerBundleStep extends BaseUpgradeStep {
 
 	@Override
 	public IStatus perform(IProgressMonitor progressMonitor) {
+		UpgradeStepStatus oldStatus = getStatus();
+
+		setStatus(UpgradeStepStatus.RUNNING);
+
 		List<IProject> projects = _resourceSelection.selectProjects(
 			"Select Liferay Workspace Project", false, ResourceSelection.WORKSPACE_PROJECTS);
 
 		if (projects.isEmpty()) {
+			setStatus(oldStatus);
+
 			return Status.CANCEL_STATUS;
 		}
 

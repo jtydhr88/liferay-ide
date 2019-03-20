@@ -14,6 +14,7 @@
 
 package com.liferay.ide.upgrade.plan.ui.internal.steps;
 
+import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.ui.util.UIUtil;
 import com.liferay.ide.upgrade.plan.core.UpgradeEvent;
 import com.liferay.ide.upgrade.plan.core.UpgradeListener;
@@ -40,6 +41,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -56,6 +58,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 /**
  * @author Terry Jia
  * @author Gregory Amerson
+ * @author Simon Jiang
  */
 public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePlanAcessor {
 
@@ -72,8 +75,6 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 
 		parentComposite.setLayoutData(gridDataFactory.create());
 
-		_disposables.add(() -> parentComposite.dispose());
-
 		parentComposite.setLayout(new TableWrapLayout());
 
 		if (_upgradeStep == null) {
@@ -82,7 +83,12 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 
 		FormText description = _formToolkit.createFormText(parentComposite, true);
 
-		description.setText(_upgradeStep.getDescription(), true, false);
+		if (CoreUtil.isNotNullOrEmpty(_upgradeStep.getDescription())) {
+			description.setText(_upgradeStep.getDescription(), true, false);
+		}
+		else {
+			description.setText("", true, false);
+		}
 
 		_disposables.add(() -> description.dispose());
 
@@ -130,9 +136,9 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 			_disposables.add(() -> completeImageHyperlink.dispose());
 
 			_enables.add(completeImageHyperlink);
-
-			_fill(formToolkit, _buttonComposite, _disposables);
 		}
+
+		_fill(formToolkit, _buttonComposite, _disposables);
 
 		Image stepRestartImage = UpgradePlanUIPlugin.getImage(UpgradePlanUIPlugin.STEP_RESTART_IMAGE);
 
@@ -159,6 +165,7 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 		_upgradePlanner.addListener(this);
 
 		_updateEnablement(_upgradeStep, _enables);
+
 	}
 
 	@Override
@@ -180,7 +187,7 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 
 	@Override
 	public ISelection getSelection() {
-		return null;
+		return TreeSelection.EMPTY;
 	}
 
 	@Override
@@ -188,10 +195,14 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 		if (upgradeEvent instanceof UpgradeStepStatusChangedEvent) {
 			UpgradeStepStatusChangedEvent upgradeStepStatusChangedEvent = (UpgradeStepStatusChangedEvent)upgradeEvent;
 
-			UpgradeStep upgradeStep = upgradeStepStatusChangedEvent.getUpgradeStep();
+			UpgradeStepStatus newStatus = upgradeStepStatusChangedEvent.getNewStatus();
 
-			if (upgradeStep.equals(_upgradeStep)) {
-				UIUtil.async(() -> _updateEnablement(_upgradeStep, _enables));
+			if (newStatus.equals(UpgradeStepStatus.FAILED) || newStatus.equals(UpgradeStepStatus.INCOMPLETE)) {
+				UpgradeStep upgradeStep = upgradeStepStatusChangedEvent.getUpgradeStep();
+
+				if (upgradeStep.equals(_upgradeStep)) {
+					UIUtil.async(() -> _updateEnablement(_upgradeStep, _enables));
+				}
 			}
 		}
 	}

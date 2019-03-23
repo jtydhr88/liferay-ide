@@ -1,0 +1,4 @@
+- when repl file is created, look in the workspace to see if we have target platform
+  if we do, then collect a list of services from the distro that we need to import into the repl context
+- add ShowInPackageView/ShowInProjectExplorer Actions
+- add selectImports Action

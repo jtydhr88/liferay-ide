@@ -14,6 +14,8 @@
 
 package com.liferay.ide.project.ui;
 
+import com.liferay.ide.project.ui.repl.ReplFileDocumentProvider;
+
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -23,10 +25,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.ui.PreferenceConstants;
+import org.eclipse.jdt.ui.text.JavaTextTools;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -110,6 +115,22 @@ public class ProjectUI extends AbstractUIPlugin {
 		return descriptor.createImage();
 	}
 
+	public JavaTextTools getJavaTextTools() {
+		if (_javaTextTools == null) {
+			_javaTextTools = new JavaTextTools(PreferenceConstants.getPreferenceStore());
+		}
+
+		return _javaTextTools;
+	}
+
+	public IDocumentProvider getReplDocumentProvider() {
+		if (_replDocumentProvider == null) {
+			_replDocumentProvider = new ReplFileDocumentProvider();
+		}
+
+		return _replDocumentProvider;
+	}
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -166,5 +187,8 @@ public class ProjectUI extends AbstractUIPlugin {
 	}
 
 	private static ProjectUI _plugin;
+
+	private JavaTextTools _javaTextTools;
+	private ReplFileDocumentProvider _replDocumentProvider;
 
 }

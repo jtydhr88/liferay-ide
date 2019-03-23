@@ -2032,4 +2032,49 @@
 		>
 		</include>
 	</extension>
+	<extension
+		point="org.eclipse.ui.editors"
+	>
+		<editor
+			class="com.liferay.ide.project.ui.repl.LiferayReplEditor"
+			contributorClass="com.liferay.ide.project.ui.repl.LiferayReplEditorActionContributor"
+			default="false"
+			extensions="repl"
+			icon="icons/liferay_logo_16.png"
+			id="com.liferay.ide.project.ui.LiferayReplEditor"
+			name="Liferay Repl"
+			symbolicFontName="org.eclipse.jdt.ui.editors.textfont"
+		>
+		</editor>
+	</extension>
+	<extension
+		point="org.eclipse.ui.editorActions"
+	>
+		<editorContribution
+			id="com.liferay.ide.project.ui.LiferayReplToolbarActions"
+			targetID="com.liferay.ide.project.ui.LiferayReplEditor"
+		>
+			<action
+				class="com.liferay.ide.project.ui.repl.ReplPopupDisplayAction"
+				id="com.liferay.ide.project.ui.ReplDisplay"
+				label="Display"
+				style="push"
+				toolbarPath="evaluationGroup"
+			>
+				<selection
+					class="org.eclipse.jface.text.ITextSelection"
+				>
+				</selection>
+			</action>
+		</editorContribution>
+	</extension>
+	<extension
+		point="org.eclipse.core.filebuffers.documentSetup"
+	>
+		<participant
+			class="com.liferay.ide.project.ui.repl.ReplDocumentSetupParticipant"
+			extensions="repl"
+		>
+		</participant>
+	</extension>
 </plugin>

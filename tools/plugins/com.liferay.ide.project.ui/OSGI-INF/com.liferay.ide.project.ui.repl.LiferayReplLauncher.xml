@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component name="com.liferay.ide.project.ui.repl.LiferayReplLauncher" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0">
+	<service scope="singleton">
+		<provide interface="com.liferay.ide.project.ui.repl.ReplLauncher" />
+	</service>
+	<implementation class="com.liferay.ide.project.ui.repl.LiferayReplLauncher" />
+</scr:component>

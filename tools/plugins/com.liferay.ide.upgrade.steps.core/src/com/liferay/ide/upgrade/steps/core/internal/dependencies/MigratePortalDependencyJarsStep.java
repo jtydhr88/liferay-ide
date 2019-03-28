@@ -22,7 +22,7 @@ import com.liferay.ide.upgrade.steps.core.dependencies.UpdatePluginsSDKDependenc
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-
+import org.eclipse.core.runtime.Status;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -49,7 +49,7 @@ public class MigratePortalDependencyJarsStep extends BaseUpgradeStep {
 
 	@Override
 	public IStatus perform(IProgressMonitor progressMonitor) {
-		return null;
+		return Status.OK_STATUS;
 	}
 
 	@Reference

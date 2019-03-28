@@ -15,6 +15,7 @@
 package com.liferay.ide.upgrade.plan.ui.internal;
 
 import com.liferay.ide.core.util.StringUtil;
+import com.liferay.ide.ui.util.SWTUtil;
 import com.liferay.ide.ui.util.UIUtil;
 import com.liferay.ide.upgrade.plan.core.UpgradeEvent;
 import com.liferay.ide.upgrade.plan.core.UpgradeListener;
@@ -36,7 +37,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -83,8 +84,6 @@ public class UpgradePlanView extends ViewPart implements ISelectionProvider, Upg
 
 	@Override
 	public void dispose() {
-		super.dispose();
-
 		_upgradePlanner.removeListener(this);
 		_serviceTracker.close();
 
@@ -95,6 +94,12 @@ public class UpgradePlanView extends ViewPart implements ISelectionProvider, Upg
 		if (_upgradeStepViewer != null) {
 			_upgradeStepViewer.dispose();
 		}
+
+		if ((_upgradeViewProgressBar != null) && !_upgradeViewProgressBar.isDisposed()) {
+			_upgradeViewProgressBar.dispose();
+		}
+
+		super.dispose();
 	}
 
 	@Override
@@ -127,6 +132,8 @@ public class UpgradePlanView extends ViewPart implements ISelectionProvider, Upg
 				_upgradePlanner.startUpgradePlan(upgradePlan);
 			}
 		);
+
+		_upgradePlanner.addListener(this);
 	}
 
 	@Override
@@ -184,9 +191,18 @@ public class UpgradePlanView extends ViewPart implements ISelectionProvider, Upg
 	}
 
 	private void _createPartControl(Composite parentComposite) {
-		parentComposite.setLayout(new FillLayout());
+		Composite upgradeViewComposite = SWTUtil.createComposite(parentComposite, 1, 2, GridData.FILL_HORIZONTAL);
 
-		SashForm sashForm = new SashForm(parentComposite, SWT.HORIZONTAL);
+		_upgradeViewProgressBar = new UpgradeViewProgressBar(upgradeViewComposite);
+
+		_upgradeViewProgressBar.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+
+		SashForm sashForm = new SashForm(upgradeViewComposite, SWT.HORIZONTAL);
+
+		sashForm.setLayoutData(
+			new GridData(
+				GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL |
+				GridData.HORIZONTAL_ALIGN_FILL));
 
 		_upgradePlanViewer = new UpgradePlanViewer(sashForm);
 
@@ -244,5 +260,6 @@ public class UpgradePlanView extends ViewPart implements ISelectionProvider, Upg
 	private UpgradePlanner _upgradePlanner;
 	private UpgradePlanViewer _upgradePlanViewer;
 	private UpgradeStepViewer _upgradeStepViewer;
+	private UpgradeViewProgressBar _upgradeViewProgressBar;
 
 }

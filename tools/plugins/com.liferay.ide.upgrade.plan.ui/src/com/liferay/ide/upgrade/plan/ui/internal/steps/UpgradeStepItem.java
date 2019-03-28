@@ -42,11 +42,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
@@ -112,7 +110,7 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener {
 
 		_buttonComposite = _formToolkit.createComposite(_parentComposite);
 
-		GridLayout buttonGridLayout = new GridLayout(2, false);
+		GridLayout buttonGridLayout = new GridLayout(1, false);
 
 		buttonGridLayout.marginHeight = 2;
 		buttonGridLayout.marginWidth = 2;
@@ -138,7 +136,6 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener {
 
 				_enables.add(performImageHyperlink);
 
-				_fill(_formToolkit, _buttonComposite, _disposables);
 			}
 			else {
 				Image stepCompleteImage = UpgradePlanUIPlugin.getImage(UpgradePlanUIPlugin.STEP_COMPLETE_IMAGE);
@@ -153,8 +150,6 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener {
 			}
 		}
 
-		_fill(formToolkit, _buttonComposite, _disposables);
-
 		Image stepRestartImage = UpgradePlanUIPlugin.getImage(UpgradePlanUIPlugin.STEP_RESTART_IMAGE);
 
 		ImageHyperlink restartImageHyperlink = createImageHyperlink(
@@ -162,8 +157,6 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener {
 			"Restarting " + _upgradeStep.getTitle() + "...", this::_restart, _upgradeStep);
 
 		_disposables.add(() -> restartImageHyperlink.dispose());
-
-		_fill(formToolkit, _buttonComposite, _disposables);
 
 		Image stepSkipImage = UpgradePlanUIPlugin.getImage(UpgradePlanUIPlugin.STEP_SKIP_IMAGE);
 
@@ -256,19 +249,9 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener {
 	}
 
 	private IStatus _complete(IProgressMonitor progressMonitor) {
+		_upgradeStep.setStatus(UpgradeStepStatus.COMPLETED);
+
 		return Status.OK_STATUS;
-	}
-
-	private void _fill(FormToolkit formToolkit, Composite parent, List<Disposable> disposables) {
-		Label fillLabel = formToolkit.createLabel(parent, null);
-
-		GridData gridData = new GridData();
-
-		gridData.widthHint = 16;
-
-		fillLabel.setLayoutData(gridData);
-
-		disposables.add(() -> fillLabel.dispose());
 	}
 
 	private IStatus _perform(IProgressMonitor progressMonitor) {
@@ -276,11 +259,25 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener {
 
 		UpgradeCommand upgradeCommand = ServicesLookup.getSingleService(UpgradeCommand.class, "(id=" + commandId + ")");
 
+		IStatus performStatus = Status.CANCEL_STATUS;
+
 		if (upgradeCommand != null) {
-			return upgradeCommand.perform(progressMonitor);
+			performStatus = upgradeCommand.perform(progressMonitor);
+
+			if (performStatus.isOK() || (performStatus.getSeverity() == Status.INFO) ||
+				(performStatus.getSeverity() == Status.WARNING)) {
+
+				_upgradeStep.setStatus(UpgradeStepStatus.COMPLETED);
+			}
+			else if (performStatus.getSeverity() == Status.CANCEL) {
+				_upgradeStep.setStatus(UpgradeStepStatus.INCOMPLETE);
+			}
+			else {
+				_upgradeStep.setStatus(UpgradeStepStatus.FAILED);
+			}
 		}
 
-		return Status.CANCEL_STATUS;
+		return performStatus;
 	}
 
 	private IStatus _restart(IProgressMonitor progressMonitor) {

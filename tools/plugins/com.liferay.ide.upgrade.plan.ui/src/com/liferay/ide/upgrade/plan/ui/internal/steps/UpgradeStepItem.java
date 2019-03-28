@@ -255,6 +255,8 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 	}
 
 	private IStatus _complete(IProgressMonitor progressMonitor) {
+		_upgradeStep.setStatus(UpgradeStepStatus.COMPLETED);
+
 		return Status.OK_STATUS;
 	}
 
@@ -271,7 +273,21 @@ public class UpgradeStepItem implements UpgradeItem, UpgradeListener, UpgradePla
 	}
 
 	private IStatus _perform(IProgressMonitor progressMonitor) {
-		return _upgradeStep.perform(progressMonitor);
+		IStatus performStatus = _upgradeStep.perform(progressMonitor);
+
+		if (performStatus.isOK() || (performStatus.getSeverity() == Status.INFO) ||
+			(performStatus.getSeverity() == Status.WARNING)) {
+
+			_upgradeStep.setStatus(UpgradeStepStatus.COMPLETED);
+		}
+		else if (performStatus.getSeverity() == Status.CANCEL) {
+			_upgradeStep.setStatus(UpgradeStepStatus.INCOMPLETE);
+		}
+		else {
+			_upgradeStep.setStatus(UpgradeStepStatus.FAILED);
+		}
+
+		return performStatus;
 	}
 
 	private IStatus _restart(IProgressMonitor progressMonitor) {

@@ -37,11 +37,11 @@ import org.eclipse.ui.handlers.IHandlerService;
 @SuppressWarnings("restriction")
 public class SnippetOpenHierarchyOnSelectionAction extends OpenTypeHierarchyAction {
 
-	private JavaSnippetEditor fEditor;
+	private LiferayReplEditor fEditor;
 	private String fDialogTitle;
 	private String fDialogMessage;
 
-	public SnippetOpenHierarchyOnSelectionAction(JavaSnippetEditor editor) {
+	public SnippetOpenHierarchyOnSelectionAction(LiferayReplEditor editor) {
 		super(editor.getSite());
 		fEditor = editor;
 		setResources();
@@ -88,7 +88,7 @@ public class SnippetOpenHierarchyOnSelectionAction extends OpenTypeHierarchyActi
 		}
 	}
 
-	protected void setEditor(JavaSnippetEditor contentEditor) {
+	protected void setEditor(LiferayReplEditor contentEditor) {
 		fEditor = contentEditor;
 	}
 

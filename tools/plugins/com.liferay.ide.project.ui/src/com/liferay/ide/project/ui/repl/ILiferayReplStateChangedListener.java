@@ -19,6 +19,6 @@ package com.liferay.ide.project.ui.repl;
  */
 public interface ILiferayReplStateChangedListener {
 
-	public void snippetStateChanged(JavaSnippetEditor editor);
+	public void snippetStateChanged(LiferayReplEditor editor);
 
 }

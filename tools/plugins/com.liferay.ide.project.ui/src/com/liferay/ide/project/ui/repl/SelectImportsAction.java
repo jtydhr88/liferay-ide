@@ -27,7 +27,7 @@ import org.eclipse.ui.PlatformUI;
 @SuppressWarnings("restriction")
 public class SelectImportsAction extends SnippetAction {
 
-	public SelectImportsAction(JavaSnippetEditor editor) {
+	public SelectImportsAction(LiferayReplEditor editor) {
 		super(editor);
 		setText(SnippetMessages.getString("SelectImports.label")); //$NON-NLS-1$
 		setToolTipText(SnippetMessages.getString("SelectImports.tooltip")); //$NON-NLS-1$
@@ -56,10 +56,10 @@ public class SelectImportsAction extends SnippetAction {
 	}
 
 	/**
-	 * @see ILiferayReplStateChangedListener#snippetStateChanged(JavaSnippetEditor)
+	 * @see ILiferayReplStateChangedListener#snippetStateChanged(LiferayReplEditor)
 	 */
 	@Override
-	public void snippetStateChanged(JavaSnippetEditor editor) {
+	public void snippetStateChanged(LiferayReplEditor editor) {
 		setEnabled(editor != null && !editor.isEvaluating());
 	}
 }

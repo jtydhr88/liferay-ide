@@ -88,7 +88,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.liferay.ide.project.ui.ProjectUI;
 import com.liferay.ide.project.ui.repl.ILiferayReplStateChangedListener;
-import com.liferay.ide.project.ui.repl.JavaSnippetEditor;
+import com.liferay.ide.project.ui.repl.LiferayReplEditor;
 import com.liferay.ide.ui.util.UIUtil;
 import com.sun.jdi.InvocationException;
 import com.sun.jdi.ObjectReference;
@@ -721,12 +721,12 @@ public abstract class EvaluateAction implements IEvaluationListener, IWorkbenchW
 			//see bug 8334
 			setNewTargetPart(part);
 		} else {
-			if (getTargetPart() instanceof JavaSnippetEditor) {
-				((JavaSnippetEditor)getTargetPart()).removeSnippetStateChangedListener(this);
+			if (getTargetPart() instanceof LiferayReplEditor) {
+				((LiferayReplEditor)getTargetPart()).removeSnippetStateChangedListener(this);
 			}
 			fTargetPart= part;
-			if (part instanceof JavaSnippetEditor) {
-				((JavaSnippetEditor)part).addSnippetStateChangedListener(this);
+			if (part instanceof LiferayReplEditor) {
+				((LiferayReplEditor)part).addSnippetStateChangedListener(this);
 			}
 		}
 	}
@@ -758,10 +758,10 @@ public abstract class EvaluateAction implements IEvaluationListener, IWorkbenchW
 	}
 
 	/**
-	 * @see ILiferayReplStateChangedListener#snippetStateChanged(JavaSnippetEditor)
+	 * @see ILiferayReplStateChangedListener#snippetStateChanged(LiferayReplEditor)
 	 */
 	@Override
-	public void snippetStateChanged(JavaSnippetEditor editor) {
+	public void snippetStateChanged(LiferayReplEditor editor) {
 		if (editor != null && !editor.isEvaluating() && editor.getFile() != null) {
 			update();
 			getAction().setEnabled(getSelectedObject() != null);

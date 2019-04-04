@@ -2036,11 +2036,11 @@
          id="editors"
          point="org.eclipse.ui.editors">
       <editor
-            name="%JavaSnippetEditor.label"
+            name="%LiferayReplEditor.label"
             icon="icons/n16/bundle_new.png"
             extensions="lrrepl"
             contributorClass="com.liferay.ide.project.ui.repl.SnippetEditorActionContributor"
-            class="com.liferay.ide.project.ui.repl.JavaSnippetEditor"
+            class="com.liferay.ide.project.ui.repl.LiferayReplEditor"
             symbolicFontName="org.eclipse.jdt.ui.editors.textfont"
             id="com.liferay.ide.project.ui.repl.SnippetEditor">
       </editor>
@@ -2100,7 +2100,7 @@
    <extension
          point="org.eclipse.ui.popupMenus">
 	<viewerContribution
-            targetID="#JavaSnippetEditorContext"
+            targetID="#LiferayReplEditorContext"
             id="com.liferay.ide.project.ui.repl.JavaSnippetPopupActions">
          <action
                label="%Execute.label"

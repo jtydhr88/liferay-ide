@@ -33,7 +33,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 
-import com.liferay.ide.project.ui.repl.JavaSnippetEditor;
+import com.liferay.ide.project.ui.repl.LiferayReplEditor;
 import com.liferay.ide.ui.util.UIUtil;
 
 /**
@@ -91,8 +91,8 @@ public class InspectAction extends EvaluateAction {
 	protected void run() {
 		IWorkbenchPart part= getTargetPart();
 
-		if (part instanceof JavaSnippetEditor) {
-			((JavaSnippetEditor)part).evalSelection(JavaSnippetEditor.RESULT_INSPECT);
+		if (part instanceof LiferayReplEditor) {
+			((LiferayReplEditor)part).evalSelection(LiferayReplEditor.RESULT_INSPECT);
 			return;
 		}
 

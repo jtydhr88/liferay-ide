@@ -68,7 +68,7 @@ public class SelectImportsDialog extends TitleAreaDialog {
 	private Button fRemoveImportsButton;
 	private TableViewer fImportsViewer;
 	private Table fImportsTable;
-	private JavaSnippetEditor fEditor;
+	private LiferayReplEditor fEditor;
 
 	private ImportsContentProvider fImportContentProvider;
 
@@ -144,7 +144,7 @@ public class SelectImportsDialog extends TitleAreaDialog {
 		}
 	}
 
-	public SelectImportsDialog(JavaSnippetEditor editor, String[] imports) {
+	public SelectImportsDialog(LiferayReplEditor editor, String[] imports) {
 		super(editor.getShell());
 		fEditor = editor;
 		fImports = imports;

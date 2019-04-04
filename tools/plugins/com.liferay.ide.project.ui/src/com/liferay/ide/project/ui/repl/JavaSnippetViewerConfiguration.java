@@ -33,12 +33,12 @@ import org.eclipse.jface.text.source.ISourceViewer;
 public class JavaSnippetViewerConfiguration extends JavaSourceViewerConfiguration {
 
 	public JavaSnippetViewerConfiguration(JavaTextTools tools, IPreferenceStore preferenceStore,
-			JavaSnippetEditor editor) {
+			LiferayReplEditor editor) {
 		super(tools.getColorManager(), preferenceStore, editor, IJavaPartitions.JAVA_PARTITIONING);
 	}
 
 	public IContentAssistProcessor getContentAssistantProcessor() {
-		return new JavaSnippetCompletionProcessor((JavaSnippetEditor) getEditor());
+		return new JavaSnippetCompletionProcessor((LiferayReplEditor) getEditor());
 	}
 
 	@Override

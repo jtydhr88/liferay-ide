@@ -20,7 +20,7 @@ import org.eclipse.jdt.internal.debug.ui.display.IDataDisplay;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.liferay.ide.project.ui.repl.JavaSnippetEditor;
+import com.liferay.ide.project.ui.repl.LiferayReplEditor;
 
 /**
  * @author Terry Jia
@@ -50,8 +50,8 @@ public class ExecuteAction extends EvaluateAction {
 	@Override
 	protected void run() {
 		IWorkbenchPart part = getTargetPart();
-		if (part instanceof JavaSnippetEditor) {
-			((JavaSnippetEditor) part).evalSelection(JavaSnippetEditor.RESULT_RUN);
+		if (part instanceof LiferayReplEditor) {
+			((LiferayReplEditor) part).evalSelection(LiferayReplEditor.RESULT_RUN);
 			return;
 		}
 		super.run();

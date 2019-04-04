@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
 @SuppressWarnings("restriction")
 public class StopAction extends SnippetAction {
 
-	public StopAction(JavaSnippetEditor editor) {
+	public StopAction(LiferayReplEditor editor) {
 		super(editor);
 
 		setText(SnippetMessages.getString("StopAction.label"));
@@ -43,7 +43,7 @@ public class StopAction extends SnippetAction {
 	}
 
 	@Override
-	public void snippetStateChanged(JavaSnippetEditor editor) {
+	public void snippetStateChanged(LiferayReplEditor editor) {
 		setEnabled(editor != null && editor.isVMLaunched());
 	}
 

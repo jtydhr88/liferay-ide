@@ -30,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
 @SuppressWarnings("restriction")
 public class ShowInPackageViewAction extends Action {
 
-	private JavaSnippetEditor fEditor;
+	private LiferayReplEditor fEditor;
 
 	/**
 	 * Creates a new <code>ShowInPackageViewAction</code>.
@@ -48,7 +48,7 @@ public class ShowInPackageViewAction extends Action {
 	 * Note: This constructor is for internal use only. Clients should not call this
 	 * constructor.
 	 */
-	public ShowInPackageViewAction(JavaSnippetEditor editor) {
+	public ShowInPackageViewAction(LiferayReplEditor editor) {
 		this();
 		fEditor = editor;
 	}

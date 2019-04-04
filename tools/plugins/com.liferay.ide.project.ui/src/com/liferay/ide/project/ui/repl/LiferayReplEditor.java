@@ -135,7 +135,7 @@ import com.sun.jdi.ObjectReference;
  * @author Terry Jia
  */
 @SuppressWarnings({"restriction", "unchecked"})
-public class JavaSnippetEditor extends AbstractDecoratedTextEditor
+public class LiferayReplEditor extends AbstractDecoratedTextEditor
 		implements IDebugEventFilter, IEvaluationListener, IValueDetailListener {
 	public static final String IMPORTS_CONTEXT = "SnippetEditor.imports";
 
@@ -255,7 +255,7 @@ public class JavaSnippetEditor extends AbstractDecoratedTextEditor
 
 	};
 
-	public JavaSnippetEditor() {
+	public LiferayReplEditor() {
 		super();
 
 		setDocumentProvider(JDIDebugUIPlugin.getDefault().getSnippetDocumentProvider());
@@ -265,7 +265,7 @@ public class JavaSnippetEditor extends AbstractDecoratedTextEditor
 				new JavaSnippetViewerConfiguration(JDIDebugUIPlugin.getDefault().getJavaTextTools(), store, this));
 		_liferayReplStateListeners = new ArrayList<>(4);
 		setPreferenceStore(store);
-		setEditorContextMenuId("#JavaSnippetEditorContext");
+		setEditorContextMenuId("#LiferayReplEditorContext");
 		setRulerContextMenuId("#JavaSnippetRulerContext");
 	}
 
@@ -656,7 +656,7 @@ public class JavaSnippetEditor extends AbstractDecoratedTextEditor
 					for (int i = 0; i < v.size(); i++) {
 						ILiferayReplStateChangedListener liferayReplStateChangedListener = v.get(i);
 
-						liferayReplStateChangedListener.snippetStateChanged(JavaSnippetEditor.this);
+						liferayReplStateChangedListener.snippetStateChanged(LiferayReplEditor.this);
 					}
 				}
 			}

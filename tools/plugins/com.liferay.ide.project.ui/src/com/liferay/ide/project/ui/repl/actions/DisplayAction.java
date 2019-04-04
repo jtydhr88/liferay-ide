@@ -28,7 +28,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.liferay.ide.project.ui.repl.JavaSnippetEditor;
+import com.liferay.ide.project.ui.repl.LiferayReplEditor;
 
 /**
  * @author Terry Jia
@@ -107,8 +107,8 @@ public class DisplayAction extends EvaluateAction {
 	@Override
 	protected void run() {
 		IWorkbenchPart part = getTargetPart();
-		if (part instanceof JavaSnippetEditor) {
-			((JavaSnippetEditor) part).evalSelection(JavaSnippetEditor.RESULT_DISPLAY);
+		if (part instanceof LiferayReplEditor) {
+			((LiferayReplEditor) part).evalSelection(LiferayReplEditor.RESULT_DISPLAY);
 			return;
 		}
 		super.run();

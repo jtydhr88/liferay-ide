@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Shell;
 public class JavaSnippetCompletionProcessor implements IContentAssistProcessor {
 
 	private CompletionProposalCollector _completionProposalCollector;
-	private JavaSnippetEditor _JavaSnippetEditor;
+	private LiferayReplEditor _liferayReplEditor;
 	private IContextInformationValidator _validator;
 	private TemplateEngine _templateEngine;
 	private CompletionProposalComparator _completionProposalComparator;
@@ -52,8 +52,8 @@ public class JavaSnippetCompletionProcessor implements IContentAssistProcessor {
 	private char[] _proposalAutoActivationSet;
 	private ContentAssistant _ContentAssistant;
 
-	public JavaSnippetCompletionProcessor(JavaSnippetEditor editor) {
-		_JavaSnippetEditor = editor;
+	public JavaSnippetCompletionProcessor(LiferayReplEditor editor) {
+		_liferayReplEditor = editor;
 
 		JavaPlugin javaPlugin = JavaPlugin.getDefault();
 
@@ -108,8 +108,8 @@ public class JavaSnippetCompletionProcessor implements IContentAssistProcessor {
 			setErrorMessage(null);
 
 			try {
-				_completionProposalCollector = new CompletionProposalCollector(_JavaSnippetEditor.getJavaProject());
-				_JavaSnippetEditor.codeComplete(_completionProposalCollector);
+				_completionProposalCollector = new CompletionProposalCollector(_liferayReplEditor.getJavaProject());
+				_liferayReplEditor.codeComplete(_completionProposalCollector);
 			}
 			catch (JavaModelException x) {
 				Shell shell = viewer.getTextWidget().getShell();

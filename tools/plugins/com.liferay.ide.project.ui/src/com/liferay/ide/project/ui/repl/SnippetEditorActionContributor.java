@@ -28,7 +28,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 @SuppressWarnings("restriction")
 public class SnippetEditorActionContributor extends BasicCompilationUnitEditorActionContributor {
 
-	protected JavaSnippetEditor fSnippetEditor;
+	protected LiferayReplEditor fSnippetEditor;
 
 	private StopAction fStopAction;
 	private SelectImportsAction fSelectImportsAction;
@@ -91,8 +91,8 @@ public class SnippetEditorActionContributor extends BasicCompilationUnitEditorAc
 
 		super.setActiveEditor(part);
 		fSnippetEditor = null;
-		if (part instanceof JavaSnippetEditor) {
-			fSnippetEditor = (JavaSnippetEditor) part;
+		if (part instanceof LiferayReplEditor) {
+			fSnippetEditor = (LiferayReplEditor) part;
 			if (fOpenOnSelectionAction == null) {
 				initializeActions();
 				contributeToMenu(getActionBars().getMenuManager());
@@ -122,7 +122,7 @@ public class SnippetEditorActionContributor extends BasicCompilationUnitEditorAc
 		}
 	}
 
-	protected void updateStatus(JavaSnippetEditor editor) {
+	protected void updateStatus(LiferayReplEditor editor) {
 		String message = ""; //$NON-NLS-1$
 		if (editor != null && editor.isEvaluating()) {
 			message = SnippetMessages.getString("SnippetActionContributor.evalMsg"); //$NON-NLS-1$

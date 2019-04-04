@@ -40,11 +40,11 @@ import org.eclipse.ui.handlers.IHandlerService;
 @SuppressWarnings("restriction")
 public class SnippetOpenOnSelectionAction extends OpenAction {
 
-	protected JavaSnippetEditor fEditor;
+	protected LiferayReplEditor fEditor;
 	private String fDialogTitle;
 	private String fDialogMessage;
 
-	public SnippetOpenOnSelectionAction(JavaSnippetEditor editor) {
+	public SnippetOpenOnSelectionAction(LiferayReplEditor editor) {
 		super(editor.getSite());
 		fEditor = editor;
 		setResources();
@@ -71,7 +71,7 @@ public class SnippetOpenOnSelectionAction extends OpenAction {
 		fDialogMessage = message;
 	}
 
-	protected void setEditor(JavaSnippetEditor contentEditor) {
+	protected void setEditor(LiferayReplEditor contentEditor) {
 		fEditor = contentEditor;
 	}
 

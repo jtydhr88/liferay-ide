@@ -21,13 +21,13 @@ import org.eclipse.jface.action.Action;
  */
 public abstract class SnippetAction extends Action implements ILiferayReplStateChangedListener {
 
-	private JavaSnippetEditor fEditor;
+	private LiferayReplEditor fEditor;
 
-	public SnippetAction(JavaSnippetEditor editor) {
+	public SnippetAction(LiferayReplEditor editor) {
 		setEditor(editor);
 	}
 
-	public void setEditor(JavaSnippetEditor editor) {
+	public void setEditor(LiferayReplEditor editor) {
 		if (fEditor != null) {
 			fEditor.removeSnippetStateChangedListener(this);
 		}
@@ -43,7 +43,7 @@ public abstract class SnippetAction extends Action implements ILiferayReplStateC
 		snippetStateChanged(fEditor);
 	}
 
-	protected JavaSnippetEditor getEditor() {
+	protected LiferayReplEditor getEditor() {
 		return fEditor;
 	}
 }

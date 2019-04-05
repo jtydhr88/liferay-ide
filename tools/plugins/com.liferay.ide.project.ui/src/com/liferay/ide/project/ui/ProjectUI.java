@@ -88,6 +88,12 @@ public class ProjectUI extends AbstractUIPlugin {
 		return _plugin.getStateLocation();
 	}
 
+	public static void log(IStatus status) {
+		ILog log = _plugin.getLog();
+
+		log.log(status);
+	}
+
 	public static void logError(Exception e) {
 		ILog log = _plugin.getLog();
 

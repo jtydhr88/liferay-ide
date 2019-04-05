@@ -14,9 +14,13 @@
 
 package com.liferay.ide.project.ui.repl;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.jdt.launching.IVMInstall;
 
 /**
  * @author Gregory Amerson
@@ -25,6 +29,14 @@ public interface ReplLauncher {
 
 	public void cleanup(IDebugTarget debugTarget);
 
+	public IDebugTarget getDebugTarget(IFile file);
+
 	public IBreakpoint getMagicBreakpoint(IDebugTarget debugTarget) throws DebugException;
+
+	public IVMInstall getVMInstall(IFile file) throws CoreException;
+
+	public String getWorkingDirectoryAttribute(IFile file) throws CoreException;
+
+	public ILaunch launch(IFile file);
 
 }

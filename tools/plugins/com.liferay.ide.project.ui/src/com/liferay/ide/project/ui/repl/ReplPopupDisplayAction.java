@@ -15,10 +15,25 @@
 package com.liferay.ide.project.ui.repl;
 
 import org.eclipse.jdt.internal.debug.ui.actions.PopupDisplayAction;
+import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * @author Gregory Amerson
  */
 @SuppressWarnings("restriction")
 public class ReplPopupDisplayAction extends PopupDisplayAction {
+
+	@Override
+	protected void run() {
+		IWorkbenchPart workbenchPart = getTargetPart();
+
+		if (workbenchPart instanceof LiferayReplEditor) {
+			((LiferayReplEditor)workbenchPart).evalSelection(LiferayReplEditor.RESULT_DISPLAY);
+
+			return;
+		}
+
+		super.run();
+	}
+
 }

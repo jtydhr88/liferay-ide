@@ -48,9 +48,9 @@ public class SelectImportsAction extends ReplAction {
 	}
 
 	private void _chooseImports() {
-		LiferayReplEditor editor = getEditor();
+		//LiferayReplEditor editor = getEditor();
 
-		String[] imports = editor.getImports();
+		//String[] imports = editor.getImports();
 
 		//new SelectImportsDialog(editor, imports).open();
 	}

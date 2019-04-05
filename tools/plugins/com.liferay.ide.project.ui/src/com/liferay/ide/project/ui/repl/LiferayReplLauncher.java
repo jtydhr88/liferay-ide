@@ -14,9 +14,13 @@
 
 package com.liferay.ide.project.ui.repl;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.jdt.launching.IVMInstall;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -32,7 +36,39 @@ public class LiferayReplLauncher implements ReplLauncher {
 	}
 
 	@Override
+	public IDebugTarget getDebugTarget(IFile file) {
+
+		// TODO Auto-generated method stub
+
+		return null;
+	}
+
+	@Override
 	public IBreakpoint getMagicBreakpoint(IDebugTarget debugTarget) throws DebugException {
+		return null;
+	}
+
+	@Override
+	public IVMInstall getVMInstall(IFile file) throws CoreException {
+
+		// TODO Auto-generated method stub
+
+		return null;
+	}
+
+	@Override
+	public String getWorkingDirectoryAttribute(IFile file) throws CoreException {
+
+		// TODO Auto-generated method stub
+
+		return null;
+	}
+
+	@Override
+	public ILaunch launch(IFile file) {
+
+		// TODO Auto-generated method stub
+
 		return null;
 	}
 

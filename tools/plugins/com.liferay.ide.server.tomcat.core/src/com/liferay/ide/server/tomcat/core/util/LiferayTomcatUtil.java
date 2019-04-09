@@ -18,6 +18,7 @@ import com.liferay.ide.core.ILiferayConstants;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileListing;
 import com.liferay.ide.core.util.FileUtil;
+import com.liferay.ide.core.util.PropertiesUtil;
 import com.liferay.ide.core.util.StringPool;
 import com.liferay.ide.project.core.util.ProjectUtil;
 import com.liferay.ide.server.core.ILiferayRuntime;
@@ -560,7 +561,19 @@ public class LiferayTomcatUtil {
 
 			IPath contextFilePath = hostPath.append(_DEFAULT_PORTAL_CONTEXT_FILE);
 
+			IPath liferayHome = appServerDir.append("..");
+
+			Properties extProperties = PropertiesUtil.loadProperties(liferayHome.append(_PORTAL_EXT_PROPERTIES));
+
+			String portalCTX = extProperties.getProperty(_PORTALCTX_KEY);
+
 			File contextFile = contextFilePath.toFile();
+
+			if (!FileUtil.exists(contextFile) && (portalCTX != null)) {
+				contextFilePath = hostPath.append(portalCTX.substring(1) + ".xml");
+
+				contextFile = contextFilePath.toFile();
+			}
 
 			if (FileUtil.exists(contextFile)) {
 				Context tcPortalContext = loadContextFile(contextFile);
@@ -575,7 +588,12 @@ public class LiferayTomcatUtil {
 			}
 
 			if (retval == null) {
-				retval = appServerDir.append(_DEFAULT_PORTAL_DIR);
+				if (portalCTX != null) {
+					retval = appServerDir.append("/webapps" + portalCTX);
+				}
+				else {
+					retval = appServerDir.append(_DEFAULT_PORTAL_DIR);
+				}
 			}
 		}
 
@@ -750,6 +768,10 @@ public class LiferayTomcatUtil {
 	private static final String _HOST_NAME = "localhost";
 
 	private static final Version _MANIFEST_VERSION_REQUIRED = ILiferayConstants.V620;
+
+	private static final String _PORTAL_EXT_PROPERTIES = "portal-ext.properties";
+
+	private static final String _PORTALCTX_KEY = "portal.ctx";
 
 	private static final String _SERVICE_NAME = "Catalina";
 

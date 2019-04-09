@@ -21,6 +21,7 @@ import com.liferay.ide.core.properties.PortalPropertiesConfiguration;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ListUtil;
+import com.liferay.ide.core.util.PropertiesUtil;
 import com.liferay.ide.server.core.ILiferayServerBehavior;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.core.gogo.GogoBundleDeployer;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -208,6 +210,14 @@ public class PortalServerBehavior
 
 			if (port != 80) {
 				url += ":" + port;
+			}
+
+			Properties extProperties = PropertiesUtil.loadProperties(portalBundle.getExtPropertiesFilePath());
+
+			String portalCTX = extProperties.getProperty("portal.ctx");
+
+			if (portalCTX != null) {
+				url += portalCTX;
 			}
 
 			_ping = new PingThread(getServer(), url, -1, this);

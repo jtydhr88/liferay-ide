@@ -67,6 +67,8 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 		autoDeployPath = liferayHome.append("deploy");
 
 		modulesPath = liferayHome.append("osgi");
+
+		extPropertiesFilePath = liferayHome.append("portal-ext.properties");
 	}
 
 	public AbstractPortalBundle(Map<String, String> appServerProperties) {
@@ -108,6 +110,11 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 		}
 
 		return libs.toArray(new IPath[libs.size()]);
+	}
+
+	@Override
+	public IPath getExtPropertiesFilePath() {
+		return extPropertiesFilePath;
 	}
 
 	@Override
@@ -211,6 +218,7 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 
 	protected IPath autoDeployPath;
 	protected IPath bundlePath;
+	protected IPath extPropertiesFilePath;
 	protected IPath liferayHome;
 	protected IPath modulesPath;
 

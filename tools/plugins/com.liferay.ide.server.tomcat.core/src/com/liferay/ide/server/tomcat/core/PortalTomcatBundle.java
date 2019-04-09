@@ -17,7 +17,6 @@ package com.liferay.ide.server.tomcat.core;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileListing;
 import com.liferay.ide.core.util.FileUtil;
-import com.liferay.ide.core.util.PropertiesUtil;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.core.portal.AbstractPortalBundle;
 import com.liferay.ide.server.util.JavaUtil;
@@ -28,7 +27,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,17 +77,13 @@ public class PortalTomcatBundle extends AbstractPortalBundle {
 	public IPath getAppServerPortalDir() {
 		IPath retval = null;
 
-		if (bundlePath != null) {
-			Properties extProperties = PropertiesUtil.loadProperties(extPropertiesFilePath);
+		String portalContext = getPortalContext();
 
-			String portalCTX = extProperties.getProperty("portal.ctx");
-
-			if (portalCTX != null) {
-				retval = bundlePath.append("webapps" + portalCTX);
-			}
-			else {
-				retval = bundlePath.append("webapps/ROOT");
-			}
+		if (portalContext != null) {
+			retval = bundlePath.append("webapps" + portalContext);
+		}
+		else {
+			retval = bundlePath.append("webapps/ROOT");
 		}
 
 		return retval;

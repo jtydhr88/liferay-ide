@@ -18,6 +18,7 @@ import com.liferay.ide.core.ILiferayConstants;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileListing;
 import com.liferay.ide.core.util.FileUtil;
+import com.liferay.ide.core.util.PropertiesUtil;
 import com.liferay.ide.core.util.StringPool;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.util.JavaUtil;
@@ -68,7 +69,7 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 
 		modulesPath = liferayHome.append("osgi");
 
-		extPropertiesFilePath = liferayHome.append("portal-ext.properties");
+		portalExtProperties = PropertiesUtil.loadProperties(liferayHome.append("portal-ext.properties"));
 	}
 
 	public AbstractPortalBundle(Map<String, String> appServerProperties) {
@@ -113,11 +114,6 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 	}
 
 	@Override
-	public IPath getExtPropertiesFilePath() {
-		return extPropertiesFilePath;
-	}
-
-	@Override
 	public String[] getHookSupportedProperties() {
 		IPath portalDir = getAppServerPortalDir();
 		IPath[] extraLibs = getBundleDependencyJars();
@@ -149,6 +145,17 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 		}
 
 		return retval;
+	}
+
+	@Override
+	public String getPortalContext() {
+		String portalContext = portalExtProperties.getProperty(_PORTAL_CONTEXT_PROPERTY_KEY);
+
+		if (CoreUtil.isNotNullOrEmpty(portalContext) && !portalContext.startsWith("/")) {
+			return "/" + portalContext;
+		}
+
+		return portalContext;
 	}
 
 	@Override
@@ -218,9 +225,9 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 
 	protected IPath autoDeployPath;
 	protected IPath bundlePath;
-	protected IPath extPropertiesFilePath;
 	protected IPath liferayHome;
 	protected IPath modulesPath;
+	protected Properties portalExtProperties;
 
 	private String _getConfigInfoFromCache(String configType, IPath portalDir) {
 		IPath configInfoPath = _getConfigInfoPath(configType);
@@ -377,6 +384,8 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 	private static final String _CONFIG_TYPE_VERSION = "version";
 
 	private static final Version _MANIFEST_VERSION_REQUIRED = ILiferayConstants.V700;
+
+	private static final String _PORTAL_CONTEXT_PROPERTY_KEY = "portal.ctx";
 
 	private static boolean _clearedConfigInfoCacheOnce = false;
 

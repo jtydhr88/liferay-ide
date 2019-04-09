@@ -38,8 +38,6 @@ public interface PortalBundle extends ILiferayPortal {
 
 	public String getDisplayName();
 
-	public IPath getExtPropertiesFilePath();
-
 	public String getHttpPort();
 
 	public int getJmxRemotePort();
@@ -51,6 +49,8 @@ public interface PortalBundle extends ILiferayPortal {
 	public IPath getModulesPath();
 
 	public IPath getOSGiBundlesDir();
+
+	public String getPortalContext();
 
 	public IPath[] getRuntimeClasspath();
 

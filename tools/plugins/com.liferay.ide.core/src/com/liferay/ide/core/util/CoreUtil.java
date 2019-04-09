@@ -420,7 +420,14 @@ public class CoreUtil {
 
 		List<IFolder> folders = new ArrayList<>();
 
-		IClasspathEntry[] entries = project.readRawClasspath();
+		IClasspathEntry[] entries;
+
+		try {
+			entries = project.readRawClasspath();
+		}
+		catch (Exception e) {
+			return new ArrayList<>();
+		}
 
 		for (IClasspathEntry entry : entries) {
 			if (entry.getEntryKind() != IClasspathEntry.CPE_SOURCE) {

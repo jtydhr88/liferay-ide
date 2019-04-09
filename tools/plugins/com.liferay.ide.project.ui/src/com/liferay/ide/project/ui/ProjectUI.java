@@ -18,6 +18,7 @@ import com.liferay.ide.project.ui.repl.ReplFileDocumentProvider;
 
 import java.net.URL;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
@@ -25,11 +26,19 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.debug.ui.IJavaDebugUIConstants;
+import org.eclipse.jdt.internal.debug.ui.DebugUIMessages;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jdt.ui.text.JavaTextTools;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
@@ -196,5 +205,15 @@ public class ProjectUI extends AbstractUIPlugin {
 
 	private JavaTextTools _javaTextTools;
 	private ReplFileDocumentProvider _replDocumentProvider;
+
+	public static void errorDialog(String title, String message, Exception e) {
+		IWorkbench workbench = PlatformUI.getWorkbench();
+
+		IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+
+		Shell shell = workbenchWindow.getShell();
+
+		ErrorDialog.openError(shell, title, null, createErrorStatus(message, e));
+	}
 
 }

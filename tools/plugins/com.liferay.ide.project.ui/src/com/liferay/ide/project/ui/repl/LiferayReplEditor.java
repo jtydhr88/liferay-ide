@@ -664,6 +664,7 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 			}
 			catch (DebugException de) {
 				ProjectUI.logError(de);
+
 				_showException(de);
 
 				return;
@@ -674,7 +675,10 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 		_setTitleImage();
 		fireEvalStateChanged();
 		_showStatusMessage("Evaluating...");
-		getSourceViewer().setEditable(false);
+
+		ISourceViewer sourceViewer = getSourceViewer();
+
+		sourceViewer.setEditable(false);
 	}
 
 	private IJavaProject _findJavaProject() throws CoreException {

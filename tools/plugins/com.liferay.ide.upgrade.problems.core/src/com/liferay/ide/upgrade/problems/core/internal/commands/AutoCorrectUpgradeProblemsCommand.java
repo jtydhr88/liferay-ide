@@ -22,6 +22,7 @@ import com.liferay.ide.upgrade.plan.core.UpgradePlanner;
 import com.liferay.ide.upgrade.plan.core.UpgradeProblem;
 import com.liferay.ide.upgrade.problems.core.AutoFileMigrateException;
 import com.liferay.ide.upgrade.problems.core.AutoFileMigrator;
+import com.liferay.ide.upgrade.problems.core.MarkerSupport;
 import com.liferay.ide.upgrade.problems.core.commands.AutoCorrectUpgradeProblemsCommandKeys;
 import com.liferay.ide.upgrade.problems.core.internal.UpgradeProblemsCorePlugin;
 
@@ -32,9 +33,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -50,12 +49,13 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Terry Jia
+ * @author Simon Jiang
  */
 @Component(
 	property = "id=" + AutoCorrectUpgradeProblemsCommandKeys.ID, scope = ServiceScope.PROTOTYPE,
 	service = UpgradeCommand.class
 )
-public class AutoCorrectUpgradeProblemsCommand implements UpgradeCommand {
+public class AutoCorrectUpgradeProblemsCommand implements UpgradeCommand, MarkerSupport {
 
 	@Override
 	public IStatus perform(IProgressMonitor progressMonitor) {
@@ -114,18 +114,11 @@ public class AutoCorrectUpgradeProblemsCommand implements UpgradeCommand {
 						}
 
 						if ((problemsCorrected > 0) && (resource != null)) {
-							IMarker problemMarker = resource.findMarker(upgradeProblem.getMarkerId());
-
-							if ((problemMarker != null) && problemMarker.exists()) {
-								problemMarker.delete();
-							}
+							resolveMarker(upgradeProblem);
 						}
 					}
 				}
 				catch (InvalidSyntaxException ise) {
-				}
-				catch (CoreException ce) {
-					UpgradeProblemsCorePlugin.logError("Could not read marker info. ", ce);
 				}
 			}
 		);

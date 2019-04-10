@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author Gregory Amerson
+ * @author Simon Jiang
  */
 public interface MarkerSupport {
 
@@ -82,6 +83,22 @@ public interface MarkerSupport {
 		}
 
 		return false;
+	}
+
+	public default void resolveMarker(UpgradeProblem upgradeProblem) {
+		upgradeProblem.setStatus(UpgradeProblem.STATUS_RESOLVED);
+
+		IMarker marker = findMarker(upgradeProblem);
+
+		if (marker != null) {
+			try {
+				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
+				marker.setAttribute(IMarker.DONE, Boolean.TRUE);
+				marker.setAttribute("upgradeProblem.resolved", Boolean.TRUE);
+			}
+			catch (CoreException ce) {
+			}
+		}
 	}
 
 	public default void upgradeProblemToMarker(UpgradeProblem upgradeProblem, IMarker marker) throws CoreException {

@@ -21,9 +21,11 @@ import com.liferay.ide.upgrade.plan.core.UpgradeCommandPerformedEvent;
 import com.liferay.ide.upgrade.plan.core.UpgradePlan;
 import com.liferay.ide.upgrade.plan.core.UpgradePlanner;
 import com.liferay.ide.upgrade.plan.core.UpgradeProblem;
+import com.liferay.ide.upgrade.plan.core.util.ServicesLookup;
 import com.liferay.ide.upgrade.problems.core.FileMigration;
 import com.liferay.ide.upgrade.problems.core.MarkerSupport;
 import com.liferay.ide.upgrade.problems.core.commands.AutoCorrectFindUpgradeProblemsCommandKeys;
+import com.liferay.ide.upgrade.problems.core.commands.AutoCorrectUpgradeProblemsCommandKeys;
 
 import java.io.File;
 
@@ -33,10 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -47,6 +46,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Gregory Amerson
+ * @author Simon Jiang
  */
 @Component(
 	property = "id=" + AutoCorrectFindUpgradeProblemsCommandKeys.ID, scope = ServiceScope.PROTOTYPE,
@@ -92,53 +92,17 @@ public class AutoCorrectFindUpgradeProblemsCommand implements UpgradeCommand, Ma
 
 				upgradePlan.addUpgradeProblems(foundUpgradeProblems);
 
-				_addMarkers(foundUpgradeProblems);
+				addMarkers(foundUpgradeProblems);
 			});
+
+		UpgradeCommand autoCorrectCommand = ServicesLookup.getSingleService(
+			UpgradeCommand.class, "(id=" + AutoCorrectUpgradeProblemsCommandKeys.ID + ")");
+
+		IStatus performStatus = autoCorrectCommand.perform(progressMonitor);
 
 		_upgradePlanner.dispatch(new UpgradeCommandPerformedEvent(this, new ArrayList<>(upgradeProblems)));
 
-		return Status.OK_STATUS;
-	}
-
-	private void _addMarkers(List<UpgradeProblem> upgradeProblems) {
-		Stream<UpgradeProblem> stream = upgradeProblems.stream();
-
-		stream.filter(
-			upgradeProblem -> FileUtil.exists(upgradeProblem.getResource())
-		).forEach(
-			upgradeProblem -> {
-				IResource resource = upgradeProblem.getResource();
-
-				try {
-					IMarker marker = resource.createMarker(UpgradeProblem.MARKER_TYPE);
-
-					upgradeProblem.setMarkerId(marker.getId());
-
-					_upgradeProblemToMarker(upgradeProblem, marker);
-				}
-				catch (CoreException ce) {
-				}
-			}
-		);
-	}
-
-	private void _upgradeProblemToMarker(UpgradeProblem upgradeProblem, IMarker marker) throws CoreException {
-		marker.setAttribute(IMarker.CHAR_START, upgradeProblem.getStartOffset());
-		marker.setAttribute(IMarker.CHAR_END, upgradeProblem.getEndOffset());
-		marker.setAttribute(IMarker.LINE_NUMBER, upgradeProblem.getLineNumber());
-		marker.setAttribute(IMarker.MESSAGE, upgradeProblem.getTitle());
-		marker.setAttribute(UpgradeProblem.MARKER_ATTRIBUTE_AUTOCORRECTCONTEXT, upgradeProblem.getAutoCorrectContext());
-		marker.setAttribute(UpgradeProblem.MARKER_ATTRIBUTE_HTML, upgradeProblem.getHtml());
-		marker.setAttribute(UpgradeProblem.MARKER_ATTRIBUTE_SUMMARY, upgradeProblem.getSummary());
-		marker.setAttribute(UpgradeProblem.MARKER_ATTRIBUTE_STATUS, upgradeProblem.getStatus());
-		marker.setAttribute(UpgradeProblem.MARKER_ATTRIBUTE_TICKET, upgradeProblem.getTicket());
-		marker.setAttribute(UpgradeProblem.MARKER_ATTRIBUTE_TYPE, upgradeProblem.getType());
-
-		IResource resource = upgradeProblem.getResource();
-
-		marker.setAttribute(IMarker.LOCATION, resource.getName());
-
-		marker.setAttribute(IMarker.SEVERITY, upgradeProblem.getMarkerType());
+		return performStatus;
 	}
 
 	@Reference

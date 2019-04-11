@@ -1,0 +1,3 @@
+Bundle-Name: repl-session
+Bundle-SymbolicName: com.liferay.repl.session
+Bundle-Version: 1.0.0

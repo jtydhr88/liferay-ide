@@ -14,25 +14,17 @@
 
 package com.liferay.ide.project.ui.repl;
 
-import com.liferay.ide.project.ui.ProjectUI;
-import com.liferay.ide.ui.util.UIUtil;
-
-import com.sun.jdi.InvocationException;
-import com.sun.jdi.ObjectReference;
-import com.sun.jdi.ReferenceType;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -51,6 +43,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventFilter;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugModelPresentation;
@@ -60,7 +53,9 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.eval.IEvaluationContext;
 import org.eclipse.jdt.debug.core.IJavaDebugTarget;
+import org.eclipse.jdt.debug.core.IJavaStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
+import org.eclipse.jdt.debug.core.IJavaValue;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jdt.debug.eval.EvaluationManager;
 import org.eclipse.jdt.debug.eval.IClassFileEvaluationEngine;
@@ -69,15 +64,13 @@ import org.eclipse.jdt.debug.eval.IEvaluationResult;
 import org.eclipse.jdt.internal.debug.core.JDIDebugPlugin;
 import org.eclipse.jdt.internal.debug.ui.JDISourceViewer;
 import org.eclipse.jdt.internal.debug.ui.JavaDebugImages;
-import org.eclipse.jdt.launching.IVMInstall;
-import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jdt.internal.debug.ui.display.JavaInspectExpression;
 import org.eclipse.jdt.ui.IContextMenuConstants;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
@@ -113,11 +106,16 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;
+
+import com.liferay.ide.project.ui.ProjectUI;
+import com.liferay.ide.ui.util.UIUtil;
+import com.sun.jdi.InvocationException;
+import com.sun.jdi.ObjectReference;
+import com.sun.jdi.ReferenceType;
 
 /**
  * @author Gregory Amerson
@@ -126,6 +124,8 @@ import org.osgi.util.tracker.ServiceTracker;
 public class LiferayReplEditor extends AbstractDecoratedTextEditor implements IDebugEventFilter, IEvaluationListener {
 
 	public static final int RESULT_DISPLAY = 1;
+	public static final int RESULT_INSPECT = 2;
+	public static final int RESULT_RUN = 3;
 
 	public static final String SERVICE_IMPORTS_CONTEXT = "LiferayReplEditor.service.imports";
 
@@ -168,7 +168,7 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 
 		debugPlugin.removeDebugEventFilter(this);
 
-		IDebugTarget jvm = _debugTarget;
+		IDebugTarget debugTarget = _debugTarget;
 
 		if (_debugTarget != null) {
 			ReplLauncher replLauncher = _serviceTracker.getService();
@@ -196,7 +196,7 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 
 			_vmDisconnected();
 
-			replLauncher.cleanup(jvm);
+			replLauncher.cleanup(debugTarget);
 		}
 	}
 
@@ -264,22 +264,147 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 
 		_snippetEnd = _snippetStart + textSelection.getLength();
 
-		_eval(snippet);
+		_evaluate(snippet);
 	}
 
 	@Override
-	public void evaluationComplete(IEvaluationResult result) {
+	public void evaluationComplete(IEvaluationResult evaluationResult) {
+		boolean severeErrors = false;
 
+		if (evaluationResult.hasErrors()) {
+			String[] errors = evaluationResult.getErrorMessages();
+
+			severeErrors = errors.length > 0;
+
+			if (evaluationResult.getException() != null) {
+				_showException(evaluationResult.getException());
+			}
+
+			_showAllErrors(errors);
+		}
+
+		IJavaValue value= evaluationResult.getValue();
+
+		if (value != null && !severeErrors) {
+			switch (_resultMode) {
+			case RESULT_DISPLAY:
+				_displayResult(value);
+				break;
+			case RESULT_INSPECT:
+				JavaInspectExpression javaInspectExpression =
+					new JavaInspectExpression(evaluationResult.getSnippet().trim(), value);
+
+				_showExpression(javaInspectExpression);
+				break;
+			case RESULT_RUN:
+				break;
+			}
+		}
+
+		_evalEnd();
+	}
+
+	private void _showExpression(JavaInspectExpression exp) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void _displayResult(IJavaValue value) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void _showAllErrors(String[] errors) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public DebugEvent[] filterDebugEvents(DebugEvent[] debugEvents) {
+		Stream.of(
+			debugEvents
+		).filter(
+			event -> event.getKind() == DebugEvent.TERMINATE
+		).filter(
+			event -> event.getSource() instanceof IDebugTarget
+		).map(
+			DebugEvent::getSource
+		).map(
+			IDebugTarget.class::cast
+		).filter(
+			target -> target.equals(_debugTarget)
+		).forEach(
+			target -> {
+				_setJavaThread(null);
+				UIUtil.async(() -> _vmDisconnected());
+			}
+		);
 
-		// TODO Auto-generated method stub
+		ReplLauncher replLauncher = _serviceTracker.getService();
 
-		return null;
+		for (int i = 0; i < debugEvents.length; i++) {
+			DebugEvent debugEvent = debugEvents[i];
+
+			Object source = debugEvent.getSource();
+
+			if ((source instanceof IJavaThread) && (debugEvent.getKind() == DebugEvent.SUSPEND)) {
+				IJavaThread javaThread = (IJavaThread)source;
+
+				if (javaThread.equals(_javaThread) && (debugEvent.getDetail() == DebugEvent.EVALUATION)) {
+					return null;
+				}
+
+				try {
+					IJavaStackFrame javaStackFrame = (IJavaStackFrame)javaThread.getTopStackFrame();
+
+					if (javaStackFrame != null) {
+						IJavaDebugTarget javaDebugTarget = (IJavaDebugTarget) javaStackFrame.getDebugTarget();
+
+						IBreakpoint[] breakpoints = javaThread.getBreakpoints();
+
+						int lineNumber = javaStackFrame.getLineNumber();
+
+						if (debugEvent.getDetail() == DebugEvent.STEP_END && (lineNumber == 32)
+							&& "com.liferay.repl.session.ReplSession".equals(javaStackFrame.getDeclaringTypeName())
+							&& javaThread.getDebugTarget() == _debugTarget) {
+
+						    // restore step filters
+						    javaDebugTarget.setStepFiltersEnabled(_stepFiltersSetting);
+
+							_setJavaThread(javaThread);
+
+							return null;
+						}
+						else if (debugEvent.getDetail() == DebugEvent.BREAKPOINT &&  breakpoints.length > 0 && breakpoints[0].equals(replLauncher.getMagicBreakpoint(javaThread.getDebugTarget()))) {
+							// locate the 'eval' method and step over
+							IStackFrame[] frames = javaThread.getStackFrames();
+							for (int j = 0; j < frames.length; j++) {
+								IJavaStackFrame frame = (IJavaStackFrame)frames[j];
+								if ("com.liferay.repl.session.ReplSession".equals(frame.getReceivingTypeName()) && frame.getName().equals("eval")) {
+								    // ignore step filters for this step
+								    _stepFiltersSetting = javaDebugTarget.isStepFiltersEnabled();
+								    javaDebugTarget.setStepFiltersEnabled(false);
+									frame.stepOver();
+									return null;
+								}
+							}
+						}
+					}
+				}
+				catch (DebugException e) {
+					ProjectUI.logError("Error filtering debug events", e);
+				}
+			}
+		}
+
+		return debugEvents;
+	}
+
+	private boolean _stepFiltersSetting;
+
+	private synchronized void _setJavaThread(IJavaThread javaThread) {
+		_javaThread = javaThread;
+		notifyAll();
 	}
 
 	public IFile getFile() {
@@ -382,6 +507,9 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 			if (property != null) {
 				_userImports = property.split(",");
 			}
+			else {
+				_userImports = new String[0];
+			}
 
 			property = file.getPersistentProperty(new QualifiedName(ProjectUI.PLUGIN_ID, SERVICE_IMPORTS_CONTEXT));
 
@@ -391,7 +519,8 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 						"UserLocalService";
 			}
 
-			_serviceImports = property.split(",");
+//			_serviceImports = property.split(",");
+			_serviceImports = new String[0];
 		}
 	}
 
@@ -504,20 +633,10 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 			}
 		}
 
-		boolean changed = false;
-
-		if (_classPathHasChanged() || _workingDirHasChanged()) {
-			changed = true;
-		}
-
 		boolean launch = false;
 
-		if ((_debugTarget == null) || changed) {
+		if (_debugTarget == null) {
 			launch = true;
-		}
-
-		if (changed) {
-			disconnectVM();
 		}
 
 		if (_debugTarget == null) {
@@ -566,47 +685,17 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 		}
 	}
 
-	private boolean _classPathHasChanged() {
-		String[] classpath = _getClassPath(getJavaProject());
-
-		if ((_launchedClassPath != null) && !_classPathsEqual(_launchedClassPath, classpath)) {
-			MessageDialog.openWarning(_getShell(), "Warning", "Classpath has changed");
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean _classPathsEqual(String[] path1, String[] path2) {
-		if (path1.length != path2.length) {
-			return false;
-		}
-
-		for (int i = 0; i < path1.length; i++) {
-			if (!path1[i].equals(path2[i])) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	private void _connectVM() {
 		DebugPlugin debugPlugin = DebugPlugin.getDefault();
 
 		debugPlugin.addDebugEventFilter(this);
-
-		_launchedClassPath = _getClassPath(getJavaProject());
-
-		_launchedWorkingDir = _getWorkingDirectoryAttribute();
 
 		ReplLauncher replLauncher = _serviceTracker.getService();
 
 		BusyIndicator.showWhile(_getShell().getDisplay(), () -> replLauncher.launch(getFile()));
 	}
 
-	private void _eval(String snippet) {
+	private void _evaluate(String snippet) {
 		if (_getJavaThread() == null) {
 			WaitThread waitThread = new WaitThread(Display.getCurrent(), this);
 
@@ -695,17 +784,6 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 		return null;
 	}
 
-	private String[] _getClassPath(IJavaProject project) {
-		try {
-			return JavaRuntime.computeDefaultRuntimeClassPath(project);
-		}
-		catch (CoreException ce) {
-			ProjectUI.logError(ce);
-
-			return new String[0];
-		}
-	}
-
 	private IClassFileEvaluationEngine _getEvaluationEngine() {
 		if (_evaluationEngine == null) {
 			IJavaProject javaProject = getJavaProject();
@@ -738,40 +816,6 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 
 	private Shell _getShell() {
 		return getSite().getShell();
-	}
-
-	private IVMInstall _getVMInstall() {
-		IFile file = getFile();
-
-		if (file != null) {
-			try {
-				ReplLauncher replLauncher = _serviceTracker.getService();
-
-				return replLauncher.getVMInstall(file);
-			}
-			catch (CoreException ce) {
-				ProjectUI.logError(ce);
-			}
-		}
-
-		return null;
-	}
-
-	private String _getWorkingDirectoryAttribute() {
-		IFile file = getFile();
-
-		if (file != null) {
-			try {
-				ReplLauncher replLauncher = _serviceTracker.getService();
-
-				return replLauncher.getWorkingDirectoryAttribute(file);
-			}
-			catch (CoreException ce) {
-				ProjectUI.logError(ce);
-			}
-		}
-
-		return null;
 	}
 
 	private boolean _performIncrementalBuild(final IProject project) {
@@ -931,7 +975,6 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 		_debugTarget = null;
 		_javaThread = null;
 		_evaluationContext = null;
-		_launchedClasspath = null;
 
 		if (_classFileEvaluationEngine != null) {
 			_classFileEvaluationEngine.dispose();
@@ -940,30 +983,6 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 		_classFileEvaluationEngine = null;
 
 		fireEvalStateChanged();
-	}
-
-	private boolean _workingDirHasChanged() {
-		String workingDir = _getWorkingDirectoryAttribute();
-
-		boolean changed = false;
-
-		if ((workingDir == null) || (_launchedWorkingDir == null)) {
-			if (workingDir != _launchedWorkingDir) {
-				changed = true;
-			}
-		}
-		else {
-			if (!workingDir.equals(_launchedWorkingDir)) {
-				changed = true;
-			}
-		}
-
-		if (changed && (_debugTarget != null)) {
-			MessageDialog.openWarning(
-				_getShell(), "Warning", "The working directory has changed. Restarting the evaluation context.");
-		}
-
-		return changed;
 	}
 
 	private IAnnotationAccess _annotationAccess;
@@ -976,9 +995,6 @@ public class LiferayReplEditor extends AbstractDecoratedTextEditor implements ID
 	private IClassFileEvaluationEngine _evaluationEngine;
 	private IJavaProject _javaProject;
 	private IJavaThread _javaThread;
-	private String[] _launchedClasspath;
-	private String[] _launchedClassPath;
-	private String _launchedWorkingDir;
 	private Image _oldTitleImage;
 	private IOverviewRuler _overviewRuler;
 

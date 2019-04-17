@@ -559,7 +559,28 @@ public class LiferayTomcatUtil {
 
 			IPath hostPath = serverPath.append(_HOST_NAME);
 
-			IPath contextFilePath = hostPath.append(_DEFAULT_PORTAL_CONTEXT_FILE);
+			if (retval == null) {
+				retval = appServerDir.append("webapps");
+
+				File folder = FileUtil.getFile(retval);
+
+				File[] files = null;
+
+				if (FileUtil.notExists(folder)) {
+					files = new File[0];
+				}
+				else {
+					files = folder.listFiles();
+				}
+
+				retval = new Path(files[0].getPath());
+			}
+
+			String folderPath = retval.toString();
+
+			String portalContextFile = folderPath.substring(folderPath.lastIndexOf("/") + 1);
+
+			IPath contextFilePath = hostPath.append(portalContextFile + ".xml");
 
 			File contextFile = contextFilePath.toFile();
 
@@ -573,10 +594,6 @@ public class LiferayTomcatUtil {
 						return new Path(docBase);
 					}
 				}
-			}
-
-			if (retval == null) {
-				retval = appServerDir.append(_DEFAULT_PORTAL_DIR);
 			}
 		}
 
@@ -743,10 +760,6 @@ public class LiferayTomcatUtil {
 	}
 
 	private static final String _CONFIG_DIR = "conf";
-
-	private static final String _DEFAULT_PORTAL_CONTEXT_FILE = "ROOT.xml";
-
-	private static final String _DEFAULT_PORTAL_DIR = "/webapps/ROOT";
 
 	private static final String _HOST_NAME = "localhost";
 

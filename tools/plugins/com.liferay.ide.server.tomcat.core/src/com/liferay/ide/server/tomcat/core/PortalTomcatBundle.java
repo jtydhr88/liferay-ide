@@ -80,7 +80,20 @@ public class PortalTomcatBundle extends AbstractPortalBundle {
 		IPath retval = null;
 
 		if (bundlePath != null) {
-			retval = bundlePath.append("webapps/ROOT");
+			retval = bundlePath.append("webapps");
+
+			File folder = FileUtil.getFile(retval);
+
+			File[] files = null;
+
+			if (FileUtil.notExists(folder)) {
+				files = new File[0];
+			}
+			else {
+				files = folder.listFiles();
+			}
+
+			retval = new Path(files[0].getPath());
 		}
 
 		return retval;

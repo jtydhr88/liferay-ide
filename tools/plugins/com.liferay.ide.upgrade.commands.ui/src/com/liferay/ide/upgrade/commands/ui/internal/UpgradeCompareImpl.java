@@ -18,9 +18,7 @@ import com.liferay.ide.upgrade.plan.core.UpgradeCompare;
 
 import java.io.File;
 import java.io.InputStream;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.nio.file.Files;
 
 import org.eclipse.compare.CompareConfiguration;
@@ -31,10 +29,12 @@ import org.eclipse.compare.IModificationDate;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
+import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
-
+import org.eclipse.swt.widgets.Composite;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
 
@@ -64,6 +64,9 @@ public class UpgradeCompareImpl implements UpgradeCompare {
 				return new DiffNode(sourceCompareItem, targetCompareItem);
 			}
 
+			public Viewer findStructureViewer(Viewer oldViewer, ICompareInput input, Composite parent) {
+				return null;
+			}
 		};
 
 		compareEditorInput.setTitle("Compare ('" + soruce.getName() + "'-'" + target.getName() + "')");

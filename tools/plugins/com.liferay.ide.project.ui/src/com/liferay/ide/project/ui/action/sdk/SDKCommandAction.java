@@ -74,7 +74,7 @@ public abstract class SDKCommandAction extends AbstractObjectAction {
 							SDK sdk = SDKUtil.getSDK(p);
 							ILiferayProject liferayProject = LiferayCore.create(ILiferayProject.class, p);
 
-							if (liferayProject != null) {
+							if ((liferayProject != null) && (sdk != null)) {
 								sdk.runCommand(p, buildFile, getSDKCommand(), null, monitor);
 								p.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 							}

@@ -29,9 +29,13 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.core.manipulation,
  org.eclipse.ui.workbench,
  org.eclipse.jdt.launching,
- org.eclipse.ui.console
+ org.eclipse.ui.console,
+ com.liferay.ide.upgrade.plan.core,
+ org.apache.commons.io,
+ com.liferay.ide.upgrade.commands.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: com.liferay.ide.gradle.ui
-
+Service-Component: OSGI-INF/com.liferay.ide.gradle.ui.upgrade.UpdateWorkspacePluginVersionCommand.xml,
+ OSGI-INF/com.liferay.ide.gradle.ui.upgrade.RemoveDependencyVersionCommand.xml

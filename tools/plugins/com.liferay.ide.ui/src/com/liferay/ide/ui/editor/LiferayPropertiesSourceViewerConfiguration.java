@@ -213,7 +213,9 @@ public class LiferayPropertiesSourceViewerConfiguration extends PropertiesFileSo
 
 								ILiferayRuntime lr = ServerUtil.getLiferayRuntime(runtime);
 
-								retval = lr.getAppServerPortalDir();
+								if (lr != null) {
+									retval = lr.getAppServerPortalDir();
+								}
 
 								break;
 							}

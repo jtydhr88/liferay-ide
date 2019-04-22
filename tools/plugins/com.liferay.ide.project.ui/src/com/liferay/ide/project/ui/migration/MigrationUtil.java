@@ -430,6 +430,8 @@ public class MigrationUtil {
 			List<FileProblems> fileProblemsList = Stream.of(
 				fileProblems
 			).filter(
+				fileProblem -> getIResourceFromFileProblems(fileProblem) != null
+			).filter(
 				fileProblem -> {
 					IResource resource = getIResourceFromFileProblems(fileProblem);
 

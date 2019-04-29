@@ -27,6 +27,7 @@ import com.liferay.ide.ui.liferay.page.wizard.MakeTaskAssignUserWizard;
 import com.liferay.ide.ui.liferay.page.wizard.NewFragmentFilesWizard;
 import com.liferay.ide.ui.liferay.page.wizard.NewKaleoWorkflowWizard;
 import com.liferay.ide.ui.liferay.page.wizard.NewLiferayComponentWizard;
+import com.liferay.ide.ui.liferay.page.wizard.NewLiferayUpgradePlanWizard;
 import com.liferay.ide.ui.liferay.page.wizard.NewRuntime62Wizard;
 import com.liferay.ide.ui.liferay.page.wizard.NewRuntime7Wizard;
 import com.liferay.ide.ui.liferay.page.wizard.project.ImportLiferayWorkspaceWizard;
@@ -240,6 +241,10 @@ public class WizardAction extends UIAction {
 		menu.click();
 	}
 
+	public void openNewLiferayUpgradePlanWizard() {
+		ide.clickNewUpgradePlan();
+	}
+
 	public void openNewLiferayWorkspaceWizard() {
 		assertTitleStartBy(_getWizard(), ide.getShell());
 
@@ -273,6 +278,7 @@ public class WizardAction extends UIAction {
 	public NewRuntime7WizardAction newRuntime7 = new NewRuntime7WizardAction();
 	public NewRuntime62WizardAction newRuntime62 = new NewRuntime62WizardAction();
 	public NewServerWizardAction newServer = new NewServerWizardAction();
+	public NewLiferayUpgradePlanWizardAction newUpgradePlan = new NewLiferayUpgradePlanWizardAction();
 	public ProjectFromExistSourceWizardAction projectFromExistSource = new ProjectFromExistSourceWizardAction();
 	public SetSdkLocationWizardAction setSdkLocation = new SetSdkLocationWizardAction();
 
@@ -780,6 +786,23 @@ public class WizardAction extends UIAction {
 		}
 
 		private final NewLiferayModulesExtWizard _newModulesExtWizard = new NewLiferayModulesExtWizard(bot);
+
+	}
+
+	public class NewLiferayUpgradePlanWizardAction {
+
+		public void prepare(String name, String planType, String currentLiferayVersion, String targetLiferayVersion) {
+			_newLiferayUpgradePlanWizard.setName(name);
+			_newLiferayUpgradePlanWizard.setUpgradePlanOutline(planType);
+			_newLiferayUpgradePlanWizard.setCurrentLiferayVersion(currentLiferayVersion);
+			_newLiferayUpgradePlanWizard.setTargetLiferayVersion(targetLiferayVersion);
+		}
+
+		public void prepareSourceCodeLocation(String location) {
+			_newLiferayUpgradePlanWizard.setSourceCodeLocation(location);
+		}
+
+		private final NewLiferayUpgradePlanWizard _newLiferayUpgradePlanWizard = new NewLiferayUpgradePlanWizard(bot);
 
 	}
 

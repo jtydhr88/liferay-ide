@@ -139,6 +139,8 @@ public interface UI {
 
 	public final String CLEAR_RESULTS = "Clear Results";
 
+	public final String CLICK_TO_PERFORM = "Click to perform";
+
 	public final String CLOSE_PROJECT = "Close Project";
 
 	public final String COLLAPSE_ALL = "Collapse All";
@@ -150,6 +152,8 @@ public interface UI {
 	public final String COMPONENT_SUITE = "Component Suite:";
 
 	public final String CONFIG = "Config";
+
+	public final String CONFIGURE_LIFERAY_WORKSPACE_SETTINGS = "Configure Liferay Workspace Settings";
 
 	public final String CONSOLE = "Console";
 
@@ -187,6 +191,8 @@ public interface UI {
 
 	public final String CREATE_JSP_FILES = "Create JSP files";
 
+	public final String CREATE_NEW_LIFERAY_WORKSPACE = "Create New Liferay Workspace [Required]";
+
 	public final String CREATE_NEW_PORTLET = "Create new portlet";
 
 	public final String CREATE_RESOURCE_BUNDLE_FILE = "Create resource bundle file";
@@ -196,6 +202,10 @@ public interface UI {
 	public final String CSS = "CSS:";
 
 	public final String CSS_CLASS_WRAPPER = "CSS class wrapper:";
+
+	public final String CURRENT_CODE_LOCATION = "Current Code Location:";
+
+	public final String CURRENT_LIFERAY_VERSION = "Current Liferay Version:";
 
 	public final String CUSTOM_JSP_FOLDER = "Custom JSP folder:";
 
@@ -277,8 +287,6 @@ public interface UI {
 
 	public final String ERROR_LOG = "Error Log";
 
-	public final String ERROR_LOG_WORKSPACE_LOG = "Error Log (Workspace Log)";
-
 	public final String EVENT = "Event:";
 
 	public final String EXPAND_ALL = "Expand All";
@@ -339,6 +347,8 @@ public interface UI {
 	public final String IMPL_CLASS = "Impl Class:";
 
 	public final String IMPORT = "Import...";
+
+	public final String IMPORT_EXISTING_LIFERAY_WORKSPACE = "Import Existing Liferay Workspace [Required]";
 
 	public final String IMPORT_LIFERAY_MODULE_PROJECT = "Import Liferay Module Project or Multi-Module Projects";
 
@@ -452,6 +462,10 @@ public interface UI {
 
 	public final String LIFERAY_TOMCAT_DIRECTORY = "Liferay Tomcat directory";
 
+	public final String LIFERAY_UPGRADE_PLAN = "Liferay Upgrade Plan";
+
+	public final String LIFERAY_UPGRADE_PLANNER = "Liferay Upgrade Planner";
+
 	public final String LIFERAY_V_62_SERVER_TOMCAT_7 = "Liferay v6.2 Server (Tomcat 7)";
 
 	public final String LIFERAY_V_62_TOMCAT_7 = "Liferay v6.2 (Tomcat 7)";
@@ -540,6 +554,8 @@ public interface UI {
 	public final String NEW_SERVER_RUNTIME_ENVIRONMENT = "New Server Runtime Environmet";
 
 	public final String NEW_SERVICE_BUILDER = "New Service Builder";
+
+	public final String NEW_UPGRADE_PLAN = "New Upgrade Plan";
 
 	public final String NEW_WITH_DOT = "New...";
 
@@ -753,6 +769,8 @@ public interface UI {
 
 	public final String SERVICES = "Services";
 
+	public final String SET_UP_LIFERAY_WORKSPACE = "Set up Liferay Workspace";
+
 	public final String SETUP_TASKS = "Setup Tasks";
 
 	public final String SHOW_ALL_PAGES = "Show All Pages";
@@ -760,6 +778,8 @@ public interface UI {
 	public final String SHOW_VIEW = "Show View";
 
 	public final String SIMULATION_PANEL_ENTRY = "simulation-panel-entry";
+
+	public final String SKIP = "Skip";
 
 	public final String SOCIAL_BOOKMARK = "social-bookmark";
 
@@ -801,6 +821,8 @@ public interface UI {
 
 	public final String SUPERCLASS = "Superclass:";
 
+	public final String TARGET_LIFERAY_VERSION = "Target Liferay Version:";
+
 	public final String TARGET_PLATFORM = "Target platform:";
 
 	public final String TEMPLATE_CONTEXT_CONCONTRIBUTOR = "template-context-contributor";
@@ -837,6 +859,8 @@ public interface UI {
 
 	public final String UPDATE_PROJECT = "Update Project...";
 
+	public final String UPGRADE_PLAN_OUTLINE = "Upgrade plan outline:";
+
 	public final String UPGRADE_SELECTED = "Upgrade Selected";
 
 	public final String UPGRADE_TO_LIFERAY_PLUGINS_SDK_7 = "Upgrade to Liferay Plugins SDK 7";
@@ -844,6 +868,8 @@ public interface UI {
 	public final String UPGRADE_TO_LIFERAY_WORKSPACE = "Upgrade to Liferay Workspace";
 
 	public final String UPGRADE_WITH_DOT = "Upgrade...";
+
+	public final String UPGRADE_YOUR_DEVELOPMENT_ENVIRONMENT = "Upgrade Your Development Environment";
 
 	public final String UPLOAD_NEW_WORKFLOW = "Upload new workflow...";
 

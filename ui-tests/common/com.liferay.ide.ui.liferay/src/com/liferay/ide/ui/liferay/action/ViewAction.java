@@ -16,6 +16,7 @@ package com.liferay.ide.ui.liferay.action;
 
 import com.liferay.ide.ui.liferay.UIAction;
 import com.liferay.ide.ui.liferay.page.view.CodeUpgradeView;
+import com.liferay.ide.ui.liferay.page.view.LiferayUpgradePlanView;
 import com.liferay.ide.ui.swtbot.eclipse.page.DeleteResourcesDialog;
 import com.liferay.ide.ui.swtbot.eclipse.page.ErrorLogView;
 import com.liferay.ide.ui.swtbot.eclipse.page.PackageExplorerView;
@@ -70,6 +71,7 @@ public class ViewAction extends UIAction {
 	public ProgressViewAction progress = new ProgressViewAction();
 	public ProjectViewAction project = new ProjectViewAction();
 	public ServersViewAction servers = new ServersViewAction();
+	public LiferayUpgradePlanViewAction upgradePlan = new LiferayUpgradePlanViewAction();
 
 	public class CodeUpgradeViewAction {
 
@@ -108,6 +110,42 @@ public class ViewAction extends UIAction {
 		}
 
 		private final ErrorLogView _errorLogView = new ErrorLogView(bot);
+
+	}
+
+	public class LiferayUpgradePlanViewAction {
+
+		public void clickSkip() {
+			_liferayUpgradePlanView.skip();
+		}
+
+		public void clickToPerform() {
+			_liferayUpgradePlanView.clickToPerform();
+		}
+
+		public void selectStep(String... files) {
+			ide.sleep();
+
+			_getProjects().setFocus();
+
+			try {
+				_getProjects().doubleClick(files);
+			}
+			catch (Exception e) {
+			}
+		}
+
+		private Tree _getProjects() {
+			String perspectiveLabel = ide.getPerspectiveLabel();
+
+			if (perspectiveLabel.equals(LIFERAY_UPGRADE_PLANNER)) {
+				return _liferayUpgradePlanView.getProjects();
+			}
+
+			return null;
+		}
+
+		private final LiferayUpgradePlanView _liferayUpgradePlanView = new LiferayUpgradePlanView(bot);
 
 	}
 
@@ -358,6 +396,9 @@ public class ViewAction extends UIAction {
 			}
 			else if (perspectiveLabel.equals(KALEO_DESIGNER)) {
 				return _packageExplorerView.getProjects();
+			}
+			else if (perspectiveLabel.equals(LIFERAY_UPGRADE_PLANNER)) {
+				return _projectExplorerView.getProjects();
 			}
 
 			return null;

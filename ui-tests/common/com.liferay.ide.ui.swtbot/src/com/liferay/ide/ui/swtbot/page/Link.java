@@ -12,29 +12,33 @@
  * details.
  */
 
-package com.liferay.ide.ui.swtbot.eclipse.page;
-
-import com.liferay.ide.ui.swtbot.page.Tree;
-import com.liferay.ide.ui.swtbot.page.View;
+package com.liferay.ide.ui.swtbot.page;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.forms.finder.widgets.SWTBotImageHyperlink;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
+
+import org.hamcrest.Matcher;
 
 /**
- * @author Terry Jia
- * @author Ying Xu
+ * @author Lily Li
  */
-public class ErrorLogView extends View {
+public class Link {
 
-	public ErrorLogView(SWTWorkbenchBot bot) {
-		super(bot, ERROR_LOG);
-	}
+	public static void clickImageHyperlink(SWTWorkbenchBot bot, Matcher matcherImageHyperLink) {
+		ImageHyperlink link = (ImageHyperlink)bot.widget(matcherImageHyperLink);
 
-	public void clickDeleteLogBtn() {
-		clickToolbarButton(DELETE_LOG);
-	}
+		link.getClass();
 
-	public Tree getLogs() {
-		return new Tree(getPart().bot());
+		SWTBotImageHyperlink imageHyperLink = new SWTBotImageHyperlink(link);
+
+		imageHyperLink.click();
+
+		try {
+			imageHyperLink.click();
+		}
+		catch (Exception e) {
+		}
 	}
 
 }

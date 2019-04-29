@@ -98,8 +98,8 @@ public class DeprecatedMethodsMigrator extends JavaFileMigrator {
 							problems.add(
 								new UpgradeProblem(
 									_tempMethod.getString("javadoc"), _tempMethod.getString("javadoc"), fileExtension,
-									"", "7.0", workspaceFile.getIFile(file), searchResult.startLine,
-									searchResult.startOffset, searchResult.endOffset, _tempMethod.getString("javadoc"),
+									"", "7.0", file, searchResult.startLine, searchResult.startOffset,
+									searchResult.endOffset, _tempMethod.getString("javadoc"),
 									searchResult.autoCorrectContext, UpgradeProblem.STATUS_NOT_RESOLVED,
 									UpgradeProblem.DEFAULT_MARKER_ID, makerType));
 						}

@@ -56,7 +56,7 @@ public class AutoCorrectAction extends BaseAutoCorrectAction implements UpgradeP
 
 		UpgradeProblem upgradeProblem = getUpgradeProblem(selection);
 
-		File file = getUpgradeFile(upgradeProblem);
+		File file = upgradeProblem.getResource();
 
 		autoCorrect(file, upgradeProblem, true);
 

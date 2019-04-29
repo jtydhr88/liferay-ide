@@ -53,7 +53,7 @@ public class AutoCorrectPreviewAction extends BaseAutoCorrectAction implements U
 
 		UpgradeProblem upgradeProblem = getUpgradeProblem(selection);
 
-		File file = getUpgradeFile(upgradeProblem);
+		File file = upgradeProblem.getResource();
 
 		String fileName = file.getName();
 

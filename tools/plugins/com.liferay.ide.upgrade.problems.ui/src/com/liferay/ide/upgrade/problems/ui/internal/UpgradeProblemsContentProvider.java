@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -132,13 +131,11 @@ public class UpgradeProblemsContentProvider extends AbstractNavigatorContentProv
 			projectProblemsContainer.setProjectName(project.getName());
 
 			for (UpgradeProblem upgradeProblem : upgradeProblems) {
-				IResource resource = upgradeProblem.getResource();
+				File file = upgradeProblem.getResource();
 
-				if (FileUtil.notExists(resource)) {
+				if (FileUtil.notExists(file)) {
 					continue;
 				}
-
-				File file = new File(resource.getLocationURI());
 
 				Path filePath = new Path(file.getPath());
 

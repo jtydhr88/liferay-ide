@@ -20,6 +20,7 @@ import com.liferay.ide.ui.swtbot.page.Editor;
 import com.liferay.ide.ui.swtbot.page.Menu;
 import com.liferay.ide.ui.swtbot.page.Shell;
 import com.liferay.ide.ui.swtbot.page.Text;
+import com.liferay.ide.ui.swtbot.page.ToolbarButtonWithTooltip;
 import com.liferay.ide.ui.swtbot.page.View;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
@@ -65,6 +66,10 @@ public class Eclipse extends BasePageObject {
 		installMenu.click();
 	}
 
+	public void clickNewUpgradePlan() {
+		getNewUpgradePlan().click();
+	}
+
 	public Editor getEditor(String fileName) {
 		return new Editor((SWTWorkbenchBot)bot, fileName);
 	}
@@ -85,6 +90,10 @@ public class Eclipse extends BasePageObject {
 
 	public String getLabel() {
 		return label;
+	}
+
+	public ToolbarButtonWithTooltip getNewUpgradePlan() {
+		return new ToolbarButtonWithTooltip(_getShell().bot(), NEW_UPGRADE_PLAN);
 	}
 
 	public Menu getOtherMenu() {
@@ -153,6 +162,10 @@ public class Eclipse extends BasePageObject {
 		showViewDialog.confirm(OPEN);
 
 		sleep(3000);
+	}
+
+	private SWTBotShell _getShell() {
+		return bot.shell(getLabel());
 	}
 
 	private SWTBotShell _getShell(String label) {

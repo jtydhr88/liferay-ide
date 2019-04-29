@@ -54,8 +54,8 @@ public class LiferayIDE extends Eclipse {
 		return _newBtn;
 	}
 
-	public void showCodeUpgradeView() {
-		showView(LIFERAY_CODE_UPGRADE);
+	public Perspective getUpgradePlannerPerspective() {
+		return _upgradePlannerPerspective;
 	}
 
 	private LiferayIDE(SWTWorkbenchBot bot) {
@@ -65,6 +65,7 @@ public class LiferayIDE extends Eclipse {
 		_kaleoDesignerPerspective = new Perspective(bot, KALEO_DESIGNER);
 		_liferayPerspective = new Perspective(bot, LIFERAY_PLUGINS);
 		_liferayWorkspacePerspective = new Perspective(bot, LIFERAY_WORKSPACE);
+		_upgradePlannerPerspective = new Perspective(bot, LIFERAY_UPGRADE_PLANNER);
 		_newBtn = new NewToolbarDropDownButton(bot);
 	}
 
@@ -75,5 +76,6 @@ public class LiferayIDE extends Eclipse {
 	private Perspective _liferayPerspective;
 	private Perspective _liferayWorkspacePerspective;
 	private NewToolbarDropDownButton _newBtn;
+	private Perspective _upgradePlannerPerspective;
 
 }

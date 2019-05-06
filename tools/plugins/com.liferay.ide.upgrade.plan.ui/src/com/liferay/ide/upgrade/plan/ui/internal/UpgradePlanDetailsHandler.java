@@ -23,6 +23,7 @@ import com.liferay.ide.upgrade.plan.ui.util.UIUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ui.def.DefinitionLoader;
 import org.eclipse.sapphire.ui.forms.swt.SapphireDialog;
@@ -47,8 +48,17 @@ public class UpgradePlanDetailsHandler extends AbstractHandler {
 		_serviceTracker.open();
 	}
 
+	@Execute
+	public void execute() {
+		_execute();
+	}
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		return _execute();
+	}
+
+	private int _execute() {
 		UpgradePlanner upgradePlanner = _serviceTracker.getService();
 
 		UpgradePlan upgradePlan = upgradePlanner.getCurrentUpgradePlan();
@@ -56,7 +66,7 @@ public class UpgradePlanDetailsHandler extends AbstractHandler {
 		if (upgradePlan == null) {
 			UIUtil.postInfo("No Upgrade Plan", "There is no upgrade plan.");
 
-			return null;
+			return -1;
 		}
 
 		Element element = UpgradePlanDetailsOp.TYPE.instantiate();

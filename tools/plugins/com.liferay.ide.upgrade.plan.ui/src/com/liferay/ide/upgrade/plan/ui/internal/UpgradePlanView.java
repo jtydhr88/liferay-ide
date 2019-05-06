@@ -33,6 +33,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -77,15 +80,19 @@ public class UpgradePlanView extends ViewPart implements ISelectionProvider, Upg
 	}
 
 	@Override
+	@PostConstruct
 	public void createPartControl(Composite parentComposite) {
 		_createPartControl(parentComposite);
 
 		IViewSite viewSite = getViewSite();
 
-		viewSite.setSelectionProvider(this);
+		if (viewSite != null) {
+			viewSite.setSelectionProvider(this);
+		}
 	}
 
 	@Override
+	@PreDestroy
 	public void dispose() {
 		_upgradePlanner.dispose(_upgradePlanner.getCurrentUpgradePlan());
 

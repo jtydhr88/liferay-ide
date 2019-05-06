@@ -14,15 +14,20 @@
 
 package com.liferay.ide.upgrade.plan.ui.internal;
 
+import javax.inject.Named;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.expressions.IEvaluationContext;
+import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Gregory Amerson
+ * @author Terry Jia
  */
 public class NewUpgradePlanHandler extends AbstractHandler {
 
@@ -35,14 +40,27 @@ public class NewUpgradePlanHandler extends AbstractHandler {
 		if (variable instanceof Shell) {
 			Shell shell = (Shell)variable;
 
-			NewUpgradePlanWizard newUpgradePlanWizard = new NewUpgradePlanWizard();
-
-			WizardDialog wizardDialog = new WizardDialog(shell, newUpgradePlanWizard);
-
-			wizardDialog.open();
+			_execute(shell);
 		}
 
 		return null;
+	}
+
+	@Execute
+	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell) {
+		if (shell == null) {
+			return;
+		}
+
+		_execute(shell);
+	}
+
+	private void _execute(Shell shell) {
+		NewUpgradePlanWizard newUpgradePlanWizard = new NewUpgradePlanWizard();
+
+		WizardDialog wizardDialog = new WizardDialog(shell, newUpgradePlanWizard);
+
+		wizardDialog.open();
 	}
 
 }

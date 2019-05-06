@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.e4.core.di.annotations.Execute;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -52,14 +53,25 @@ public class RestartUpgradeHandler extends AbstractHandler {
 		_serviceTracker.close();
 	}
 
+	@Execute
+	public void execute() {
+		_execute();
+	}
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		_execute();
+
+		return null;
+	}
+
+	private void _execute() {
 		UpgradePlanner upgradePlanner = _serviceTracker.getService();
 
 		UpgradePlan upgradePlan = upgradePlanner.getCurrentUpgradePlan();
 
 		if (upgradePlan == null) {
-			return null;
+			return;
 		}
 
 		List<UpgradeStep> rootUpgradeSteps = upgradePlan.getUpgradeSteps();
@@ -67,8 +79,6 @@ public class RestartUpgradeHandler extends AbstractHandler {
 		for (UpgradeStep upgradeStep : rootUpgradeSteps) {
 			upgradePlanner.restartStep(upgradeStep);
 		}
-
-		return null;
 	}
 
 	private final ServiceTracker<UpgradePlanner, UpgradePlanner> _serviceTracker;

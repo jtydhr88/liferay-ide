@@ -67,7 +67,14 @@ public class NewUpgradePlanWizard extends SapphireWizard<NewUpgradePlanOp> {
 
 		};
 
-		BasicNewProjectResourceWizard.updatePerspective(element);
+		try {
+			BasicNewProjectResourceWizard.updatePerspective(element);
+		}
+		catch (IllegalStateException ise) {
+
+			// running inside RCP, there is no workbench
+
+		}
 	}
 
 	private boolean _firstErrorMessageRemoved = false;

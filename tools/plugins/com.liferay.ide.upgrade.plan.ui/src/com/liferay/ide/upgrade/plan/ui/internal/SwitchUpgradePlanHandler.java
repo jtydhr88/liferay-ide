@@ -17,22 +17,27 @@ package com.liferay.ide.upgrade.plan.ui.internal;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.e4.core.di.annotations.Execute;
 
 /**
  * @author Terry Jia
  */
 public class SwitchUpgradePlanHandler extends AbstractHandler {
 
+	@Execute
+	public void execute() {
+		_execute();
+	}
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		SwitchUpgradePlanDialog switchUpgradePlanDialog = new SwitchUpgradePlanDialog();
+		_execute();
 
-		try {
-			return switchUpgradePlanDialog.open();
-		}
-		catch (Exception e) {
-			return null;
-		}
+		return null;
+	}
+
+	private void _execute() {
+		new SwitchUpgradePlanDialog().open();
 	}
 
 }

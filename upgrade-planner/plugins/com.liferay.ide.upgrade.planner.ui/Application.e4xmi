@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ASCII"?>
+<application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_qUw0cG1sEemI0f9ONMWl2A" elementId="com.liferay.ide.upgrade.planner.ui.application">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_uYUJcG1sEemI0f9ONMWl2A" elementId="com.liferay.ide.upgrade.planner.ui.trimmedwindow.upgradePlanner" label="Liferay Upgrade Planner" iconURI="platform:/plugin/com.liferay.ide.upgrade.planner.ui/icons/upgradeplanner.png" width="1024" height="800">
+    <children xsi:type="basic:PartSashContainer" xmi:id="_pl01YG1tEemI0f9ONMWl2A" elementId="com.liferay.ide.upgrade.planner.ui.partsashcontainer.main" horizontal="true">
+      <children xsi:type="basic:PartStack" xmi:id="_y33ogG1tEemI0f9ONMWl2A" elementId="com.liferay.ide.upgrade.planner.ui.partstack.upgradePlanView">
+        <children xsi:type="basic:Part" xmi:id="_C6hDAG-uEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.plan.view" contributionURI="bundleclass://com.liferay.ide.upgrade.plan.ui/com.liferay.ide.upgrade.plan.ui.internal.UpgradePlanView" label="Liferay Upgrade Plan" iconURI="platform:/plugin/com.liferay.ide.upgrade.plan.ui/icons/liferay_logo_16.png" closeable="true">
+          <tags>View</tags>
+          <tags>categoryTag:com.liferay.ide.upgrade.planner.view.category</tags>
+          <toolbar xmi:id="_C6hDAm-uEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.plan.view">
+            <children xsi:type="menu:HandledToolItem" xmi:id="_GYBxEG_BEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.upgradeplandetails" iconURI="platform:/plugin/com.liferay.ide.upgrade.plan.ui/icons/plan_details.gif" command="_RtcUsG_CEemPVtV_MmypPA"/>
+            <children xsi:type="menu:HandledToolItem" xmi:id="_rxxR4G_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.newupgradeplan" iconURI="platform:/plugin/com.liferay.ide.upgrade.plan.ui/icons/liferay_new.png" command="_4uDiIG_FEemPVtV_MmypPA"/>
+            <children xsi:type="menu:HandledToolItem" xmi:id="_sJEXkG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.switchupgradeplan" iconURI="platform:/plugin/com.liferay.ide.upgrade.plan.ui/icons/switch_plan.png" command="_5GepMG_FEemPVtV_MmypPA"/>
+            <children xsi:type="menu:HandledToolItem" xmi:id="_spUk8G_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.restartupgradeplan" iconURI="platform:/plugin/com.liferay.ide.upgrade.plan.ui/icons/restart.gif" command="_5Z1qEG_FEemPVtV_MmypPA"/>
+            <children xsi:type="menu:HandledToolItem" xmi:id="_s-BpoG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.collapseall" iconURI="platform:/plugin/com.liferay.ide.upgrade.plan.ui/icons/collapse_node.png" command="_5ww8UG_FEemPVtV_MmypPA"/>
+            <children xsi:type="menu:HandledToolItem" xmi:id="_tVGs4G_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.expandall" iconURI="platform:/plugin/com.liferay.ide.upgrade.plan.ui/icons/expand_node.png" command="_6I7ksG_FEemPVtV_MmypPA"/>
+          </toolbar>
+        </children>
+      </children>
+      <children xsi:type="basic:PartStack" xmi:id="_4dqloG_ZEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.partstack.upgradePlanInfoView"/>
+    </children>
+  </children>
+  <handlers xmi:id="_YmgeQG_CEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.handler.upgradeplandetails" contributionURI="bundleclass://com.liferay.ide.upgrade.plan.ui/com.liferay.ide.upgrade.plan.ui.internal.UpgradePlanDetailsHandler" command="_RtcUsG_CEemPVtV_MmypPA"/>
+  <handlers xmi:id="_6ha9MG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.newupgradeplan" contributionURI="bundleclass://com.liferay.ide.upgrade.plan.ui/com.liferay.ide.upgrade.plan.ui.internal.NewUpgradePlanHandler" command="_4uDiIG_FEemPVtV_MmypPA"/>
+  <handlers xmi:id="_6xk5EG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.switchupgradeplan" contributionURI="bundleclass://com.liferay.ide.upgrade.plan.ui/com.liferay.ide.upgrade.plan.ui.internal.SwitchUpgradePlanHandler" command="_5GepMG_FEemPVtV_MmypPA"/>
+  <handlers xmi:id="_7B-skG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.restartupgradeplan" contributionURI="bundleclass://com.liferay.ide.upgrade.plan.ui/com.liferay.ide.upgrade.plan.ui.internal.RestartUpgradeHandler" command="_5Z1qEG_FEemPVtV_MmypPA"/>
+  <handlers xmi:id="_7RRs0G_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.collapseall" contributionURI="bundleclass://com.liferay.ide.upgrade.plan.ui/com.liferay.ide.upgrade.plan.ui.internal.CollapseHandler" command="_5ww8UG_FEemPVtV_MmypPA"/>
+  <handlers xmi:id="_7fK-4G_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.planner.ui.expandall" contributionURI="bundleclass://com.liferay.ide.upgrade.plan.ui/com.liferay.ide.upgrade.plan.ui.internal.ExpandHandler" command="_6I7ksG_FEemPVtV_MmypPA"/>
+  <commands xmi:id="_RtcUsG_CEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.plan.ui.upgradeplandetails" commandName="upgradeplandetails"/>
+  <commands xmi:id="_4uDiIG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.plan.ui.newupgradeplan" commandName="newupgradeplan"/>
+  <commands xmi:id="_5GepMG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.plan.ui.switchupgradeplan" commandName="switchupgradeplan"/>
+  <commands xmi:id="_5Z1qEG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.plan.ui.restartupgradeplan" commandName="restartupgradeplan"/>
+  <commands xmi:id="_5ww8UG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.plan.ui.collapseall" commandName="collapseall"/>
+  <commands xmi:id="_6I7ksG_FEemPVtV_MmypPA" elementId="com.liferay.ide.upgrade.plan.ui.expandall" commandName="expandall"/>
+  <addons xmi:id="_qUw0cW1sEemI0f9ONMWl2A" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
+  <addons xmi:id="_qUw0cm1sEemI0f9ONMWl2A" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
+  <addons xmi:id="_qUw0c21sEemI0f9ONMWl2A" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
+  <addons xmi:id="_qUw0dG1sEemI0f9ONMWl2A" elementId="org.eclipse.e4.ui.workbench.commands.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.CommandProcessingAddon"/>
+  <addons xmi:id="_qUw0dW1sEemI0f9ONMWl2A" elementId="org.eclipse.e4.ui.workbench.contexts.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.ContextProcessingAddon"/>
+  <addons xmi:id="_qUw0dm1sEemI0f9ONMWl2A" elementId="org.eclipse.e4.ui.workbench.bindings.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.swt/org.eclipse.e4.ui.workbench.swt.util.BindingProcessingAddon"/>
+  <addons xmi:id="_qUw0d21sEemI0f9ONMWl2A" elementId="org.eclipse.e4.ui.workbench.handler.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.HandlerProcessingAddon"/>
+</application:Application>

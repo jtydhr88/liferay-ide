@@ -94,7 +94,9 @@ public class UpgradePlanView extends ViewPart implements ISelectionProvider, Upg
 	@Override
 	@PreDestroy
 	public void dispose() {
-		_upgradePlanner.dispose(_upgradePlanner.getCurrentUpgradePlan());
+		if (_upgradePlanner != null) {
+			_upgradePlanner.dispose(_upgradePlanner.getCurrentUpgradePlan());
+		}
 
 		_upgradePlanner.removeListener(this);
 		_serviceTracker.close();

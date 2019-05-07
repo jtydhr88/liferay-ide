@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="upgrade-planner" uid="upgradePlaner" id="com.liferay.ide.upgrade.planner.ui.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-clearPersistedState
+      </programArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.equinox.p2.core.feature" version="1.6.0.v20181123-1405"/>
+      <feature id="org.eclipse.ecf.core.feature" version="1.5.3.v20181012-2020"/>
+      <feature id="org.eclipse.sapphire" version="9.1.1.201712191343"/>
+      <feature id="org.eclipse.sapphire.java" version="9.1.1.201712191343"/>
+      <feature id="org.eclipse.sapphire.modeling.xml" version="9.1.1.201712191343"/>
+      <feature id="org.eclipse.sapphire.platform" version="9.1.1.201712191343"/>
+      <feature id="org.eclipse.sapphire.ui" version="9.1.1.201712191343"/>
+      <feature id="org.eclipse.sapphire.osgi" version="9.1.1.201712191343"/>
+      <feature id="com.liferay.ide.upgrade.planner" version="3.6.0.qualifier"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>

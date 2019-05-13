@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+		point="org.eclipse.ui.views"
+	>
+		<category
+			id="com.liferay.ide.upgrade.plugins.ui"
+			name="Liferay Upgrade"
+		>
+		</category>
+		<view
+			category="com.liferay.ide.upgrade.plugins.ui"
+			class="com.liferay.ide.upgrade.plugins.ui.internal.customjsps.CustomJSPCompareView"
+			icon="icons/sample.png"
+			id="com.liferay.ide.upgrade.plugins.ui.views.ConvertJspView"
+			inject="true"
+			name="Convert Jsp View"
+		>
+		</view>
+	</extension>
+</plugin>

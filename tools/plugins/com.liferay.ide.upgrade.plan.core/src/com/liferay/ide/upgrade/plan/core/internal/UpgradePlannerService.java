@@ -41,7 +41,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -533,7 +532,7 @@ public class UpgradePlannerService implements UpgradePlanner {
 	}
 
 	private UpgradePlan _currentUpgradePlan;
-	private final Collection<UpgradeEvent> _upgradeEvents = new CopyOnWriteArrayList<>();
+	private final Collection<UpgradeEvent> _upgradeEvents = new CopyOnWriteArraySet<>();
 	private final Collection<UpgradeListener> _upgradeListeners = new CopyOnWriteArraySet<>();
 
 }

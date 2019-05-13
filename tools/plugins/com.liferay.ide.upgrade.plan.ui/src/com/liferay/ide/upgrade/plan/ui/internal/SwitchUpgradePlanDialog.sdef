@@ -6,7 +6,6 @@
     </import>
     <dialog>
         <id>SwitchUpgradePlan</id>
-        <element-type>com.liferay.ide.upgrade.plan.core.UpgradePlansOp</element-type>
         <label>Switch Upgrade Plan</label>
         <content>
             <custom>

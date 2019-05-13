@@ -15,6 +15,7 @@
 package com.liferay.ide.upgrade.plan.core.internal;
 
 import com.liferay.ide.core.util.CoreUtil;
+import com.liferay.ide.core.util.ListUtil;
 import com.liferay.ide.core.util.StringUtil;
 import com.liferay.ide.upgrade.plan.core.IMemento;
 import com.liferay.ide.upgrade.plan.core.UpgradeEvent;
@@ -41,7 +42,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -244,22 +244,27 @@ public class UpgradePlannerService implements UpgradePlanner {
 	public void saveUpgradePlan(UpgradePlan upgradePlan) {
 		XMLMemento xmlMemento = null;
 
-		try (InputStream inputStream = new FileInputStream(_getUpgradePlannerStorageFile())) {
-			IMemento rootMemento = XMLMemento.loadMemento(inputStream);
+		if (ListUtil.isEmpty(upgradePlan.getUpgradeSteps())) {
+			return;
+		}
 
-			if (rootMemento == null) {
-				rootMemento = XMLMemento.createWriteRoot("upgradePlanner");
-			}
+		try (InputStream inputStream = new FileInputStream(_getUpgradePlannerStorageFile())) {
+			final IMemento rootMemento = Optional.of(
+				XMLMemento.loadMemento(inputStream)
+			).orElseGet(
+				() -> XMLMemento.createWriteRoot("upgradePlanner")
+			);
 
 			String name = upgradePlan.getName();
 
-			Optional<IMemento> upgradePlanMementoOptional = Stream.of(
+			IMemento upgradePlanMemento = Stream.of(
 				rootMemento.getChildren("upgradePlan")
 			).filter(
 				memento -> name.equals(memento.getString("upgradePlanName"))
-			).findFirst();
-
-			IMemento upgradePlanMemento = upgradePlanMementoOptional.orElse(rootMemento.createChild("upgradePlan"));
+			).findFirst(
+			).orElseGet(
+				() -> rootMemento.createChild("upgradePlan")
+			);
 
 			upgradePlanMemento.putString("upgradePlanName", upgradePlan.getName());
 			upgradePlanMemento.putString("currentVersion", upgradePlan.getCurrentVersion());
@@ -527,7 +532,7 @@ public class UpgradePlannerService implements UpgradePlanner {
 	}
 
 	private UpgradePlan _currentUpgradePlan;
-	private final Collection<UpgradeEvent> _upgradeEvents = new CopyOnWriteArrayList<>();
+	private final Collection<UpgradeEvent> _upgradeEvents = new CopyOnWriteArraySet<>();
 	private final Collection<UpgradeListener> _upgradeListeners = new CopyOnWriteArraySet<>();
 
 }

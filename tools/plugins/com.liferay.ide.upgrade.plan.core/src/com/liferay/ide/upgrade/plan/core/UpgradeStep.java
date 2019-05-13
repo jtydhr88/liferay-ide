@@ -133,7 +133,6 @@ public class UpgradeStep {
 		}
 
 		if (isEqualIgnoreCase(_description, baseUpgradeStep._description) &&
-			isEqualIgnoreCase(_icon, baseUpgradeStep._icon) &&
 			isEqualIgnoreCase(_requirement, baseUpgradeStep._requirement) &&
 			isEqualIgnoreCase(_commandId, baseUpgradeStep._commandId) &&
 			isEqualIgnoreCase(_url, baseUpgradeStep._url) && isEqual(_children, baseUpgradeStep._children) &&

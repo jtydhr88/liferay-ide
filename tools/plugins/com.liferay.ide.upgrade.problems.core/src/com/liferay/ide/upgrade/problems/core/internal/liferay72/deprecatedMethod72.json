@@ -1,0 +1,1718 @@
+[
+	{
+		"className": "ManifestHelperTask",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no replacement",
+		"methodName": "setAnalyze",
+		"packageName": "com.liferay.util.ant",
+		"parameters": [
+			"boolean"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getFileEntryControlPanelLink(PortletRequest, long)}",
+		"methodName": "getDLFileEntryControlPanelLink",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"PortletRequest",
+			"long"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getFolderControlPanelLink(PortletRequest, long)}",
+		"methodName": "getDLFolderControlPanelLink",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"PortletRequest",
+			"long"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getDownloadURL(FileEntry, FileVersion, ThemeDisplay, String)}",
+		"methodName": "getDownloadURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getDownloadURL(FileEntry, FileVersion, ThemeDisplay, String, boolean, boolean)}",
+		"methodName": "getDownloadURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getImagePreviewURL(FileEntry, FileVersion, ThemeDisplay)}",
+		"methodName": "getImagePreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getImagePreviewURL(FileEntry, FileVersion, ThemeDisplay, String, boolean, boolean)}",
+		"methodName": "getImagePreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getImagePreviewURL(FileEntry, FileVersion, ThemeDisplay)}",
+		"methodName": "getImagePreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getPreviewURL(FileEntry, FileVersion, ThemeDisplay, String)}",
+		"methodName": "getPreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getPreviewURL(FileEntry, FileVersion, ThemeDisplay, String, boolean, boolean)}",
+		"methodName": "getPreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getThumbnailSrc(FileEntry, FileVersion, ThemeDisplay)}",
+		"methodName": "getThumbnailSrc",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getThumbnailSrc(FileEntry, ThemeDisplay)}",
+		"methodName": "getThumbnailSrc",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getWebDavURL(ThemeDisplay, Folder, FileEntry)}",
+		"methodName": "getWebDavURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"ThemeDisplay",
+			"Folder",
+			"FileEntry"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getWebDavURL(ThemeDisplay, Folder, FileEntry, boolean)}",
+		"methodName": "getWebDavURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"ThemeDisplay",
+			"Folder",
+			"FileEntry",
+			"boolean"
+		]
+	},
+	{
+		"className": "DL",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getWebDavURL(ThemeDisplay, Folder, FileEntry, boolean, boolean)}",
+		"methodName": "getWebDavURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"ThemeDisplay",
+			"Folder",
+			"FileEntry",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getFileEntryControlPanelLink(PortletRequest, long)}",
+		"methodName": "getDLFileEntryControlPanelLink",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"PortletRequest",
+			"long"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getFolderControlPanelLink(PortletRequest, long)}",
+		"methodName": "getDLFolderControlPanelLink",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"PortletRequest",
+			"long"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getDownloadURL(FileEntry, FileVersion, ThemeDisplay, String)}",
+		"methodName": "getDownloadURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getDownloadURL(FileEntry, FileVersion, ThemeDisplay, String, boolean, boolean)}",
+		"methodName": "getDownloadURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getImagePreviewURL(FileEntry, FileVersion, ThemeDisplay)}",
+		"methodName": "getImagePreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getImagePreviewURL(FileEntry, FileVersion, ThemeDisplay, String, boolean, boolean)}",
+		"methodName": "getImagePreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getImagePreviewURL(FileEntry, FileVersion, ThemeDisplay)}",
+		"methodName": "getImagePreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getPreviewURL(FileEntry, FileVersion, ThemeDisplay, String)}",
+		"methodName": "getPreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getPreviewURL(FileEntry, FileVersion, ThemeDisplay, String, boolean, boolean)}",
+		"methodName": "getPreviewURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getThumbnailSrc(FileEntry, FileVersion, ThemeDisplay)}",
+		"methodName": "getThumbnailSrc",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getThumbnailSrc(FileEntry, ThemeDisplay)}",
+		"methodName": "getThumbnailSrc",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"FileEntry",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getWebDavURL(ThemeDisplay, Folder, FileEntry)}",
+		"methodName": "getWebDavURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"ThemeDisplay",
+			"Folder",
+			"FileEntry"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getWebDavURL(ThemeDisplay, Folder, FileEntry, boolean)}",
+		"methodName": "getWebDavURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"ThemeDisplay",
+			"Folder",
+			"FileEntry",
+			"boolean"
+		]
+	},
+	{
+		"className": "DLUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getWebDavURL(ThemeDisplay, Folder, FileEntry, boolean, boolean)}",
+		"methodName": "getWebDavURL",
+		"packageName": "com.liferay.document.library.kernel.util",
+		"parameters": [
+			"ThemeDisplay",
+			"Folder",
+			"FileEntry",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "InvokerFilter",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#getURI(String)}",
+		"methodName": "getURI",
+		"packageName": "com.liferay.portal.kernel.servlet.filters.invoker",
+		"parameters": [
+			"HttpServletRequest",
+			"String"
+		]
+	},
+	{
+		"className": "BaseUpgradePortletId",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "updateGroup",
+		"packageName": "com.liferay.portal.kernel.upgrade",
+		"parameters": [
+			"long",
+			"String"
+		]
+	},
+	{
+		"className": "DynamicQueryFactory",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#forClass(Class,ClassLoader)}",
+		"methodName": "forClass",
+		"packageName": "com.liferay.portal.kernel.dao.orm",
+		"parameters": [
+			"Class<?>"
+		]
+	},
+	{
+		"className": "DynamicQueryFactory",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#forClass(Class,String,ClassLoader)}",
+		"methodName": "forClass",
+		"packageName": "com.liferay.portal.kernel.dao.orm",
+		"parameters": [
+			"Class<?>",
+			"String"
+		]
+	},
+	{
+		"className": "DynamicQueryFactoryUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#forClass(Class,ClassLoader)}",
+		"methodName": "forClass",
+		"packageName": "com.liferay.portal.kernel.dao.orm",
+		"parameters": [
+			"Class<?>"
+		]
+	},
+	{
+		"className": "DynamicQueryFactoryUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#forClass(Class,String,ClassLoader)}",
+		"methodName": "forClass",
+		"packageName": "com.liferay.portal.kernel.dao.orm",
+		"parameters": [
+			"Class<?>",
+			"String"
+		]
+	},
+	{
+		"className": "JSONUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#putAll(Object...)}",
+		"methodName": "put",
+		"packageName": "com.liferay.portal.kernel.json",
+		"parameters": [
+			"Object"
+		]
+	},
+	{
+		"className": "PortalCacheManager",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#reconfigurePortalCaches(URL,ClassLoader)}",
+		"methodName": "reconfigurePortalCaches",
+		"packageName": "com.liferay.portal.kernel.cache",
+		"parameters": [
+			"URL"
+		]
+	},
+	{
+		"className": "DynamicPortalCacheManager",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#reconfigurePortalCaches(URL,ClassLoader)}",
+		"methodName": "reconfigurePortalCaches",
+		"packageName": "com.liferay.portal.kernel.cache",
+		"parameters": [
+			"URL"
+		]
+	},
+	{
+		"className": "SuggesterVisitor",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "visit",
+		"packageName": "com.liferay.portal.kernel.search.suggest",
+		"parameters": [
+			"AggregateSuggester"
+		]
+	},
+	{
+		"className": "TrashRenderer",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "renderActions",
+		"packageName": "com.liferay.portal.kernel.trash",
+		"parameters": [
+			"RenderRequest",
+			"RenderResponse"
+		]
+	},
+	{
+		"className": "WorkflowInstanceManager",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(long,Long,String,String,String,String,String,Boolean,int,int,OrderByComparator)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.kernel.workflow",
+		"parameters": [
+			"long",
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"OrderByComparator<WorkflowInstance>"
+		]
+	},
+	{
+		"className": "WorkflowInstanceManager",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(long,Long,String,String,String,String,String,Boolean)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.kernel.workflow",
+		"parameters": [
+			"long",
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean"
+		]
+	},
+	{
+		"className": "WorkflowInstanceManagerUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(long,Long,String,String,String,String,String,Boolean,int,int,OrderByComparator)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.kernel.workflow",
+		"parameters": [
+			"long",
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"OrderByComparator<WorkflowInstance>"
+		]
+	},
+	{
+		"className": "WorkflowInstanceManagerUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(long,Long,String,String,String,String,String,Boolean)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.kernel.workflow",
+		"parameters": [
+			"long",
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean"
+		]
+	},
+	{
+		"className": "UserPortraitTag",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replace by {#getUserPortraitHTML(String,String,User,ThemeDisplay)}",
+		"methodName": "getUserPortraitHTML",
+		"packageName": "com.liferay.taglib.ui",
+		"parameters": [
+			"String",
+			"Supplier<String>"
+		]
+	},
+	{
+		"className": "UserPortraitTag",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "setUserName",
+		"packageName": "com.liferay.taglib.ui",
+		"parameters": [
+			"String"
+		]
+	},
+	{
+		"className": "UserPortraitTag",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "getPortraitURL",
+		"packageName": "com.liferay.taglib.ui",
+		"parameters": [
+			"User"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getFileEntryControlPanelLink(PortletRequest, long)}",
+		"methodName": "getDLFileEntryControlPanelLink",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"PortletRequest",
+			"long"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getFolderControlPanelLink(PortletRequest, long)}",
+		"methodName": "getDLFolderControlPanelLink",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"PortletRequest",
+			"long"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getDownloadURL(FileEntry, FileVersion, ThemeDisplay, String)}",
+		"methodName": "getDownloadURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getDownloadURL(FileEntry, FileVersion, ThemeDisplay, String, boolean, boolean)}",
+		"methodName": "getDownloadURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getImagePreviewURL(FileEntry, FileVersion, ThemeDisplay)}",
+		"methodName": "getImagePreviewURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getImagePreviewURL(FileEntry, FileVersion, ThemeDisplay, String, boolean, boolean)}",
+		"methodName": "getImagePreviewURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getImagePreviewURL(FileEntry, FileVersion, ThemeDisplay)}",
+		"methodName": "getImagePreviewURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"FileEntry",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getPreviewURL(FileEntry, FileVersion, ThemeDisplay, String)}",
+		"methodName": "getPreviewURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getPreviewURL(FileEntry, FileVersion, ThemeDisplay, String, boolean, boolean)}",
+		"methodName": "getPreviewURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay",
+			"String",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getThumbnailSrc(FileEntry, FileVersion, ThemeDisplay)}",
+		"methodName": "getThumbnailSrc",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"FileEntry",
+			"FileVersion",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getThumbnailSrc(FileEntry, ThemeDisplay)}",
+		"methodName": "getThumbnailSrc",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"FileEntry",
+			"ThemeDisplay"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getWebDavURL(ThemeDisplay, Folder, FileEntry)}",
+		"methodName": "getWebDavURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"ThemeDisplay",
+			"Folder",
+			"FileEntry"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getWebDavURL(ThemeDisplay, Folder, FileEntry, boolean)}",
+		"methodName": "getWebDavURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"ThemeDisplay",
+			"Folder",
+			"FileEntry",
+			"boolean"
+		]
+	},
+	{
+		"className": "DLImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {com.liferay.document.library.util.DLURLHelper#FileEntryURLHelper#getWebDavURL(ThemeDisplay, Folder, FileEntry, boolean, boolean)}",
+		"methodName": "getWebDavURL",
+		"packageName": "com.liferay.portlet.documentlibrary.util",
+		"parameters": [
+			"ThemeDisplay",
+			"Folder",
+			"FileEntry",
+			"boolean",
+			"boolean"
+		]
+	},
+	{
+		"className": "DynamicQueryFactoryImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#forClass(Class,ClassLoader)}",
+		"methodName": "forClass",
+		"packageName": "com.liferay.portal.dao.orm.hibernate",
+		"parameters": [
+			"Class<?>"
+		]
+	},
+	{
+		"className": "DynamicQueryFactoryImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#forClass(Class,String,ClassLoader)}",
+		"methodName": "forClass",
+		"packageName": "com.liferay.portal.dao.orm.hibernate",
+		"parameters": [
+			"Class<?>",
+			"String"
+		]
+	},
+	{
+		"className": "PluginPackageHotDeployListener",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "getPortalCacheConfigurationURL",
+		"packageName": "com.liferay.portal.deploy.hot",
+		"parameters": [
+			"Configuration",
+			"ClassLoader",
+			"String"
+		]
+	},
+	{
+		"className": "WorkflowInstanceManagerProxyBean",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(long,Long,String,String,String,String,String,Boolean,int,int,OrderByComparator)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.workflow",
+		"parameters": [
+			"long",
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"OrderByComparator<WorkflowInstance>"
+		]
+	},
+	{
+		"className": "WorkflowInstanceManagerProxyBean",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(long,Long,String,String,String,String,String,Boolean)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.workflow",
+		"parameters": [
+			"long",
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean"
+		]
+	},
+	{
+		"className": "AMImageConfiguration",
+		"deprecatedVersion": "7.2",
+		"javadoc": "Set the maximum image size for adaptive media generation. Images larger than this value will not generate adaptive media images. A value of -1 indicates that all images will generate adaptive media images. A value of 0 indicates that no adaptive media images will be generated.",
+		"methodName": "imageMaxSize",
+		"packageName": "com.liferay.adaptive.media.image.internal.configuration",
+		"parameters": []
+	},
+	{
+		"className": "ServiceTrackerFactory",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no replacement",
+		"methodName": "create",
+		"packageName": "com.liferay.osgi.util",
+		"parameters": [
+			"Class<T>"
+		]
+	},
+	{
+		"className": "ServiceTrackerFactory",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no replacement",
+		"methodName": "open",
+		"packageName": "com.liferay.osgi.util",
+		"parameters": [
+			"Class<T>"
+		]
+	},
+	{
+		"className": "Schema",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x)",
+		"methodName": "getExample",
+		"packageName": "com.liferay.portal.vulcan.yaml.openapi",
+		"parameters": []
+	},
+	{
+		"className": "Schema",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x)",
+		"methodName": "setExample",
+		"packageName": "com.liferay.portal.vulcan.yaml.openapi",
+		"parameters": [
+			"String"
+		]
+	},
+	{
+		"className": "WikiGroupServiceConfiguration",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "getMediaWikiEditor",
+		"packageName": "com.liferay.wiki.configuration",
+		"parameters": []
+	},
+	{
+		"className": "ElasticsearchDocumentFactory",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x)",
+		"methodName": "getElasticsearchDocument",
+		"packageName": "com.liferay.portal.search.elasticsearch6.internal.document",
+		"parameters": [
+			"com.liferay.portal.kernel.search.Document"
+		]
+	},
+	{
+		"className": "DefaultElasticsearchDocumentFactory",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x)",
+		"methodName": "getElasticsearchDocument",
+		"packageName": "com.liferay.portal.search.elasticsearch6.internal.document",
+		"parameters": [
+			"com.liferay.portal.kernel.search.Document"
+		]
+	},
+	{
+		"className": "WorkflowInstanceManagerImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(long,Long,String,String,String,String,String,Boolean,int,int,OrderByComparator)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.workflow.kaleo.runtime.integration.internal",
+		"parameters": [
+			"long",
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"OrderByComparator<WorkflowInstance>"
+		]
+	},
+	{
+		"className": "WorkflowInstanceManagerImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(long,Long,String,String,String,String,String,Boolean)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.workflow.kaleo.runtime.integration.internal",
+		"parameters": [
+			"long",
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean"
+		]
+	},
+	{
+		"className": "DefaultWorkflowEngineImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(Long,String,String,String,String,String,Boolean,int,int,OrderByComparator,ServiceContext)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.workflow.kaleo.runtime.internal",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"OrderByComparator<WorkflowInstance>",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "DefaultWorkflowEngineImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(Long,String,String,String,String,String,Boolean,ServiceContext)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.workflow.kaleo.runtime.internal",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "KaleoInstanceLocalServiceWrapper",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(Long,String,String,String,String,String,Boolean,int,int,OrderByComparator,ServiceContext)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.workflow.kaleo.service",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoInstance>",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "KaleoInstanceLocalServiceWrapper",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(Long,String,String,String,String,String,Boolean,ServiceContext)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.workflow.kaleo.service",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "KaleoInstanceLocalServiceUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(Long,String,String,String,String,String,Boolean,int,int,OrderByComparator,ServiceContext)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.workflow.kaleo.service",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoInstance>",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "KaleoInstanceLocalServiceUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(Long,String,String,String,String,String,Boolean,ServiceContext)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.workflow.kaleo.service",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "KaleoInstanceLocalService",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(Long,String,String,String,String,String,Boolean,int,int,OrderByComparator,ServiceContext)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.workflow.kaleo.service",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"OrderByComparator<KaleoInstance>",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "KaleoInstanceLocalService",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(Long,String,String,String,String,String,Boolean,ServiceContext)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.workflow.kaleo.service",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "WorkflowEngine",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(Long,String,String,String,String,String,Boolean,int,int,OrderByComparator,ServiceContext)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.workflow.kaleo.runtime",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"OrderByComparator<WorkflowInstance>",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "WorkflowEngine",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(Long,String,String,String,String,String,Boolean,ServiceContext)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.workflow.kaleo.runtime",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "KaleoInstanceLocalServiceImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#search(Long,String,String,String,String,String,Boolean,int,int,OrderByComparator,ServiceContext)}",
+		"methodName": "search",
+		"packageName": "com.liferay.portal.workflow.kaleo.service.impl",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"int",
+			"int",
+			"OrderByComparator<KaleoInstance>",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "KaleoInstanceLocalServiceImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#searchCount(Long,String,String,String,String,String,Boolean,ServiceContext)}",
+		"methodName": "searchCount",
+		"packageName": "com.liferay.portal.workflow.kaleo.service.impl",
+		"parameters": [
+			"Long",
+			"String",
+			"String",
+			"String",
+			"Boolean",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service.impl",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service.impl",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service.impl",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"String",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service.impl",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentCollectionContributorTracker",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by #getFragmentEntries",
+		"methodName": "getFragmentCollectionContributorEntries",
+		"packageName": "com.liferay.fragment.contributor",
+		"parameters": []
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceWrapper",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceWrapper",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceWrapper",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"String",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceWrapper",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"String",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalServiceUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"com.liferay.portal.kernel.service.ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalService",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalService",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalService",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"String",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentEntryLinkLocalService",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addFragmentEntryLink(long,long,long,long,long,long,String,String,String,String,String,int,String,ServiceContext)}",
+		"methodName": "addFragmentEntryLink",
+		"packageName": "com.liferay.fragment.service",
+		"parameters": [
+			"long",
+			"long",
+			"long",
+			"long",
+			"long",
+			"String",
+			"String",
+			"String",
+			"String",
+			"int",
+			"ServiceContext"
+		]
+	},
+	{
+		"className": "FragmentCollectionContributorTrackerImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by #getFragmentEntries",
+		"methodName": "getFragmentCollectionContributorEntries",
+		"packageName": "com.liferay.fragment.internal.contributor",
+		"parameters": []
+	},
+	{
+		"className": "TestPortalCacheManager",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#reconfigurePortalCaches(URL,ClassLoader)}",
+		"methodName": "reconfigurePortalCaches",
+		"packageName": "com.liferay.portal.cache.test.util",
+		"parameters": [
+			"URL"
+		]
+	},
+	{
+		"className": "EhcachePortalCacheManager",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#reconfigurePortalCaches(URL,ClassLoader)}",
+		"methodName": "reconfigurePortalCaches",
+		"packageName": "com.liferay.portal.cache.ehcache.internal",
+		"parameters": [
+			"URL"
+		]
+	},
+	{
+		"className": "DLPortletToolbarContributor",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "getPortletTitleAddDocumentMenuItems",
+		"packageName": "com.liferay.document.library.portlet.toolbar.contributor",
+		"parameters": [
+			"Folder",
+			"ThemeDisplay",
+			"PortletRequest"
+		]
+	},
+	{
+		"className": "DLPortletToolbarContributor",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "getPortletTitleAddFolderMenuItem",
+		"packageName": "com.liferay.document.library.portlet.toolbar.contributor",
+		"parameters": [
+			"ThemeDisplay",
+			"PortletRequest",
+			"Folder"
+		]
+	},
+	{
+		"className": "DLPortletToolbarContributor",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "getPortletTitleAddMultipleDocumentsMenuItem",
+		"packageName": "com.liferay.document.library.portlet.toolbar.contributor",
+		"parameters": [
+			"ThemeDisplay",
+			"PortletRequest",
+			"Folder"
+		]
+	},
+	{
+		"className": "DLPortletInstanceSettings",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "isShowTabs",
+		"packageName": "com.liferay.document.library.web.internal.settings",
+		"parameters": []
+	},
+	{
+		"className": "OAuth2AuthorizationLocalServiceWrapper",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addOAuth2Authorization(long,long,String,long,long,String,Date,Date,String,String,String,Date,Date)}",
+		"methodName": "addOAuth2Authorization",
+		"packageName": "com.liferay.oauth2.provider.service",
+		"parameters": [
+			"long",
+			"long",
+			"String",
+			"long",
+			"long",
+			"String",
+			"java.util.Date",
+			"java.util.Date",
+			"String",
+			"String",
+			"java.util.Date",
+			"java.util.Date"
+		]
+	},
+	{
+		"className": "OAuth2AuthorizationLocalServiceUtil",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addOAuth2Authorization(long,long,String,long,long,String,Date,Date,String,String,String,Date,Date)}",
+		"methodName": "addOAuth2Authorization",
+		"packageName": "com.liferay.oauth2.provider.service",
+		"parameters": [
+			"long",
+			"long",
+			"String",
+			"long",
+			"long",
+			"String",
+			"java.util.Date",
+			"java.util.Date",
+			"String",
+			"String",
+			"java.util.Date",
+			"java.util.Date"
+		]
+	},
+	{
+		"className": "OAuth2AuthorizationLocalService",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addOAuth2Authorization(long,long,String,long,long,String,Date,Date,String,String,String,Date,Date)}",
+		"methodName": "addOAuth2Authorization",
+		"packageName": "com.liferay.oauth2.provider.service",
+		"parameters": [
+			"long",
+			"long",
+			"String",
+			"long",
+			"long",
+			"String",
+			"Date",
+			"Date",
+			"String",
+			"String",
+			"Date",
+			"Date"
+		]
+	},
+	{
+		"className": "OAuth2AuthorizationLocalServiceImpl",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#addOAuth2Authorization(long,long,String,long,long,String,Date,Date,String,String,String,Date,Date)}",
+		"methodName": "addOAuth2Authorization",
+		"packageName": "com.liferay.oauth2.provider.service.impl",
+		"parameters": [
+			"long",
+			"long",
+			"String",
+			"long",
+			"long",
+			"String",
+			"Date",
+			"Date",
+			"String",
+			"String",
+			"Date",
+			"Date"
+		]
+	},
+	{
+		"className": "UpdateDocumentRequest",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced byUpdateDocumentRequest.UpdateDocumentRequest(String, String, Document)",
+		"methodName": "UpdateDocumentRequest",
+		"packageName": "com.liferay.portal.search.engine.adapter.document",
+		"parameters": [
+			"String",
+			"String",
+			"com.liferay.portal.kernel.search.Document"
+		]
+	},
+	{
+		"className": "UpdateDocumentRequest",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by getDocument",
+		"methodName": "getDocument71",
+		"packageName": "com.liferay.portal.search.engine.adapter.document",
+		"parameters": []
+	},
+	{
+		"className": "IndexDocumentRequest",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced byIndexDocumentRequest.IndexDocumentRequest(String, Document)",
+		"methodName": "IndexDocumentRequest",
+		"packageName": "com.liferay.portal.search.engine.adapter.document",
+		"parameters": [
+			"String",
+			"com.liferay.portal.kernel.search.Document"
+		]
+	},
+	{
+		"className": "IndexDocumentRequest",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced byIndexDocumentRequest.IndexDocumentRequest(String, String, Document)",
+		"methodName": "IndexDocumentRequest",
+		"packageName": "com.liferay.portal.search.engine.adapter.document",
+		"parameters": [
+			"String",
+			"String",
+			"com.liferay.portal.kernel.search.Document"
+		]
+	},
+	{
+		"className": "IndexDocumentRequest",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by getDocument",
+		"methodName": "getDocument71",
+		"packageName": "com.liferay.portal.search.engine.adapter.document",
+		"parameters": []
+	},
+	{
+		"className": "SearchSearchRequest",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by Sort",
+		"methodName": "getSorts71",
+		"packageName": "com.liferay.portal.search.engine.adapter.search",
+		"parameters": []
+	},
+	{
+		"className": "SearchSearchRequest",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced bycom.liferay.portal.search.stats.StatsRequest",
+		"methodName": "getStats",
+		"packageName": "com.liferay.portal.search.engine.adapter.search",
+		"parameters": []
+	},
+	{
+		"className": "SearchSearchRequest",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by Sort",
+		"methodName": "setSorts",
+		"packageName": "com.liferay.portal.search.engine.adapter.search",
+		"parameters": [
+			"com.liferay.portal.kernel.search.Sort[]"
+		]
+	},
+	{
+		"className": "SearchSearchRequest",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced bycom.liferay.portal.search.stats.StatsRequest",
+		"methodName": "setStats",
+		"packageName": "com.liferay.portal.search.engine.adapter.search",
+		"parameters": [
+			"Map<String,Stats>"
+		]
+	},
+	{
+		"className": "PortletSharedSearchResponse",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), replaced by {#getSearchResponse()} and {SearchResponse#getTotalHits()}",
+		"methodName": "getTotalHits",
+		"packageName": "com.liferay.portal.search.web.portlet.shared.search",
+		"parameters": []
+	},
+	{
+		"className": "RepositoryEntryBrowserTag",
+		"deprecatedVersion": "7.2",
+		"javadoc": "@deprecated As of Mueller (7.2.x), with no direct replacement",
+		"methodName": "setDlMimeTypeDisplayContext",
+		"packageName": "com.liferay.item.selector.taglib.servlet.taglib",
+		"parameters": [
+			"DLMimeTypeDisplayContext"
+		]
+	}
+]

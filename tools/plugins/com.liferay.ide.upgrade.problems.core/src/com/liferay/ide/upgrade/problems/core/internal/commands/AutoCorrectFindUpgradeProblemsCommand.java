@@ -14,6 +14,7 @@
 
 package com.liferay.ide.upgrade.problems.core.internal.commands;
 
+import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ListUtil;
 import com.liferay.ide.upgrade.plan.core.MessagePrompt;
@@ -38,9 +39,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -76,6 +80,34 @@ public class AutoCorrectFindUpgradeProblemsCommand implements MarkerSupport, Upg
 		autoCorrectableUpgradeProblems.stream(
 		).forEach(
 			this::_autoCorrectProblem
+		);
+
+		autoCorrectableUpgradeProblems.stream(
+		).map(
+			problem -> problem.getResource()
+		).map(
+			resource -> {
+				IFile[] files = CoreUtil.findFilesForLocationURI(resource.toURI());
+
+				if (ListUtil.isNotEmpty(files)) {
+					return files[0];
+				}
+
+				return null;
+			}
+		).filter(
+			Objects::nonNull
+		).map(
+			IResource::getProject
+		).distinct(
+		).forEach(
+			project -> {
+				try {
+					project.refreshLocal(IResource.DEPTH_INFINITE, progressMonitor);
+				}
+				catch (Exception e) {
+				}
+			}
 		);
 
 		_upgradePlanner.dispatch(

@@ -21,6 +21,8 @@ import com.liferay.ide.core.util.FileUtil;
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.charset.Charset;
+
 import java.util.Comparator;
 import java.util.List;
 
@@ -105,7 +107,7 @@ public class GradleDependencyUpdater {
 
 			});
 
-		_gradleFileContents = FileUtils.readLines(_file);
+		_gradleFileContents = FileUtils.readLines(_file, Charset.defaultCharset());
 
 		for (Artifact artifact : artifacts) {
 			int[] lineNumbers = dependenciesClosureVisitor.getDependenceLineNumbers(artifact);
@@ -153,7 +155,7 @@ public class GradleDependencyUpdater {
 
 		_walkScript(visitor);
 
-		_gradleFileContents = FileUtils.readLines(_file);
+		_gradleFileContents = FileUtils.readLines(_file, Charset.defaultCharset());
 
 		if (!dependency.startsWith("\t")) {
 			dependency = "\t" + dependency;

@@ -16,9 +16,10 @@ package com.liferay.ide.functional.upgrade.tests;
 
 import com.liferay.ide.ui.liferay.SwtbotBase;
 import com.liferay.ide.ui.liferay.support.project.ProjectSupport;
-import com.liferay.ide.ui.swtbot.util.StringPool;
+import com.liferay.ide.ui.liferay.support.upgrade.LiferayUpgradePlanSupport;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -27,15 +28,14 @@ import org.junit.Test;
  */
 public class UpgradePlannerIconsTests extends SwtbotBase {
 
+	@ClassRule
+	public static LiferayUpgradePlanSupport upgradePlanner = new LiferayUpgradePlanSupport(bot);
+
 	@Test
 	public void expandAndcollapse() {
-		viewAction.switchUpgradePlannerPerspective();
-
 		wizardAction.openNewLiferayUpgradePlanWizard();
 
-		wizardAction.newUpgradePlan.prepare(project.getName(), "07-liferay-code-upgrade-plan", "6.2", "7.1");
-
-		wizardAction.newUpgradePlan.prepareCurrentCodeLocation(StringPool.BLANK);
+		wizardAction.newUpgradePlan.prepare(project.getName(), UPGRADE_CODE_OUTLINE, "6.2", "7.1");
 
 		wizardAction.finish();
 
@@ -52,13 +52,9 @@ public class UpgradePlannerIconsTests extends SwtbotBase {
 
 	@Test
 	public void restartUpgradePlan() {
-		viewAction.switchUpgradePlannerPerspective();
-
 		wizardAction.openNewLiferayUpgradePlanWizard();
 
-		wizardAction.newUpgradePlan.prepare(project.getName(), "07-liferay-code-upgrade-plan", "6.2", "7.1");
-
-		wizardAction.newUpgradePlan.prepareCurrentCodeLocation(StringPool.BLANK);
+		wizardAction.newUpgradePlan.prepare(project.getName(), UPGRADE_CODE_OUTLINE, "6.2", "7.1");
 
 		wizardAction.finish();
 
@@ -77,8 +73,6 @@ public class UpgradePlannerIconsTests extends SwtbotBase {
 
 	@Test
 	public void showProgressView() {
-		viewAction.switchUpgradePlannerPerspective();
-
 		viewAction.upgradePlan.showProgressView();
 
 		validationAction.assertViewVisible(PROGRESS);
@@ -86,8 +80,6 @@ public class UpgradePlannerIconsTests extends SwtbotBase {
 
 	@Test
 	public void showUpgradePlanInfoView() {
-		viewAction.switchUpgradePlannerPerspective();
-
 		viewAction.upgradePlan.showUpgradePlanInfoView();
 
 		validationAction.assertViewVisible(LIFERAY_UPGRADE_PLAN_INFO);
@@ -95,8 +87,6 @@ public class UpgradePlannerIconsTests extends SwtbotBase {
 
 	@Test
 	public void switchUpgradePlan() {
-		viewAction.switchUpgradePlannerPerspective();
-
 		viewAction.upgradePlan.clickSwitchUpgradePlan();
 
 		dialogAction.close();
@@ -104,14 +94,19 @@ public class UpgradePlannerIconsTests extends SwtbotBase {
 
 	@Test
 	public void upgradePlanDetails() {
-		viewAction.switchUpgradePlannerPerspective();
-
 		viewAction.upgradePlan.clickUpgradePlanDetails();
 
 		dialogAction.confirm();
 	}
 
 	@Rule
-	public ProjectSupport project = new ProjectSupport(bot);
+	public ProjectSupport project = new ProjectSupport(bot) {
+
+		@Override
+		public boolean isSwitchToUpgradePespective() {
+			return true;
+		}
+
+	};
 
 }

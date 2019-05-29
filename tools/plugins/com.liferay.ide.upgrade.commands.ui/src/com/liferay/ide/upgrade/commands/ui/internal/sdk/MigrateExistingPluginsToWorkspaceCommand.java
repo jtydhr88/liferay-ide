@@ -134,11 +134,14 @@ public class MigrateExistingPluginsToWorkspaceCommand implements SapphireContent
 					progressMonitor.subTask("Converting " + name + " to a module");
 
 					sb.append("convert ");
+					sb.append("--remove false ");
 					sb.append("--source \"");
 					sb.append(currentProjectLocation);
-					sb.append("\" --base \"");
+					sb.append("\" ");
+					sb.append("--base \"");
 					sb.append(targetProjectLocation);
-					sb.append("\" \"");
+					sb.append("\" ");
+					sb.append("\"");
 					sb.append(name);
 					sb.append("\"");
 

@@ -20,6 +20,8 @@ Require-Bundle: com.liferay.ide.core,
  org.eclipse.osgi.services,
  org.eclipse.wst.sse.core,
  org.eclipse.wst.xml.core,
- org.json
-Service-Component: OSGI-INF/com.liferay.ide.upgrade.plugins.core.internal.customjsps.UpgradeCoreJSPCommand.xml,
- OSGI-INF/com.liferay.ide.upgrade.plugins.core.internal.customjsps.UpgradePortletJSPCommand.xml
+ org.json,
+ com.liferay.ide.project.core,
+ org.eclipse.sapphire.modeling,
+ org.eclipse.sapphire.platform
+Export-Package: com.liferay.ide.upgrade.plugins.core

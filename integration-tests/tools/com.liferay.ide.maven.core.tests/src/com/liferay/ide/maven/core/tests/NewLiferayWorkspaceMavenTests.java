@@ -87,7 +87,8 @@ public class NewLiferayWorkspaceMavenTests extends ProjectOpBase<NewLiferayWorks
 		NewLiferayWorkspaceOp op = NewLiferayWorkspaceOp.TYPE.instantiate();
 
 		String defaultBundleUrl =
-			"https://releases-cdn.liferay.com/portal/7.0.6-ga7/liferay-ce-portal-tomcat-7.0-ga7-20180507111753223.zip";
+			"https://releases-cdn.liferay.com/portal/7.2.0-ga1/liferay-ce-portal-tomcat-7.2.0-ga1-" +
+				"20190531153709761.tar.gz";
 
 		IPath rootLocation = CoreUtil.getWorkspaceRootLocation();
 
@@ -119,6 +120,46 @@ public class NewLiferayWorkspaceMavenTests extends ProjectOpBase<NewLiferayWorks
 		assertLiferayServerExists(workspace.getName());
 
 		deleteServer(workspace.getName());
+
+		deleteProject(workspace.getName());
+	}
+
+	@Test
+	public void testNewMavenLiferayWorkspaceOpWithBundle70() throws Exception {
+		NewLiferayWorkspaceOp op = NewLiferayWorkspaceOp.TYPE.instantiate();
+
+		String default70BundleUrl =
+			"https://releases-cdn.liferay.com/portal/7.0.6-ga7/liferay-ce-portal-tomcat-7.0-ga7-20180507111753223.zip";
+
+		IWorkspaceRoot wsRoot = CoreUtil.getWorkspaceRoot();
+
+		IPath workspaceLocation = wsRoot.getLocation();
+
+		op.setWorkspaceName(workspace.getName());
+		op.setLiferayVersion("7.0");
+		op.setProjectProvider(provider());
+		op.setLocation(workspaceLocation.toPortableString());
+
+		createOrImportAndBuild(
+			op, workspace.getName(), "Maven Liferay Workspace would not support Target Platform.", true);
+
+		IProject workspaceProject = CoreUtil.getProject(workspace.getName());
+
+		MavenTestUtil.waitForJobsToComplete();
+
+		IPath wsLocation = workspaceProject.getLocation();
+
+		IPath pomFilePath = wsLocation.append("pom.xml");
+
+		File pomFile = pomFilePath.toFile();
+
+		Assert.assertTrue(pomFile.exists());
+
+		String xml = FileUtil.readContents(pomFile);
+
+		Assert.assertTrue(xml.contains(default70BundleUrl));
+
+		assertLiferayServerNotExists(workspace.getName());
 
 		deleteProject(workspace.getName());
 	}
@@ -169,7 +210,8 @@ public class NewLiferayWorkspaceMavenTests extends ProjectOpBase<NewLiferayWorks
 		NewLiferayWorkspaceOp op = NewLiferayWorkspaceOp.TYPE.instantiate();
 
 		String bundleUrl =
-			"https://releases-cdn.liferay.com/portal/7.0.6-ga7/liferay-ce-portal-tomcat-7.0-ga7-20180507111753223.zip";
+			"https://releases-cdn.liferay.com/portal/7.2.0-ga1/liferay-ce-portal-tomcat-7.2.0-ga1-" +
+				"20190531153709761.tar.gz";
 
 		IWorkspaceRoot wsRoot = CoreUtil.getWorkspaceRoot();
 

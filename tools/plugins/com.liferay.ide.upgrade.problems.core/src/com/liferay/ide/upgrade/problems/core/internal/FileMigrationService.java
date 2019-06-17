@@ -238,11 +238,21 @@ public class FileMigrationService implements FileMigration {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 
-				if (dir.endsWith("bin") && dir.startsWith(startDir.getPath())) {
+				String currentDir = dir.toString();
+
+				if (dir.endsWith("bin") && currentDir.equals(startDir.getPath() + "/bin")) {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 
-				if (dir.endsWith("target") && dir.startsWith(startDir.getPath())) {
+				if (dir.endsWith("out") && currentDir.equals(startDir.getPath() + "/out")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("build") && currentDir.equals(startDir.getPath() + "/build")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("target") && currentDir.equals(startDir.getPath() + "/target")) {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 
@@ -296,11 +306,21 @@ public class FileMigrationService implements FileMigration {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 
-				if (dir.endsWith("bin") && dir.startsWith(startDir.getPath())) {
+				String currentDir = dir.toString();
+
+				if (dir.endsWith("bin") && currentDir.equals(startDir.getPath() + "/bin")) {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 
-				if (dir.endsWith("target") && dir.startsWith(startDir.getPath())) {
+				if (dir.endsWith("out") && currentDir.equals(startDir.getPath() + "/out")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("build") && currentDir.equals(startDir.getPath() + "/build")) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+
+				if (dir.endsWith("target") && currentDir.equals(startDir.getPath() + "/target")) {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 

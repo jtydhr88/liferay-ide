@@ -24,11 +24,19 @@ import org.junit.Rule;
 
 /**
  * @author Rui Wang
+ * @author Ashley Yuan
  */
 public class NewModulesExtWizardGradleBase extends SwtbotBase {
 
 	@ClassRule
-	public static LiferayWorkspaceGradleSupport liferayWorkspace = new LiferayWorkspaceGradleSupport(bot);
+	public static LiferayWorkspaceGradleSupport liferayWorkspace = new LiferayWorkspaceGradleSupport(bot) {
+
+		@Override
+		public void prepareGradleWorkspace() {
+			wizardAction.newLiferayWorkspace.prepareGradleWithIndexSources(getName());
+		}
+
+	};
 
 	public void addModulesExtWithJavaAndJSP() {
 		wizardAction.openNewLiferayModulesExtWizard();
@@ -43,13 +51,16 @@ public class NewModulesExtWizardGradleBase extends SwtbotBase {
 
 		wizardAction.next();
 
-		wizardAction.newModulesExt.openAddOriginMoudleDialog();
+		String[][] files = {
+			{"META-INF", "resources", "configuration.jsp"},
+			{"com", "liferay", "login", "web", "internal", "constants", "LoginPortletKeys.java"}
+		};
 
-		dialogAction.addFiles("META-INF", "resources", "configuration.jsp");
+		for (String[] file : files) {
+			wizardAction.newModulesExt.openAddOriginMoudleDialog();
 
-		wizardAction.newModulesExt.openAddOriginMoudleDialog();
-
-		dialogAction.addFiles("com", "liferay", "login", "web", "internal", "constants", "LoginPortletKeys.java");
+			dialogAction.selectOverrideFile(file);
+		}
 
 		wizardAction.finish();
 
@@ -81,21 +92,16 @@ public class NewModulesExtWizardGradleBase extends SwtbotBase {
 
 		wizardAction.next();
 
-		wizardAction.newModulesExt.openAddOriginMoudleDialog();
+		String[][] files = {
+			{"META-INF", "MANIFEST.MF"}, {"resource-actions", "default.xml"}, {"portlet.properties"},
+			{"content", "Language.properties"}
+		};
 
-		dialogAction.addFiles("META-INF", "MANIFEST.MF");
+		for (String[] file : files) {
+			wizardAction.newModulesExt.openAddOriginMoudleDialog();
 
-		wizardAction.newModulesExt.openAddOriginMoudleDialog();
-
-		dialogAction.addFiles("resource-actions", "default.xml");
-
-		wizardAction.newModulesExt.openAddOriginMoudleDialog();
-
-		dialogAction.addFiles("portlet.properties");
-
-		wizardAction.newModulesExt.openAddOriginMoudleDialog();
-
-		dialogAction.addFiles("content", "Language.properties");
+			dialogAction.selectOverrideFile(file);
+		}
 
 		wizardAction.finish();
 

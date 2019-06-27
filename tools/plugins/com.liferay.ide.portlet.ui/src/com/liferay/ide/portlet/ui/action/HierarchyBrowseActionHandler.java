@@ -68,7 +68,11 @@ public class HierarchyBrowseActionHandler extends BrowseActionHandler {
 			if (javaType != null) {
 				IJavaProject javaProject = JavaCore.create(project);
 
-				scope = SearchEngine.createHierarchyScope(javaProject.findType(javaType));
+				IType type = javaProject.findType(javaType);
+
+				if (type != null) {
+					scope = SearchEngine.createHierarchyScope(javaProject.findType(javaType));
+				}
 			}
 			else {
 				MessageDialog.openInformation(

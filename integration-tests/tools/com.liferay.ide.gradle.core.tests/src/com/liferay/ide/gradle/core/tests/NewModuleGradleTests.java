@@ -20,6 +20,7 @@ import com.liferay.ide.gradle.core.tests.base.NewModuleGradleBase;
 import com.liferay.ide.project.core.modules.NewLiferayModuleProjectOp;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.sapphire.Value;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -64,9 +65,13 @@ public class NewModuleGradleTests extends NewModuleGradleBase {
 		op.setProjectProvider(provider());
 		op.setProjectTemplateName("content-targeting-report");
 
-		createOrImportAndBuild(op, project.getName());
+		Value<String> version = op.getLiferayVersion();
 
-		deleteProject(project.getName());
+		if (!"7.2".equals(version.getDefaultContent())) {
+			createOrImportAndBuild(op, project.getName());
+
+			deleteProject(project.getName());
+		}
 	}
 
 	@Test
@@ -77,9 +82,13 @@ public class NewModuleGradleTests extends NewModuleGradleBase {
 		op.setProjectProvider(provider());
 		op.setProjectTemplateName("content-targeting-rule");
 
-		createOrImportAndBuild(op, project.getName());
+		Value<String> version = op.getLiferayVersion();
 
-		deleteProject(project.getName());
+		if (!"7.2".equals(version.getDefaultContent())) {
+			createOrImportAndBuild(op, project.getName());
+
+			deleteProject(project.getName());
+		}
 	}
 
 	@Test
@@ -90,9 +99,13 @@ public class NewModuleGradleTests extends NewModuleGradleBase {
 		op.setProjectProvider(provider());
 		op.setProjectTemplateName("content-targeting-tracking-action");
 
-		createOrImportAndBuild(op, project.getName());
+		Value<String> version = op.getLiferayVersion();
 
-		deleteProject(project.getName());
+		if (!"7.2".equals(version.getDefaultContent())) {
+			createOrImportAndBuild(op, project.getName());
+
+			deleteProject(project.getName());
+		}
 	}
 
 	@Test
@@ -116,9 +129,13 @@ public class NewModuleGradleTests extends NewModuleGradleBase {
 		op.setProjectProvider(provider());
 		op.setProjectTemplateName("form-field");
 
-		createOrImportAndBuild(op, project.getName());
+		Value<String> version = op.getLiferayVersion();
 
-		deleteProject(project.getName());
+		if (!"7.2".equals(version.getDefaultContent())) {
+			createOrImportAndBuild(op, project.getName());
+
+			deleteProject(project.getName());
+		}
 	}
 
 	@Test

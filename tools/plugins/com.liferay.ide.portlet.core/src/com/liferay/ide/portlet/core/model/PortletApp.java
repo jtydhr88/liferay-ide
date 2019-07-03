@@ -36,10 +36,10 @@ import org.eclipse.sapphire.modeling.xml.annotations.XmlSchema;
  */
 @Image(path = "images/obj16/portlet_model_obj.gif")
 @XmlBinding(path = "portlet-app")
-@XmlNamespace(prefix = "", uri = "http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd")
+@XmlNamespace(prefix = "", uri = "http://xmlns.jcp.org/xml/ns/portlet")
 @XmlSchema(
-	location = "http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd",
-	namespace = "http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+	location = "http://xmlns.jcp.org/xml/ns/portlet/portlet-app_3_0.xsd",
+	namespace = "http://xmlns.jcp.org/xml/ns/portlet"
 )
 public interface PortletApp extends Identifiable, ResourceBundle {
 

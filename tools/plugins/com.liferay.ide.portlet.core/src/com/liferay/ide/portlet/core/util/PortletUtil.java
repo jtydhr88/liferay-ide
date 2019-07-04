@@ -142,7 +142,11 @@ public class PortletUtil {
 	 */
 	public static IPackageFragmentRoot getSourceFolder(IJavaProject javaProject) throws JavaModelException {
 		for (IPackageFragmentRoot root : javaProject.getPackageFragmentRoots()) {
-			if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
+			IPath classPath = root.getPath();
+
+			String path = classPath.toString();
+
+			if ((root.getKind() == IPackageFragmentRoot.K_SOURCE) && path.contains("resources")) {
 				return root;
 			}
 		}

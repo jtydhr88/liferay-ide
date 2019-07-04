@@ -180,7 +180,11 @@ public abstract class AbstractResourceBundleActionHandler extends PropertyEditor
 		IClasspathEntry[] cpEntries = CoreUtil.getClasspathEntries(project);
 
 		for (IClasspathEntry iClasspathEntry : cpEntries) {
-			if (IClasspathEntry.CPE_SOURCE == iClasspathEntry.getEntryKind()) {
+			IPath classPath = iClasspathEntry.getPath();
+
+			String path = classPath.toString();
+
+			if ((IClasspathEntry.CPE_SOURCE == iClasspathEntry.getEntryKind()) && path.contains("resources")) {
 				IFolder folder = wroot.getFolder(iClasspathEntry.getPath());
 
 				IPath entryPath = folder.getLocation();
@@ -210,7 +214,11 @@ public abstract class AbstractResourceBundleActionHandler extends PropertyEditor
 		IClasspathEntry[] cpEntries = CoreUtil.getClasspathEntries(project);
 
 		for (IClasspathEntry iClasspathEntry : cpEntries) {
-			if (IClasspathEntry.CPE_SOURCE == iClasspathEntry.getEntryKind()) {
+			IPath classPath = iClasspathEntry.getPath();
+
+			String path = classPath.toString();
+
+			if ((IClasspathEntry.CPE_SOURCE == iClasspathEntry.getEntryKind()) && path.contains("resources")) {
 				IFolder srcFolder = wroot.getFolder(iClasspathEntry.getPath());
 
 				IPath rbSourcePath = srcFolder.getLocation();

@@ -18,7 +18,9 @@ import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ListUtil;
 
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -141,8 +143,34 @@ public class PortletUtil {
 	 * @throws JavaModelException
 	 */
 	public static IPackageFragmentRoot getSourceFolder(IJavaProject javaProject) throws JavaModelException {
-		for (IPackageFragmentRoot root : javaProject.getPackageFragmentRoots()) {
-			if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
+		IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
+
+		Stream<IPackageFragmentRoot> stream = Arrays.stream(roots);
+
+		roots = stream.filter(
+			iPackageFragmentRoot -> {
+				try {
+					if (iPackageFragmentRoot.getKind() == IPackageFragmentRoot.K_SOURCE) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				catch (JavaModelException jme) {
+					return false;
+				}
+			}
+		).toArray(
+			IPackageFragmentRoot[]::new
+		);
+
+		for (IPackageFragmentRoot root : roots) {
+			IPath classPath = root.getPath();
+
+			String path = classPath.toString();
+
+			if ((roots.length > 1) ? path.contains("resources") : true) {
 				return root;
 			}
 		}

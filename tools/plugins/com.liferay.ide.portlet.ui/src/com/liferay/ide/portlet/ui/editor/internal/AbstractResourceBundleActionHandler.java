@@ -30,8 +30,10 @@ import java.io.InputStream;
 
 import java.lang.reflect.InvocationTargetException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -179,8 +181,27 @@ public abstract class AbstractResourceBundleActionHandler extends PropertyEditor
 	protected boolean getFileFromClasspath(IProject project, String ioFileName) {
 		IClasspathEntry[] cpEntries = CoreUtil.getClasspathEntries(project);
 
+		Stream<IClasspathEntry> stream = Arrays.stream(cpEntries);
+
+		cpEntries = stream.filter(
+			iClasspathEntry -> {
+				if (IClasspathEntry.CPE_SOURCE == iClasspathEntry.getEntryKind()) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		).toArray(
+			IClasspathEntry[]::new
+		);
+
 		for (IClasspathEntry iClasspathEntry : cpEntries) {
-			if (IClasspathEntry.CPE_SOURCE == iClasspathEntry.getEntryKind()) {
+			IPath classPath = iClasspathEntry.getPath();
+
+			String path = classPath.toString();
+
+			if ((cpEntries.length > 1) ? path.contains("resources") : true) {
 				IFolder folder = wroot.getFolder(iClasspathEntry.getPath());
 
 				IPath entryPath = folder.getLocation();
@@ -209,8 +230,27 @@ public abstract class AbstractResourceBundleActionHandler extends PropertyEditor
 	protected IFolder getResourceBundleFolderLocation(IProject project, String ioFileName) {
 		IClasspathEntry[] cpEntries = CoreUtil.getClasspathEntries(project);
 
+		Stream<IClasspathEntry> stream = Arrays.stream(cpEntries);
+
+		cpEntries = stream.filter(
+			iClasspathEntry -> {
+				if (IClasspathEntry.CPE_SOURCE == iClasspathEntry.getEntryKind()) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		).toArray(
+			IClasspathEntry[]::new
+		);
+
 		for (IClasspathEntry iClasspathEntry : cpEntries) {
-			if (IClasspathEntry.CPE_SOURCE == iClasspathEntry.getEntryKind()) {
+			IPath classPath = iClasspathEntry.getPath();
+
+			String path = classPath.toString();
+
+			if ((cpEntries.length > 1) ? path.contains("resources") : true) {
 				IFolder srcFolder = wroot.getFolder(iClasspathEntry.getPath());
 
 				IPath rbSourcePath = srcFolder.getLocation();

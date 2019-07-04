@@ -19,6 +19,7 @@ import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ListUtil;
 
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -133,6 +134,43 @@ public class PortletUtil {
 	}
 
 	/**
+	 * @param text
+	 * @return
+	 */
+	public static IClasspathEntry getResourceClassPath(IProject project) {
+		IClasspathEntry[] cpEntries = Stream.of(
+			CoreUtil.getClasspathEntries(project)
+		).filter(
+			classpathEntry -> IClasspathEntry.CPE_SOURCE == classpathEntry.getEntryKind()
+		).toArray(
+			IClasspathEntry[]::new
+		);
+
+		if (cpEntries.length == 0) {
+			return null;
+		}
+
+		IClasspathEntry classpathEntry = null;
+
+		if (cpEntries.length == 1) {
+			classpathEntry = cpEntries[0];
+		}
+		else {
+			for (IClasspathEntry entry : cpEntries) {
+				IPath classPath = entry.getPath();
+
+				String path = classPath.toString();
+
+				if (path.startsWith("/" + project.getName() + "/src/main/resources")) {
+					classpathEntry = entry;
+				}
+			}
+		}
+
+		return classpathEntry;
+	}
+
+	/**
 	 * This method will return the first source folder of the Java project
 	 *
 	 * @param javaProject
@@ -140,10 +178,47 @@ public class PortletUtil {
 	 * @return
 	 * @throws JavaModelException
 	 */
-	public static IPackageFragmentRoot getSourceFolder(IJavaProject javaProject) throws JavaModelException {
-		for (IPackageFragmentRoot root : javaProject.getPackageFragmentRoots()) {
-			if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
-				return root;
+	public static IPackageFragmentRoot getResourceFolder(IJavaProject javaProject) throws JavaModelException {
+		IPackageFragmentRoot[] roots = Stream.of(
+			javaProject.getPackageFragmentRoots()
+		).filter(
+			iPackageFragmentRoot -> {
+				try {
+					if (iPackageFragmentRoot.getKind() == IPackageFragmentRoot.K_SOURCE) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				catch (JavaModelException jme) {
+					return false;
+				}
+			}
+		).toArray(
+			IPackageFragmentRoot[]::new
+		);
+
+		if (roots.length == 0) {
+			return null;
+		}
+
+		IPath classPath = null;
+
+		if (roots.length == 1) {
+			classPath = roots[0].getPath();
+		}
+		else {
+			for (IPackageFragmentRoot root : roots) {
+				classPath = root.getPath();
+
+				String path = classPath.toString();
+
+				IProject project = javaProject.getProject();
+
+				if (path.startsWith("/" + project.getName() + "/src/main/resources")) {
+					return root;
+				}
 			}
 		}
 

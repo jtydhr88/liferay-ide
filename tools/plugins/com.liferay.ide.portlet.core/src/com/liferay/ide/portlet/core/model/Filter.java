@@ -16,8 +16,8 @@ package com.liferay.ide.portlet.core.model;
 
 import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.Length;
 import org.eclipse.sapphire.ListProperty;
+import org.eclipse.sapphire.PossibleValues;
 import org.eclipse.sapphire.ReferenceValue;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
@@ -48,9 +48,11 @@ public interface Filter extends Describeable, Displayable {
 
 	public ElementList<Param> getInitParams();
 
-	public ElementList<LifeCycle> getLifeCycle();
+	public Value<String> getLifecycle();
 
 	public Value<String> getName();
+
+	public Value<Integer> getOrdinal();
 
 	public void setImplementation(JavaTypeName value);
 
@@ -78,15 +80,20 @@ public interface Filter extends Describeable, Displayable {
 	@XmlListBinding(mappings = @XmlListBinding.Mapping(element = "init-param", type = Param.class))
 	public ListProperty PROP_INIT_PARAMS = new ListProperty(TYPE, "InitParams");
 
-	@Label(standard = "lifecycle")
-	@Length(min = 1)
-	@Type(base = LifeCycle.class)
-	@XmlListBinding(mappings = @XmlListBinding.Mapping(element = "lifecycle", type = LifeCycle.class))
-	public ListProperty PROP_LIFE_CYCLE = new ListProperty(TYPE, "LifeCycle");
-
 	@Label(standard = "name")
 	@Required
 	@XmlBinding(path = "filter-name")
 	public ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
+
+	@Label(standard = "ordinal")
+	@Type(base = Integer.class)
+	@XmlBinding(path = "ordinal")
+	public ValueProperty PROP_ORDINAL = new ValueProperty(TYPE, "Ordinal");
+
+	@Label(standard = "lifecycle")
+	@PossibleValues(values = {"ACTION_PHASE", "EVENT_PHASE", "RENDER_PHASE", "RESOURCE_PHASE"})
+	@Required
+	@XmlBinding(path = "lifecycle")
+	public ValueProperty PROP_Lifecycle = new ValueProperty(TYPE, "Lifecycle");
 
 }

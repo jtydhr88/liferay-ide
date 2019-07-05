@@ -65,6 +65,12 @@
                             <property>Filters</property>
                             <child-property>Name</child-property>
                             <child-property>
+                                <property>Ordinal</property>
+                            </child-property>
+                            <child-property>
+                                <property>Lifecycle</property>
+                            </child-property>
+                            <child-property>
                                 <property>Implementation</property>
                             </child-property>
                         </property-editor>

@@ -52,6 +52,8 @@ public interface Filter extends Describeable, Displayable {
 
 	public Value<String> getName();
 
+	public Value<Integer> getOrdinal();
+
 	public void setImplementation(JavaTypeName value);
 
 	public void setImplementation(String value);
@@ -88,5 +90,11 @@ public interface Filter extends Describeable, Displayable {
 	@Required
 	@XmlBinding(path = "filter-name")
 	public ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
+
+	@Label(standard = "ordinal")
+	@Required
+	@Type(base = Integer.class)
+	@XmlBinding(path = "ordinal")
+	public ValueProperty PROP_ORDINAL = new ValueProperty(TYPE, "Ordinal");
 
 }

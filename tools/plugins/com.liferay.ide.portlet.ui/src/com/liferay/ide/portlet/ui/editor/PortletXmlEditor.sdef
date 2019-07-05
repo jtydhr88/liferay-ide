@@ -65,6 +65,9 @@
                             <property>Filters</property>
                             <child-property>Name</child-property>
                             <child-property>
+                                <property>Ordinal</property>
+                            </child-property>
+                            <child-property>
                                 <property>Implementation</property>
                             </child-property>
                         </property-editor>
@@ -591,6 +594,7 @@
                 <content>
                     <property-editor>DisplayName</property-editor>
                     <property-editor>Name</property-editor>
+                    <property-editor>Ordinal</property-editor>
                     <property-editor>
                         <property>Implementation</property>
                     </property-editor>

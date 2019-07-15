@@ -137,8 +137,8 @@ public class PortletUtil {
 	 * @param text
 	 * @return
 	 */
-	public static IClasspathEntry getResourceClassPath(IProject project) {
-		IClasspathEntry[] cpEntries = Stream.of(
+	public static IClasspathEntry getResourceFolderClasspathEntry(IProject project) {
+		IClasspathEntry[] classpathEntries = Stream.of(
 			CoreUtil.getClasspathEntries(project)
 		).filter(
 			classpathEntry -> IClasspathEntry.CPE_SOURCE == classpathEntry.getEntryKind()
@@ -146,23 +146,25 @@ public class PortletUtil {
 			IClasspathEntry[]::new
 		);
 
-		if (cpEntries.length == 0) {
+		if (classpathEntries.length == 0) {
 			return null;
 		}
 
 		IClasspathEntry classpathEntry = null;
 
-		if (cpEntries.length == 1) {
-			classpathEntry = cpEntries[0];
+		if (classpathEntries.length == 1) {
+			classpathEntry = classpathEntries[0];
 		}
 		else {
-			for (IClasspathEntry entry : cpEntries) {
-				IPath classPath = entry.getPath();
+			IFolder resourcesFolder = project.getFolder("/src/main/resources");
 
-				String path = classPath.toString();
+			if (resourcesFolder.exists()) {
+				for (IClasspathEntry entry : classpathEntries) {
+					IPath path = entry.getPath();
 
-				if (path.startsWith("/" + project.getName() + "/src/main/resources")) {
-					classpathEntry = entry;
+					if (path.equals(resourcesFolder.getFullPath())) {
+						return entry;
+					}
 				}
 			}
 		}
@@ -178,13 +180,15 @@ public class PortletUtil {
 	 * @return
 	 * @throws JavaModelException
 	 */
-	public static IPackageFragmentRoot getResourceFolder(IJavaProject javaProject) throws JavaModelException {
-		IPackageFragmentRoot[] roots = Stream.of(
+	public static IPackageFragmentRoot getResourcesFolderPacageFragmentRoot(IJavaProject javaProject)
+		throws JavaModelException {
+
+		IPackageFragmentRoot[] packageFragmentRoots = Stream.of(
 			javaProject.getPackageFragmentRoots()
 		).filter(
-			iPackageFragmentRoot -> {
+			packageFragmentRoot -> {
 				try {
-					if (iPackageFragmentRoot.getKind() == IPackageFragmentRoot.K_SOURCE) {
+					if (packageFragmentRoot.getKind() == IPackageFragmentRoot.K_SOURCE) {
 						return true;
 					}
 					else {
@@ -199,25 +203,25 @@ public class PortletUtil {
 			IPackageFragmentRoot[]::new
 		);
 
-		if (roots.length == 0) {
+		if (packageFragmentRoots.length == 0) {
 			return null;
 		}
 
 		IPath classPath = null;
 
-		if (roots.length == 1) {
-			classPath = roots[0].getPath();
+		if (packageFragmentRoots.length == 1) {
+			classPath = packageFragmentRoots[0].getPath();
 		}
 		else {
-			for (IPackageFragmentRoot root : roots) {
-				classPath = root.getPath();
+			for (IPackageFragmentRoot packageFragmentRoot : packageFragmentRoots) {
+				classPath = packageFragmentRoot.getPath();
 
 				String path = classPath.toString();
 
 				IProject project = javaProject.getProject();
 
 				if (path.startsWith("/" + project.getName() + "/src/main/resources")) {
-					return root;
+					return packageFragmentRoot;
 				}
 			}
 		}

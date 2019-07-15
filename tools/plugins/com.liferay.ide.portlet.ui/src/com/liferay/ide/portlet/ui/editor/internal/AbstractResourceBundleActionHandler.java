@@ -116,7 +116,7 @@ public abstract class AbstractResourceBundleActionHandler extends PropertyEditor
 				try {
 					IJavaProject javaProject = JavaCore.create(project);
 
-					IPackageFragmentRoot pkgSrc = PortletUtil.getResourceFolder(javaProject);
+					IPackageFragmentRoot pkgSrc = PortletUtil.getResourcesFolderPacageFragmentRoot(javaProject);
 
 					IPackageFragment rbPackageFragment = pkgSrc.getPackageFragment(packageName);
 
@@ -177,7 +177,7 @@ public abstract class AbstractResourceBundleActionHandler extends PropertyEditor
 	 * @return
 	 */
 	protected boolean getFileFromClasspath(IProject project, String ioFileName) {
-		IClasspathEntry classpathEntry = PortletUtil.getResourceClassPath(project);
+		IClasspathEntry classpathEntry = PortletUtil.getResourceFolderClasspathEntry(project);
 
 		if (classpathEntry != null) {
 			IFolder folder = wroot.getFolder(classpathEntry.getPath());
@@ -205,7 +205,7 @@ public abstract class AbstractResourceBundleActionHandler extends PropertyEditor
 	 * @return
 	 */
 	protected IFolder getResourceBundleFolderLocation(IProject project, String ioFileName) {
-		IClasspathEntry classpathEntry = PortletUtil.getResourceClassPath(project);
+		IClasspathEntry classpathEntry = PortletUtil.getResourceFolderClasspathEntry(project);
 
 		if (classpathEntry != null) {
 			IFolder srcFolder = wroot.getFolder(classpathEntry.getPath());

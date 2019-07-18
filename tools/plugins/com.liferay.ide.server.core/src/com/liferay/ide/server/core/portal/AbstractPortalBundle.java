@@ -19,6 +19,7 @@ import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileListing;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.StringPool;
+import com.liferay.ide.core.util.ZipUtil;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.util.JavaUtil;
 import com.liferay.ide.server.util.LiferayPortalValueLoader;
@@ -38,6 +39,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TimeZone;
+import java.util.zip.ZipFile;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -136,6 +139,12 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 	public IPath getLogPath() {
 		IPath liferayHomeLogsPath = liferayHome.append("logs");
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		TimeZone portalDefaultTimeZone = _getPortalDefaultTimeZone();
+
+		if (portalDefaultTimeZone != null) {
+			simpleDateFormat.setTimeZone(portalDefaultTimeZone);
+		}
 
 		return liferayHomeLogsPath.append("liferay." + simpleDateFormat.format(new Date()) + ".log");
 	}
@@ -307,6 +316,38 @@ public abstract class AbstractPortalBundle implements PortalBundle {
 		}
 
 		return configInfoPath;
+	}
+
+	private TimeZone _getPortalDefaultTimeZone() {
+		IPath portalLibPath = getAppServerPortalDir().append("WEB-INF/lib");
+
+		if (FileUtil.exists(portalLibPath)) {
+			IPath portalImplJarPath = portalLibPath.append("portal-impl.jar");
+
+			if (FileUtil.exists(portalImplJarPath)) {
+				try (ZipFile portalImplJar = new ZipFile(portalImplJarPath.toFile());
+					InputStream portalPropertiesInputstream = portalImplJar.getInputStream(
+						ZipUtil.getZipEntry(portalImplJar, "portal.properties"))) {
+
+					if (portalPropertiesInputstream != null) {
+						Properties properties = new Properties();
+
+						properties.load(portalPropertiesInputstream);
+
+						String defaultTimeZone = properties.getProperty("company.default.time.zone");
+
+						if (defaultTimeZone != null) {
+							return TimeZone.getTimeZone(defaultTimeZone);
+						}
+					}
+				}
+				catch (Exception e) {
+					LiferayServerCore.logError("Failed to find portal default timeZone ", e);
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private String _getPortalVersion(IPath portalDir, IPath[] extraLib) {

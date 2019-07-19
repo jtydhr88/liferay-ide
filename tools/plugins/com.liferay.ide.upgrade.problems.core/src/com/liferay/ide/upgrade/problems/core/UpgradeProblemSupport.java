@@ -16,7 +16,6 @@ package com.liferay.ide.upgrade.problems.core;
 
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
-import com.liferay.ide.core.util.ListUtil;
 import com.liferay.ide.upgrade.plan.core.UpgradeProblem;
 
 import java.io.File;
@@ -45,18 +44,18 @@ public interface UpgradeProblemSupport {
 			upgradeProblem -> {
 				File resource = upgradeProblem.getResource();
 
-				IFile[] problemFiles = CoreUtil.findFilesForLocationURI(resource.toURI());
+				IFile problemFile = CoreUtil.findFilesForLocationURI(resource);
 
-				return ListUtil.isNotEmpty(problemFiles);
+				return problemFile != null;
 			}
 		).forEach(
 			upgradeProblem -> {
 				File resource = upgradeProblem.getResource();
 
-				IFile[] problemFiles = CoreUtil.findFilesForLocationURI(resource.toURI());
+				IFile problemFile = CoreUtil.findFilesForLocationURI(resource);
 
 				try {
-					IMarker marker = problemFiles[0].createMarker(UpgradeProblem.MARKER_TYPE);
+					IMarker marker = problemFile.createMarker(UpgradeProblem.MARKER_TYPE);
 
 					upgradeProblem.setMarkerId(marker.getId());
 
@@ -83,9 +82,7 @@ public interface UpgradeProblemSupport {
 
 		File file = upgradeProblem.getResource();
 
-		IFile[] iFiles = CoreUtil.findFilesForLocationURI(file.toURI());
-
-		IResource resource = iFiles[0];
+		IFile resource = CoreUtil.findFilesForLocationURI(file);
 
 		long markerId = upgradeProblem.getMarkerId();
 
@@ -150,9 +147,7 @@ public interface UpgradeProblemSupport {
 
 		File file = upgradeProblem.getResource();
 
-		IFile[] iFiles = CoreUtil.findFilesForLocationURI(file.toURI());
-
-		IResource resource = iFiles[0];
+		IResource resource = CoreUtil.findFilesForLocationURI(file);
 
 		marker.setAttribute(IMarker.LOCATION, resource.getName());
 

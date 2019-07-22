@@ -14,6 +14,9 @@
 
 package com.liferay.ide.service.ui.wizard;
 
+import com.liferay.ide.core.IBundleProject;
+import com.liferay.ide.core.IWebProject;
+import com.liferay.ide.core.LiferayCore;
 import com.liferay.ide.core.util.StringPool;
 import com.liferay.ide.project.core.util.ProjectUtil;
 import com.liferay.ide.project.ui.wizard.LiferayDataModelWizardPage;
@@ -326,6 +329,12 @@ public class NewServiceBuilderWizardPage
 			 ProjectUtil.isExtProject(project)) &&
 			SDKUtil.isSDKProject(project)) {
 
+			return true;
+		}
+
+		IBundleProject bundleProject = LiferayCore.create(IBundleProject.class, project);
+
+		if ((bundleProject != null) && !(bundleProject instanceof IWebProject)) {
 			return true;
 		}
 

@@ -14,6 +14,8 @@
 
 package com.liferay.ide.project.ui.wizard;
 
+import com.liferay.ide.core.IBundleProject;
+import com.liferay.ide.core.LiferayCore;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.ListUtil;
 import com.liferay.ide.core.util.StringPool;
@@ -56,6 +58,14 @@ public class ValidProjectChecker {
 		boolean hasJsfFacet = false;
 
 		for (IProject project : projects) {
+			IBundleProject bundleProject = LiferayCore.create(IBundleProject.class, project);
+
+			if (bundleProject != null) {
+				hasValidProjectTypes = true;
+
+				break;
+			}
+
 			if (ProjectUtil.isLiferayFacetedProject(project)) {
 				IFacetedProject facetedProject = ProjectUtil.getFacetedProject(project);
 

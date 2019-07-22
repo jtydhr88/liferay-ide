@@ -32,4 +32,5 @@ Require-Bundle: biz.aQute.bndlib;bundle-version="[4,5)",
  org.gradle.toolingapi;bundle-version="5.0.0"
 Service-Component: OSGI-INF/com.liferay.ide.gradle.core.LiferayGradleWorkspaceProjectProvider.xml,
  OSGI-INF/com.liferay.ide.gradle.core.GradleProjectSynchronizer.xml,
- OSGI-INF/com.liferay.ide.gradle.core.GradleProjectBuilder.xml
+ OSGI-INF/com.liferay.ide.gradle.core.GradleProjectBuilder.xml,
+ OSGI-INF/com.liferay.ide.gradle.core.GradleServiceBuilderHelper.xml

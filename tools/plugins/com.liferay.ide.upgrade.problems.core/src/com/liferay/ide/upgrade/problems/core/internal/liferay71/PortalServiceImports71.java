@@ -73,10 +73,21 @@ public class PortalServiceImports71 extends JavaImportsMigrator {
 	}
 
 	private final String[] _modularizationPropertiesFileNames = {
+		"modularization-adaptive-media-image-api.properties", "modularization-apio.architect.impl.properties",
 		"modularization-blogs-api.properties", "modularization-document-library-content-api.properties",
+		"modularization-document-library-content-service.properties",
 		"modularization-document-library-file-rank-api.properties",
-		"modularization-document-library-sync-api.properties", "modularization-message-boards-api.properties",
-		"modularization-petra-api.properties", "modularization-petra-string.properties"
+		"modularization-document-library-service.properties", "modularization-document-library-sync-api.properties",
+		"modularization-dynamic-data-lists-service.properties", "modularization-dynamic-data-mapping-taglib.properties",
+		"modularization-journal-api.properties", "modularization-journal-test.properties",
+		"modularization-mail-reader-api.properties", "modularization-message-boards-api.properties",
+		"modularization-message-boards-web.properties", "modularization-mobile-device-rules-api.properties",
+		"modularization-mobile-device-rules-web.properties", "modularization-petra-api.properties",
+		"modularization-petra-io.properties", "modularization-petra-lang.properties",
+		"modularization-petra-memory.properties", "modularization-petra-nio.properties",
+		"modularization-petra-string.properties", "modularization-portal-compound-session-id.properties",
+		"modularization-portal-monitoring.properties", "modularization-portal-workflow-kaleo-api.properties",
+		"modularization-portlet-display-template-api.properties", "modularization-web-page-element-apio-impl.properties"
 	};
 
 }

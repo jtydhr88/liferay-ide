@@ -29,4 +29,6 @@ public interface XMLFile extends SourceFile {
 	public Collection<FileSearchResult> findElementAttribute(
 		String tagName, String attributeName, Pattern valuePattern);
 
+	public Collection<FileSearchResult> findElementByName(String elementName);
+
 }

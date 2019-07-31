@@ -82,10 +82,12 @@ public class ModuleProjectNameValidationService extends ValidationService implem
 
 				NewLiferayProjectProvider<BaseModuleOp> provider = get(op.getProjectProvider());
 
-				IStatus projectStatus = provider.validateProjectLocation(currentProjectName, osPath);
+				if (provider != null) {
+					IStatus projectStatus = provider.validateProjectLocation(currentProjectName, osPath);
 
-				if (!projectStatus.isOK()) {
-					return StatusBridge.create(projectStatus);
+					if (!projectStatus.isOK()) {
+						return StatusBridge.create(projectStatus);
+					}
 				}
 
 				File projectFodler = FileUtil.getFile(osPath.append(currentProjectName));

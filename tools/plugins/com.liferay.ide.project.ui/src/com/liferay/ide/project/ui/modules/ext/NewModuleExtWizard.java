@@ -16,8 +16,8 @@ package com.liferay.ide.project.ui.modules.ext;
 
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.project.core.modules.ext.NewModuleExtOp;
+import com.liferay.ide.project.ui.BaseProjectWizard;
 import com.liferay.ide.project.ui.ProjectUI;
-import com.liferay.ide.project.ui.modules.BaseProjectWizard;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.sapphire.ui.def.DefinitionLoader;

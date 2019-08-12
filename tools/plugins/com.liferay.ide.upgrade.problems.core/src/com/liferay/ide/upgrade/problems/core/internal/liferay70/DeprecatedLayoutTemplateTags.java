@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 import java.util.ArrayList;
@@ -55,11 +54,10 @@ import org.osgi.service.component.annotations.Component;
 	},
 	service = {AutoFileMigrator.class, FileMigrator.class}
 )
-@SuppressWarnings("restriction")
+@SuppressWarnings({"restriction", "deprecation"})
 public class DeprecatedLayoutTemplateTags extends XMLFileMigrator implements AutoFileMigrator {
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public int correctProblems(File file, Collection<UpgradeProblem> upgradeProblems) throws AutoFileMigrateException {
 		int problemsCorrected = 0;
 		IDOMModel domModel = null;
@@ -67,7 +65,7 @@ public class DeprecatedLayoutTemplateTags extends XMLFileMigrator implements Aut
 		try {
 			IModelManager modelManager = StructuredModelManager.getModelManager();
 
-			try (InputStream input = Files.newInputStream(Paths.get(file.toURI()), StandardOpenOption.READ)) {
+			try (InputStream input = Files.newInputStream(file.toPath(), StandardOpenOption.READ)) {
 				domModel = (IDOMModel)modelManager.getModelForEdit(file.getAbsolutePath(), input, null);
 			}
 
@@ -75,10 +73,10 @@ public class DeprecatedLayoutTemplateTags extends XMLFileMigrator implements Aut
 
 			for (UpgradeProblem upgradeProblem : upgradeProblems) {
 				if (_KEY.equals(upgradeProblem.getAutoCorrectContext())) {
-					IndexedRegion region = domModel.getIndexedRegion(upgradeProblem.getStartOffset());
+					IndexedRegion indexedRegion = domModel.getIndexedRegion(upgradeProblem.getStartOffset());
 
-					if (region instanceof IDOMElement) {
-						IDOMElement element = (IDOMElement)region;
+					if (indexedRegion instanceof IDOMElement) {
+						IDOMElement element = (IDOMElement)indexedRegion;
 
 						elementsToCorrect.add(element);
 					}
@@ -99,7 +97,7 @@ public class DeprecatedLayoutTemplateTags extends XMLFileMigrator implements Aut
 
 			if (problemsCorrected > 0) {
 				try (OutputStream output = Files.newOutputStream(
-						Paths.get(file.toURI()), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
+						file.toPath(), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
 						StandardOpenOption.DSYNC)) {
 
 					domModel.save(output);
@@ -126,7 +124,7 @@ public class DeprecatedLayoutTemplateTags extends XMLFileMigrator implements Aut
 
 		List<FileSearchResult> results = new ArrayList<>();
 
-		Collection<FileSearchResult> tags = xmlFileChecker.findElementByName(_KEY);
+		Collection<FileSearchResult> tags = xmlFileChecker.findElement(_KEY);
 
 		for (FileSearchResult tagResult : tags) {
 			tagResult.autoCorrectContext = _KEY;

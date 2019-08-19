@@ -21,6 +21,7 @@ import com.liferay.ide.core.properties.PortalPropertiesConfiguration;
 import com.liferay.ide.core.util.CoreUtil;
 import com.liferay.ide.core.util.FileUtil;
 import com.liferay.ide.core.util.ListUtil;
+import com.liferay.ide.core.util.StringUtil;
 import com.liferay.ide.server.core.ILiferayServerBehavior;
 import com.liferay.ide.server.core.LiferayServerCore;
 import com.liferay.ide.server.core.gogo.GogoBundleDeployer;
@@ -34,7 +35,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -397,31 +397,9 @@ public class PortalServerBehavior
 		launch.setAttribute(
 			ATTR_PROGRAM_ARGUMENTS, _mergeArguments(existingProgArgs, _getRuntimeStartProgArgs(), null));
 
-		String existingVMArgs = launch.getAttribute(ATTR_VM_ARGUMENTS, (String)null);
-
-		String[] configVMArgs = _getRuntimeStartVMArguments();
-
-		if (null != existingVMArgs) {
-			String[] parsedVMArgs = DebugPlugin.parseArguments(existingVMArgs);
-
-			List<String> memoryArgs = new ArrayList<>();
-
-			if (CoreUtil.isNotNullOrEmpty(Arrays.toString(parsedVMArgs))) {
-				for (String pArg : parsedVMArgs) {
-					if (pArg.startsWith("-Xm")) {
-						memoryArgs.add(pArg);
-					}
-				}
-			}
-
-			String[] excludeArgs = memoryArgs.toArray(new String[memoryArgs.size()]);
-
-			launch.setAttribute(
-				ATTR_VM_ARGUMENTS, _mergeArguments(configVMArgs[0] + " " + existingVMArgs, configVMArgs, excludeArgs));
-		}
-		else {
-			launch.setAttribute(ATTR_VM_ARGUMENTS, _mergeArguments(existingVMArgs, configVMArgs, null));
-		}
+		launch.setAttribute(
+			ATTR_VM_ARGUMENTS,
+			_mergeArguments(StringUtil.merge(_getRuntimeStartVMArguments(), " "), new String[0], null));
 
 		PortalRuntime portalRuntime = _getPortalRuntime();
 
@@ -570,17 +548,17 @@ public class PortalServerBehavior
 
 			// Remove JMX arguments if present
 
-			String existingVMArgs = wc.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, (String)null);
+			String coinfigVMArgs = StringUtil.merge(_getRuntimeStopVMArguments(), " ");
 
-			if (existingVMArgs.indexOf(_JMX_EXCLUDE_ARGS[0]) >= 0) {
+			if (coinfigVMArgs.indexOf(_JMX_EXCLUDE_ARGS[0]) >= 0) {
 				wc.setAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
-					_mergeArguments(existingVMArgs, _getRuntimeStopVMArguments(), _JMX_EXCLUDE_ARGS));
+					_mergeArguments(coinfigVMArgs, new String[0], _JMX_EXCLUDE_ARGS));
 			}
 			else {
 				wc.setAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
-					_mergeArguments(existingVMArgs, _getRuntimeStopVMArguments(), null));
+					_mergeArguments(coinfigVMArgs, new String[0], null));
 			}
 
 			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, args);

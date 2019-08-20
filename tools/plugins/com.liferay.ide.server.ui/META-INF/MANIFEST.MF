@@ -47,3 +47,4 @@ Export-Package: com.liferay.ide.server.ui,
  com.liferay.ide.server.ui.navigator,
  com.liferay.ide.server.ui.portal,
  com.liferay.ide.server.ui.wizard
+Import-Package: org.apache.commons.lang3

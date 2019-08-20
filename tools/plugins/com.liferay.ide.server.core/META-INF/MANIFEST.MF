@@ -34,3 +34,4 @@ Export-Package: com.liferay.ide.server.core,
  com.liferay.ide.server.remote,
  com.liferay.ide.server.util
 Bundle-ClassPath: .
+Import-Package: com.google.common.collect

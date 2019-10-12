@@ -14,6 +14,7 @@
 
 package com.liferay.ide.upgrade.plan.core.internal;
 
+import com.liferay.ide.upgrade.plan.core.IUpgradePlanOutline;
 import com.liferay.ide.upgrade.plan.core.UpgradePlan;
 import com.liferay.ide.upgrade.plan.core.UpgradeProblem;
 import com.liferay.ide.upgrade.plan.core.UpgradeStep;
@@ -41,7 +42,7 @@ import org.eclipse.core.runtime.Adapters;
 public class StandardUpgradePlan implements UpgradePlan {
 
 	public StandardUpgradePlan(
-		String name, String currentVersion, String targetVersion, String upgradePlanOutline,
+		String name, String currentVersion, String targetVersion, IUpgradePlanOutline upgradePlanOutline,
 		List<UpgradeStep> upgradeSteps, Map<String, String> upgradeContext) {
 
 		_name = name;
@@ -79,7 +80,7 @@ public class StandardUpgradePlan implements UpgradePlan {
 		if (isEqualIgnoreCase(_name, targetUpgradePlan._name) &&
 			isEqualIgnoreCase(_currentVersion, targetUpgradePlan._currentVersion) &&
 			isEqualIgnoreCase(_targetVersion, targetUpgradePlan._targetVersion) &&
-			isEqualIgnoreCase(_upgradePlanOutline, targetUpgradePlan._upgradePlanOutline) &&
+			_upgradePlanOutline.equals(targetUpgradePlan._upgradePlanOutline) &&
 			_upgradeProblems.equals(targetUpgradePlan._upgradeProblems) &&
 			_upgradeSteps.equals(targetUpgradePlan._upgradeSteps)) {
 
@@ -114,7 +115,7 @@ public class StandardUpgradePlan implements UpgradePlan {
 		return _upgradeContext;
 	}
 
-	public String getUpgradePlanOutline() {
+	public IUpgradePlanOutline getUpgradePlanOutline() {
 		return _upgradePlanOutline;
 	}
 
@@ -222,7 +223,7 @@ public class StandardUpgradePlan implements UpgradePlan {
 	private final String _name;
 	private final String _targetVersion;
 	private Map<String, String> _upgradeContext = new HashMap<>();
-	private String _upgradePlanOutline;
+	private IUpgradePlanOutline _upgradePlanOutline;
 	private Set<UpgradeProblem> _upgradeProblems;
 	private final List<UpgradeStep> _upgradeSteps;
 

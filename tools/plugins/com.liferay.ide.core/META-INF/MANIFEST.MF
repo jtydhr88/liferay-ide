@@ -21,7 +21,8 @@ Require-Bundle: org.apache.commons.codec,
  org.eclipse.jdt.launching,
  org.eclipse.jface.text,
  org.eclipse.sapphire.modeling;bundle-version="[9,10)",
- org.json
+ org.json,
+ com.google.guava
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.liferay.ide.core,

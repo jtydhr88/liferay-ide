@@ -17,31 +17,21 @@ package com.liferay.ide.upgrade.plan.core.internal;
 import com.liferay.ide.upgrade.plan.core.IUpgradePlanOutline;
 import com.liferay.ide.upgrade.plan.core.UpgradePlanCorePlugin;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.eclipse.sapphire.services.ValueLabelService;
+import org.eclipse.sapphire.ConversionException;
+import org.eclipse.sapphire.ConversionService;
 
 /**
- * @author Terry Jia
  * @author Simon Jiang
  */
-public class OutlineValueLabelService extends ValueLabelService {
+public class StringToIUpgradePlanOutlineConversionService extends ConversionService<String, IUpgradePlanOutline> {
+
+	public StringToIUpgradePlanOutlineConversionService() {
+		super(String.class, IUpgradePlanOutline.class);
+	}
 
 	@Override
-	public String provide(String value) {
-		List<IUpgradePlanOutline> outlines = new CopyOnWriteArrayList<>();
-
-		outlines.addAll(UpgradePlanCorePlugin.getOutlines(UpgradePlanCorePlugin.CUSTOMER_OUTLINE_KEY));
-		outlines.addAll(UpgradePlanCorePlugin.getOutlines(UpgradePlanCorePlugin.DEFAULT_OUTLINE_KEY));
-
-		IUpgradePlanOutline unitOutlineSet = UpgradePlanCorePlugin.getFilterOutlines(value);
-
-		if (unitOutlineSet != null) {
-			return unitOutlineSet.getName();
-		}
-
-		return value;
+	public IUpgradePlanOutline convert(String object) throws ConversionException {
+		return UpgradePlanCorePlugin.getFilterOutlines(object);
 	}
 
 }

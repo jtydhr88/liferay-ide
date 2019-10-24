@@ -14,14 +14,13 @@
 
 package com.liferay.ide.project.ui.languageserver;
 
-import com.liferay.ide.core.util.CoreUtil;
-import com.liferay.ide.project.core.modules.BladeCLI;
-import com.liferay.ide.project.core.modules.BladeCLIException;
-
 import java.util.Arrays;
 
 import org.eclipse.lsp4e.server.ProcessOverSocketStreamConnectionProvider;
 import org.eclipse.wst.server.core.util.SocketUtil;
+
+import com.liferay.ide.core.util.CoreUtil;
+import com.liferay.ide.project.core.modules.BladeCLIException;
 
 /**
  * @author Terry Jia
@@ -31,7 +30,7 @@ public class LanguageServerConnectionProvider extends ProcessOverSocketStreamCon
 	public LanguageServerConnectionProvider() throws BladeCLIException {
 		super(
 			Arrays.asList(
-				"java", "-jar", BladeCLI.getBladeCLIPathString(), "languageServer", "-p", String.valueOf(_port)),
+				"java", "-DliferayLanguageServerPort=" + _port, "-jar", "~/.liferay-ide/liferay-properties-server-SNAPSHOT-all.jar"),
 			CoreUtil.getWorkspaceRootLocationString(), _port);
 	}
 

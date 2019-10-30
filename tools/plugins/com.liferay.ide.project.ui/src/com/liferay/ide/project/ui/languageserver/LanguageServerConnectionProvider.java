@@ -30,7 +30,7 @@ public class LanguageServerConnectionProvider extends ProcessOverSocketStreamCon
 	public LanguageServerConnectionProvider() throws BladeCLIException {
 		super(
 			Arrays.asList(
-				"java", "-DliferayLanguageServerPort=" + _port, "-jar", "~/.liferay-ide/liferay-properties-server-SNAPSHOT-all.jar"),
+				"java", "-DliferayLanguageServerPort=" + _port, "-jar", "~/.liferay-ide/liferay-properties-server-all.jar"),
 			CoreUtil.getWorkspaceRootLocationString(), _port);
 	}
 

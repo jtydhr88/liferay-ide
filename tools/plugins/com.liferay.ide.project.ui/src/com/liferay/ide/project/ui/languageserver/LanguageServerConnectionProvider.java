@@ -14,13 +14,16 @@
 
 package com.liferay.ide.project.ui.languageserver;
 
+import com.liferay.ide.core.util.CoreUtil;
+import com.liferay.ide.project.core.modules.BladeCLIException;
+
+import java.io.File;
+
 import java.util.Arrays;
+import java.util.Properties;
 
 import org.eclipse.lsp4e.server.ProcessOverSocketStreamConnectionProvider;
 import org.eclipse.wst.server.core.util.SocketUtil;
-
-import com.liferay.ide.core.util.CoreUtil;
-import com.liferay.ide.project.core.modules.BladeCLIException;
 
 /**
  * @author Terry Jia
@@ -29,9 +32,22 @@ public class LanguageServerConnectionProvider extends ProcessOverSocketStreamCon
 
 	public LanguageServerConnectionProvider() throws BladeCLIException {
 		super(
-			Arrays.asList(
-				"java", "-DliferayLanguageServerPort=" + _port, "-jar", "~/.liferay-ide/liferay-properties-server-all.jar"),
+			Arrays.asList("java", "-DliferayLanguageServerPort=" + _port, "-jar", _getLiferayPropertiesServerPath()),
 			CoreUtil.getWorkspaceRootLocationString(), _port);
+	}
+
+	private static String _getLiferayPropertiesServerPath() {
+		Properties properties = System.getProperties();
+
+		File temp = new File(properties.getProperty("user.home"), ".liferay-ide");
+
+		File liferayPropertiesServerJar = new File(temp, "liferay-properties-server-all.jar");
+
+		if (liferayPropertiesServerJar.exists()) {
+			return liferayPropertiesServerJar.getAbsolutePath();
+		}
+
+		return null;
 	}
 
 	private static int _port = SocketUtil.findUnusedPort(10000, 60000);

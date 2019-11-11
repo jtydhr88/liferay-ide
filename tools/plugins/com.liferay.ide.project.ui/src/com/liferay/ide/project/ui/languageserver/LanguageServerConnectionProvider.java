@@ -22,18 +22,17 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Properties;
 
-import org.eclipse.lsp4e.server.ProcessOverSocketStreamConnectionProvider;
-import org.eclipse.wst.server.core.util.SocketUtil;
+import org.eclipse.lsp4e.server.ProcessStreamConnectionProvider;
 
 /**
  * @author Terry Jia
  */
-public class LanguageServerConnectionProvider extends ProcessOverSocketStreamConnectionProvider {
+public class LanguageServerConnectionProvider extends ProcessStreamConnectionProvider {
 
 	public LanguageServerConnectionProvider() throws BladeCLIException {
 		super(
-			Arrays.asList("java", "-DliferayLanguageServerPort=" + _port, "-jar", _getLiferayPropertiesServerPath()),
-			CoreUtil.getWorkspaceRootLocationString(), _port);
+			Arrays.asList("java", "-DliferayLanguageServerStandardIO=true", "-jar", _getLiferayPropertiesServerPath()),
+			CoreUtil.getWorkspaceRootLocationString());
 	}
 
 	private static String _getLiferayPropertiesServerPath() {
@@ -49,7 +48,5 @@ public class LanguageServerConnectionProvider extends ProcessOverSocketStreamCon
 
 		return null;
 	}
-
-	private static int _port = SocketUtil.findUnusedPort(10000, 60000);
 
 }

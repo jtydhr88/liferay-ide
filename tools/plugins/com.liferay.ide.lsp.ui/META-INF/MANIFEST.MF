@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %bundle.name
+Bundle-SymbolicName: com.liferay.ide.lsp.ui;singleton:=true
+Bundle-Version: 3.7.1.qualifier
+Bundle-Vendor: %bundle.vendor
+Require-Bundle: org.eclipse.lsp4e,
+ org.eclipse.lsp4j,
+ com.liferay.ide.project.core,
+ com.liferay.ide.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/com.liferay.ide.lsp.ui.migration.IDEReporter.xml
